@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Color Picker</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="color_view">ColorView</string>
     <string name="action_settings">Settings</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.example.colorpicker;
 
+import com.example.colorpicker.R;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -9,17 +11,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
-
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new ColorView(this));
+        setContentView(R.layout.activity_main);
+        initStartScreen();
     }
-
-
+    
+    /** Initialize start screen view/images/layout */
+    private void initStartScreen(){
+    	int screenWidth = findViewById(R.id.container).getWidth();
+    	int screenHeight = findViewById(R.id.container).getHeight();
+    	
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         

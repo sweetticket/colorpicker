@@ -2,7 +2,11 @@
 <resources>
 
     <string name="app_name">Color Picker</string>
-    <string name="color_view">ColorView</string>
+    <string name="start_view">Start View</string>
+    <string name="backdrop">Backdrop</string>
+    <string name="to_gallery">To Gallery</string>
+    <string name="to_camera">To Camera</string>
+    <string name="to_picker">To Picker</string>
     <string name="action_settings">Settings</string>
 
 </resources>

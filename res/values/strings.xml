@@ -8,5 +8,9 @@
     <string name="to_camera">To Camera</string>
     <string name="to_picker">To Picker</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_gallery">GalleryActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_pinpoint">PinpointActivity</string>
+    <string name="selected_photo">Selected Photo</string>
 
 </resources>

@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.colorpicker.CameraActivity"
+            android:label="@string/title_activity_gallery" >
+        </activity>
+        <activity
+            android:name="com.example.colorpicker.PinpointActivity"
+            android:label="@string/title_activity_pinpoint" >
+        </activity>
     </application>
 
 </manifest>

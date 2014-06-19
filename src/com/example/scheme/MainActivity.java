@@ -1,6 +1,6 @@
-package com.example.colorpicker;
+package com.example.scheme;
 
-import com.example.colorpicker.R;
+import com.example.scheme.R;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;

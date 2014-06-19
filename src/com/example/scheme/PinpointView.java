@@ -2,23 +2,24 @@ package com.example.scheme;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class PinpointView extends ImageView {
 	
 	private boolean mZooming;
-	private float mZoomX;
-	private float mZoomY;
+	private int mZoomX;
+	private int mZoomY;
 	private Paint mPaint;
 	private Matrix mMatrix;
-	private Bitmap mMagnifier;
+	private Bitmap mBitmap;
+	private int mColor;
 
 
 	public PinpointView(Context context) {
@@ -38,12 +39,9 @@ public class PinpointView extends ImageView {
 	
 	private void init(){
 		mZooming = false;
-		Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-		mMagnifier = Bitmap.createBitmap(30, 30, conf); 
-		BitmapShader shader = new BitmapShader(mMagnifier, TileMode.CLAMP, TileMode.CLAMP);
-		mMatrix = new Matrix();
 		mPaint = new Paint();
-		mPaint.setShader(shader);
+		mBitmap = ((BitmapDrawable)this.getDrawable()).getBitmap();
+		Log.d("bit", "bitmap = "+mBitmap);
 	}
 	
 	public void setZooming(boolean b){
@@ -51,8 +49,8 @@ public class PinpointView extends ImageView {
 	}
 	
 	public void setZoomPos(float x, float y){
-		mZoomX = x;
-		mZoomY = y;
+		mZoomX = Math.round(x);
+		mZoomY = Math.round(y);
 		
 	}
 	
@@ -62,11 +60,12 @@ public class PinpointView extends ImageView {
 	    super.onDraw(canvas);
 	    
 	    if (mZooming) {
-	        mMatrix.reset();
-	        mMatrix.postScale(2f, 2f, mZoomX, mZoomY);
-	        mPaint.getShader().setLocalMatrix(mMatrix);
-
-	        canvas.drawCircle(mZoomX, mZoomY, 100, mPaint);
+	        mColor = mBitmap.getPixel(mZoomX, mZoomY);
+	        mPaint.setColor(mColor);
+	        
+	        //TODO: new bitmap at corner of screen, filled with mColor
 	    }
+	    
+	    
 	}
 }

@@ -26,6 +26,7 @@ public class PinpointActivity extends ActionBarActivity {
 
 	public final int REQUIRED_SIZE = 80;
 	private PinpointView mPinpointView;
+	private Bitmap mBitmap;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,8 +34,8 @@ public class PinpointActivity extends ActionBarActivity {
 		mPinpointView = (PinpointView) findViewById(R.id.pinpoint_view);
 		Intent intent = getIntent();
 		String path = intent.getStringExtra("path");
-
-		mPinpointView.setImageBitmap(fixImage(path));
+		mBitmap = fixImage(path);
+		mPinpointView.setImageBitmap(mBitmap);
 
 		initTouch();
 

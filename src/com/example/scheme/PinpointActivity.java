@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,13 +25,11 @@ public class PinpointActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("pinpoint", "in pinpoint activity");
+		setContentView(R.layout.activity_pinpoint);
 		selectedPhoto = (ImageView) findViewById(R.id.selected_photo);
 		Intent intent = getIntent();
 		String path = intent.getStringExtra("path");
-        Log.d("img path", "pinpoint path : "+ path);
 		selectedPhoto.setImageBitmap(BitmapFactory.decodeFile(path));
-		setContentView(R.layout.activity_pinpoint);
 		
 	}
 	

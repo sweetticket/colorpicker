@@ -40,7 +40,6 @@ public class PinpointView extends ImageView {
 	private void init(){
 		mZooming = false;
 		mPaint = new Paint();
-		mBitmap = ((BitmapDrawable)this.getDrawable()).getBitmap();
 		Log.d("bit", "bitmap = "+mBitmap);
 	}
 	
@@ -56,7 +55,7 @@ public class PinpointView extends ImageView {
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
-
+		mBitmap = ((BitmapDrawable)this.getDrawable()).getBitmap();
 	    super.onDraw(canvas);
 	    
 	    if (mZooming) {

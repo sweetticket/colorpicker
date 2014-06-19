@@ -11,6 +11,6 @@
     <string name="title_activity_gallery">GalleryActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_pinpoint">PinpointActivity</string>
-    <string name="selected_photo">Selected Photo</string>
+    <string name="pinpoint_view">Pinpoint View</string>
 
 </resources>

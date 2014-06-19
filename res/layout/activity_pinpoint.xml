@@ -6,11 +6,11 @@
     tools:context="com.example.scheme.PinpointActivity"
     tools:ignore="MergeRootFrame" >
 
-    <ImageView
-        android:id="@+id/selected_photo"
+    <com.example.scheme.PinpointView
+        android:id="@+id/pinpoint_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:contentDescription="@string/selected_photo" />
+        android:contentDescription="@string/pinpoint_view" />
 
 </FrameLayout>

@@ -2,6 +2,7 @@ package com.example.scheme;
 
 import com.example.scheme.R;
 
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.content.Context;
@@ -15,30 +16,65 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.os.Build;
 
 public class PinpointActivity extends ActionBarActivity {
 
-	private ImageView selectedPhoto;
-	final int REQUIRED_SIZE = 80;
-
+	public final int REQUIRED_SIZE = 80;
+	private PinpointView mPinpointView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pinpoint);
-		selectedPhoto = (ImageView) findViewById(R.id.selected_photo);
+		mPinpointView = (PinpointView) findViewById(R.id.pinpoint_view);
 		Intent intent = getIntent();
 		String path = intent.getStringExtra("path");
 
-		selectedPhoto.setImageBitmap(fixImage(path));
+		mPinpointView.setImageBitmap(fixImage(path));
+
+		initTouch();
 
 		Context context = getApplicationContext();
 		CharSequence text = "Tap to pinpoint color";
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+	}
+
+	/** Sets up touch listeners */
+	private void initTouch() {
+		mPinpointView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				int action = MotionEventCompat.getActionMasked(event);
+				float x = event.getX();
+				float y = event.getY();
+
+				switch (action) {
+				case (MotionEvent.ACTION_DOWN): {
+
+					return true;
+				}
+				case (MotionEvent.ACTION_MOVE):
+					mPinpointView.setZooming(true);
+					view.invalidate();
+					return true;
+				case (MotionEvent.ACTION_UP):
+					mPinpointView.setZooming(false);
+					view.invalidate();
+					return true;
+				default:
+					return true;
+				}
+
+			}
+
+		});
 	}
 
 	private Bitmap fixImage(String path) {
@@ -67,8 +103,8 @@ public class PinpointActivity extends ActionBarActivity {
 			Bitmap bitmap = bm;
 
 			ExifInterface exif = new ExifInterface(path);
-			int orientation = exif
-					.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+			int orientation = exif.getAttributeInt(
+					ExifInterface.TAG_ORIENTATION, 1);
 			Log.e("orientation", "" + orientation);
 			Matrix m = new Matrix();
 

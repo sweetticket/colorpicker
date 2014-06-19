@@ -4,24 +4,26 @@ import com.example.scheme.R;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.os.Build;
 
 public class PinpointActivity extends ActionBarActivity {
-	
+
 	private ImageView selectedPhoto;
-	
+	final int REQUIRED_SIZE = 80;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,10 +31,75 @@ public class PinpointActivity extends ActionBarActivity {
 		selectedPhoto = (ImageView) findViewById(R.id.selected_photo);
 		Intent intent = getIntent();
 		String path = intent.getStringExtra("path");
-		selectedPhoto.setImageBitmap(BitmapFactory.decodeFile(path));
-		
+
+		selectedPhoto.setImageBitmap(fixImage(path));
+
+		Context context = getApplicationContext();
+		CharSequence text = "Tap to pinpoint color";
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
 	}
-	
+
+	private Bitmap fixImage(String path) {
+		try {
+			if (path == null) {
+				return null;
+			}
+			// decode image size
+			BitmapFactory.Options o = new BitmapFactory.Options();
+			o.inJustDecodeBounds = true;
+			// Find the correct scale value. It should be the power of 2.
+			int width_tmp = o.outWidth, height_tmp = o.outHeight;
+			int scale = 6;
+			while (true) {
+				if (width_tmp / 2 < REQUIRED_SIZE
+						|| height_tmp / 2 < REQUIRED_SIZE)
+					break;
+				width_tmp /= 2;
+				height_tmp /= 2;
+				scale++;
+			}
+			// decode with inSampleSize
+			BitmapFactory.Options o2 = new BitmapFactory.Options();
+			o2.inSampleSize = scale;
+			Bitmap bm = BitmapFactory.decodeFile(path, o2);
+			Bitmap bitmap = bm;
+
+			ExifInterface exif = new ExifInterface(path);
+			int orientation = exif
+					.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+			Log.e("orientation", "" + orientation);
+			Matrix m = new Matrix();
+
+			if ((orientation == 3)) {
+				m.postRotate(180);
+				m.postScale((float) bm.getWidth(), (float) bm.getHeight());
+				// if(m.preRotate(90)){
+				Log.e("in orientation", "" + orientation);
+				bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+						bm.getHeight(), m, true);
+				return bitmap;
+			} else if (orientation == 6) {
+				m.postRotate(90);
+				Log.e("in orientation", "" + orientation);
+				bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+						bm.getHeight(), m, true);
+				return bitmap;
+			} else if (orientation == 8) {
+				m.postRotate(270);
+				Log.e("in orientation", "" + orientation);
+				bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+						bm.getHeight(), m, true);
+				return bitmap;
+			}
+			return bitmap;
+		} catch (Exception e) {
+		}
+		return null;
+
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 

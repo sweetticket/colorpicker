@@ -4,26 +4,22 @@ import com.example.scheme.R;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.os.Build;
 import android.provider.MediaStore;
 
 public class MainActivity extends ActionBarActivity {
 	public static final int SELECT_PICTURE = 1;
+	public static final int REQUEST_IMAGE_CAPTURE = 2;
 	private String imagePath;
 	private ImageView mToGallery;
 	private ImageView mToCamera;
@@ -58,7 +54,11 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View view) {
-				
+				Intent cameraIntent = new Intent(
+						MediaStore.ACTION_IMAGE_CAPTURE);
+				if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+					startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+				}
 			}
 		});
 
@@ -66,29 +66,56 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View view) {
-				
+
 			}
 		});
 
 	}
-	
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK && data != null) {
-            Uri pickedImage = data.getData();
-            String[] filePath = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
-            cursor.moveToFirst();
-            imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 
-            cursor.close();
-            Intent pinpointIntent = new Intent(this, PinpointActivity.class);
+		if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK
+				&& data != null) {
+			Uri pickedImage = data.getData();
+			String[] filePath = { MediaStore.Images.Media.DATA };
+			Cursor cursor = getContentResolver().query(pickedImage, filePath,
+					null, null, null);
+			cursor.moveToFirst();
+			imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+			cursor.close();
+			Intent pinpointIntent = new Intent(this, PinpointActivity.class);
 			pinpointIntent.putExtra("path", imagePath);
 			startActivity(pinpointIntent.setData(pickedImage));
-        }
-    }
+		}
+
+		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+			Uri pickedImage = data.getData();
+			imagePath = getRealPathFromURI(pickedImage);
+			Intent pinpointIntent = new Intent(this, PinpointActivity.class);
+			pinpointIntent.putExtra("path", imagePath);
+			startActivity(pinpointIntent.setData(pickedImage));
+			/*
+			 * Bundle extras = data.getExtras(); Bitmap imageBitmap = (Bitmap)
+			 * extras.get("data"); mImageView.setImageBitmap(imageBitmap);
+			 */
+		}
+	}
+
+	public String getRealPathFromURI(Uri contentUri) {
+		try {
+			String[] proj = { MediaStore.Images.Media.DATA };
+			Cursor cursor = getContentResolver().query(contentUri, proj, null,
+					null, null);
+			int column_index = cursor
+					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(column_index);
+		} catch (Exception e) {
+			return contentUri.getPath();
+		}
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

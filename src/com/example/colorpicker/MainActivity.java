@@ -43,36 +43,31 @@ public class MainActivity extends ActionBarActivity {
 
 	/** Set listeners, etc. */
 	private void initButtons() {
-		mToGallery.setOnTouchListener(new View.OnTouchListener() {
+		mToGallery.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public boolean onTouch(View view, MotionEvent event) {
+			public void onClick(View view) {
 				Intent galleryIntent = new Intent(
 						Intent.ACTION_PICK,
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(galleryIntent, SELECT_PICTURE);
-				return false;
 			}
 		});
 
-		mToCamera.setOnTouchListener(new View.OnTouchListener() {
+		mToCamera.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public boolean onTouch(View view, MotionEvent event) {
-				// TODO Auto-generated method stub
-				return false;
+			public void onClick(View view) {
+				
 			}
-
 		});
 
-		mToPicker.setOnTouchListener(new View.OnTouchListener() {
+		mToPicker.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public boolean onTouch(View view, MotionEvent event) {
-				// TODO Auto-generated method stub
-				return false;
+			public void onClick(View view) {
+				
 			}
-
 		});
 
 	}

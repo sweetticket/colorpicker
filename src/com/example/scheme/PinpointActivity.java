@@ -87,9 +87,7 @@ public class PinpointActivity extends ActionBarActivity {
 					view.invalidate();
 					return true;
 				case (MotionEvent.ACTION_UP):
-					Intent colorPickerIntent = new Intent();
-					colorPickerIntent.putExtra("color", mPinpointView.getColor());
-					//TODO: send to colorpicker, make ColorModel
+					// Continue button
 					view.invalidate();
 					return true;
 				default:
@@ -159,6 +157,13 @@ public class PinpointActivity extends ActionBarActivity {
 		return null;
 
 	}
+	
+	private void startColorPicker(int color){
+		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
+		colorPickerIntent.putExtra("color", color);
+		startActivity(colorPickerIntent);
+		
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -173,11 +178,20 @@ public class PinpointActivity extends ActionBarActivity {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		
+	    // Handle presses on the action bar items
+	    /*switch (item.getItemId()) {
+	        case R.id.action_search:
+	            openSearch();
+	            return true;
+	        case R.id.action_compose:
+	            composeMessage();
+	            return true;
+	        default:*/
+	            return super.onOptionsItemSelected(item);
+	    //}
 	}
+	
+	
 
 }

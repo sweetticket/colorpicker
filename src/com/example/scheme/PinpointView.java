@@ -25,7 +25,7 @@ public class PinpointView extends ImageView {
 	private int mRectLeft;
 	private int mRectRight;
 	private Paint mPaint;
-	private Bitmap mBitmap;
+	private Bitmap mPhotoBit;
 	private int mColor;
 	private int mScreenWidth;
 	private int mScreenHeight;
@@ -110,8 +110,8 @@ public class PinpointView extends ImageView {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		if (mBitmap == null || mCanvas == null) {
-			mBitmap = ((BitmapDrawable) this.getDrawable()).getBitmap();
+		if (mPhotoBit == null || mCanvas == null) {
+			mPhotoBit = ((BitmapDrawable) this.getDrawable()).getBitmap();
 			mCanvas = canvas;
 		}
 		if (mZooming) {
@@ -137,10 +137,10 @@ public class PinpointView extends ImageView {
 	   //outside ImageView
 	   return color.background_light; 
 	  }else{
-	   int projectedX = (int)((double)mXPos * ((double)mBitmap.getWidth()/(double)mScreenWidth));
-	   int projectedY = (int)((double)mYPos * ((double)mBitmap.getHeight()/(double)mScreenHeight));
+	   int projectedX = (int)((double)mXPos * ((double)mPhotoBit.getWidth()/(double)mScreenWidth));
+	   int projectedY = (int)((double)mYPos * ((double)mPhotoBit.getHeight()/(double)mScreenHeight));
 	   
-	     return mBitmap.getPixel(projectedX, projectedY);
+	     return mPhotoBit.getPixel(projectedX, projectedY);
 	  }
 	 }
 

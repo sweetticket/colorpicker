@@ -3,11 +3,13 @@
     package="com.example.scheme"
     android:versionCode="1"
     android:versionName="1.0" >
-	
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
-	 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -29,6 +31,13 @@
         <activity
             android:name="com.example.scheme.PinpointActivity"
             android:label="@string/title_activity_pinpoint" >
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
+        </activity>
+        <activity
+            android:name="com.example.scheme.ColorPickerActivity"
+            android:label="@string/title_activity_color_picker" >
         </activity>
     </application>
 

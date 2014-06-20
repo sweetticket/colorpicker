@@ -12,15 +12,24 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class PinpointView extends ImageView {
+
+	public static final int RECT_SIDE_LENGTH = 170;
+	public static final int LEFT = 80135;
+	public static final int RIGHT = 10350;
 	
 	private boolean mZooming;
-	private int mZoomX;
-	private int mZoomY;
+	private int mXPos;
+	private int mYPos;
+	private int mRectLeft;
+	private int mRectRight;
 	private Paint mPaint;
-	private Matrix mMatrix;
 	private Bitmap mBitmap;
 	private int mColor;
-
+	private int mScreenWidth;
+	private int mScreenHeight;
+	private Canvas mCanvas;
+	private int mDirection;
+	
 
 	public PinpointView(Context context) {
 		super(context);
@@ -36,37 +45,93 @@ public class PinpointView extends ImageView {
 		super(context, attrs, defStyle);
 		init();
 	}
-	
-	private void init(){
+
+	private void init() {
 		mZooming = false;
 		mPaint = new Paint();
-		Log.d("bit", "bitmap = "+mBitmap);
+		mDirection = 0;
+		Log.d("bit", "bitmap = " + mBitmap);
 	}
-	
-	public void setZooming(boolean b){
+
+	@Override
+	protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
+		super.onSizeChanged(xNew, yNew, xOld, yOld);
+		mScreenWidth = xNew;
+		mScreenHeight = yNew;
+		mRectLeft = 0;
+		mRectRight = RECT_SIDE_LENGTH;
+	}
+
+	public void setRectPos() {
+		if (mDirection == LEFT) {
+			mRectLeft--;
+			mRectRight--;
+			if (mRectLeft < 0) {
+				mRectLeft = 0;
+				mRectRight = RECT_SIDE_LENGTH;
+			}
+		} else if (mDirection == RIGHT) {
+			mRectLeft++;
+			mRectRight++;
+			if (mRectRight > mScreenWidth) {
+				mRectLeft = mScreenWidth - RECT_SIDE_LENGTH;
+				mRectRight = mScreenWidth;
+			}
+		}
+	}
+
+	public void setZooming(boolean b) {
 		mZooming = b;
 	}
+
+	public void setZoomPos(float x, float y) {
+		mXPos = Math.round(x);
+		mYPos = Math.round(y);
+
+	}
 	
-	public void setZoomPos(float x, float y){
-		mZoomX = Math.round(x);
-		mZoomY = Math.round(y);
-		
+	public int getXPos(){
+		return mXPos;
+	}
+	
+	public int getYPos(){
+		return mYPos;
+	}
+	
+	public int getColor(){
+		return mColor;
 	}
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		mBitmap = ((BitmapDrawable)this.getDrawable()).getBitmap();
-	    super.onDraw(canvas);
-	    
-	    if (mZooming) {
-	        mColor = mBitmap.getPixel(mZoomX, mZoomY);
-	        mPaint.setColor(mColor);
-	        
-	        Log.d("color", "color: "+mColor); // color doesn't change..
-	        
-	        //TODO: new bitmap at corner of screen, filled with mColor
-	    }
-	    
-	    
+		super.onDraw(canvas);
+		mBitmap = ((BitmapDrawable) this.getDrawable()).getBitmap();
+		mCanvas = canvas;
+
+		if (mZooming) {
+			mColor = mBitmap.getPixel(mXPos, mYPos);
+			mPaint.setColor(mColor);
+			drawZoom();
+		}
+
+	}
+
+	private void drawZoom() {
+		mCanvas.drawRect(mRectLeft, 0, mRectRight, RECT_SIDE_LENGTH, mPaint);
+		this.invalidate();
+	}
+
+	public boolean isInRectangle() {
+		if (mYPos <= RECT_SIDE_LENGTH) {
+			if (mXPos >= mRectLeft && mXPos <= mRectRight){
+				if (mRectLeft <= mScreenWidth/2){
+					mDirection = RIGHT;
+				} else {
+					mDirection = LEFT;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,8 +26,13 @@ import android.os.Build;
 public class PinpointActivity extends ActionBarActivity {
 
 	public final int REQUIRED_SIZE = 80;
+	public final int FRAME_RATE = 10;
 	private PinpointView mPinpointView;
 	private Bitmap mBitmap;
+	private Handler mRectHandler;
+	private float mXPos;
+	private float mYPos;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,6 +54,7 @@ public class PinpointActivity extends ActionBarActivity {
 
 	/** Sets up touch listeners */
 	private void initTouch() {
+		mRectHandler = new Handler();
 		mPinpointView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -64,10 +71,24 @@ public class PinpointActivity extends ActionBarActivity {
 				case (MotionEvent.ACTION_MOVE):
 					mPinpointView.setZoomPos(x, y);
 					mPinpointView.setZooming(true);
+					if (mPinpointView.isInRectangle()) {
+						mRectHandler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								mPinpointView.setRectPos();
+
+								mRectHandler.postDelayed(this, FRAME_RATE);
+							}
+						}, FRAME_RATE);
+					}
+
 					view.invalidate();
 					return true;
 				case (MotionEvent.ACTION_UP):
 					mPinpointView.setZooming(false);
+					Intent colorPickerIntent = new Intent();
+					colorPickerIntent.putExtra("color", mPinpointView.getColor());
+					//TODO: send to colorpicker, make ColorModel
 					view.invalidate();
 					return true;
 				default:

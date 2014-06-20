@@ -1,5 +1,6 @@
 package com.example.scheme;
 
+import android.R.color;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -116,7 +117,7 @@ public class PinpointView extends ImageView {
 			mCanvas = canvas;
 		}
 		if (mZooming) {
-			mColor = mBitmap.getPixel(mXPos, mYPos);
+			mColor = getProjectedColor();
 			mPaint.setColor(mColor);
 			drawZoom();
 			mCanvas.drawCircle(mXPos, mYPos, 10, mCirclePaint);
@@ -124,6 +125,23 @@ public class PinpointView extends ImageView {
 
 
 	}
+	
+	
+	 /*
+	  * Project position on ImageView to position on Bitmap
+	  * return the color on the position 
+	  */
+	 private int getProjectedColor(){
+	  if(mXPos<0 || mYPos<0 || mXPos > mScreenWidth || mYPos > mScreenHeight){
+	   //outside ImageView
+	   return color.background_light; 
+	  }else{
+	   int projectedX = (int)((double)mXPos * ((double)mBitmap.getWidth()/(double)mScreenWidth));
+	   int projectedY = (int)((double)mYPos * ((double)mBitmap.getHeight()/(double)mScreenHeight));
+	   
+	     return mBitmap.getPixel(projectedX, projectedY);
+	  }
+	 }
 
 	private void drawZoom() {
 		mCanvas.drawRect(mRectLeft, 0, mRectRight, RECT_SIDE_LENGTH, mPaint);

@@ -2,6 +2,7 @@ package com.example.scheme;
 
 import com.example.scheme.R;
 
+import android.R.color;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -99,7 +100,7 @@ public class PinpointActivity extends ActionBarActivity {
 
 		});
 	}
-
+	
 	private Bitmap fixImage(String path) {
 		try {
 			if (path == null) {

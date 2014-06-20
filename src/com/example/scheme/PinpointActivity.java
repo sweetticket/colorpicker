@@ -62,6 +62,7 @@ public class PinpointActivity extends ActionBarActivity {
 					return true;
 				}
 				case (MotionEvent.ACTION_MOVE):
+					mPinpointView.setZoomPos(x, y);
 					mPinpointView.setZooming(true);
 					view.invalidate();
 					return true;

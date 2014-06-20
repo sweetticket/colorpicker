@@ -62,6 +62,8 @@ public class PinpointView extends ImageView {
 	        mColor = mBitmap.getPixel(mZoomX, mZoomY);
 	        mPaint.setColor(mColor);
 	        
+	        Log.d("color", "color: "+mColor); // color doesn't change..
+	        
 	        //TODO: new bitmap at corner of screen, filled with mColor
 	    }
 	    

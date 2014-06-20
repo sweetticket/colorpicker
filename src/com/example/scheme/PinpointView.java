@@ -53,8 +53,9 @@ public class PinpointView extends ImageView {
 		mPaint = new Paint();
 		mDirection = 0;
 		mCirclePaint = new Paint();
-		mCirclePaint.setColor(0x77ff0000);
-		mCirclePaint.setAlpha(125);
+		mCirclePaint.setStyle(Paint.Style.STROKE);
+		mCirclePaint.setStrokeWidth(2);
+		mCirclePaint.setColor(Color.BLACK);
 	}
 
 	@Override
@@ -89,11 +90,8 @@ public class PinpointView extends ImageView {
 	}
 
 	public void setZoomPos(float x, float y) {
-		//Rect bounds = this.getDrawable().getBounds();
-		//int bitLeft = (this.getWidth() - bounds.right) / 2;
-		//int bitTop = (this.getHeight() - bounds.bottom) / 2;
-		mXPos = Math.round(x);// - bounds.left;
-		mYPos = Math.round(y);// - bounds.top;
+		mXPos = Math.round(x);
+		mYPos = Math.round(y);
 
 	}
 
@@ -121,6 +119,9 @@ public class PinpointView extends ImageView {
 			mPaint.setColor(mColor);
 			drawZoom();
 			mCanvas.drawCircle(mXPos, mYPos, 10, mCirclePaint);
+			mCanvas.drawLine(mXPos-20, mYPos, mXPos+20, mYPos, mCirclePaint);
+			mCanvas.drawLine(mXPos, mYPos-20, mXPos, mYPos+20, mCirclePaint);
+
 		}
 
 

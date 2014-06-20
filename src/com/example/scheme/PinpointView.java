@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,7 +17,7 @@ public class PinpointView extends ImageView {
 	public static final int RECT_SIDE_LENGTH = 170;
 	public static final int LEFT = 80135;
 	public static final int RIGHT = 10350;
-	
+
 	private boolean mZooming;
 	private int mXPos;
 	private int mYPos;
@@ -29,7 +30,7 @@ public class PinpointView extends ImageView {
 	private int mScreenHeight;
 	private Canvas mCanvas;
 	private int mDirection;
-	
+	private Paint mCirclePaint;
 
 	public PinpointView(Context context) {
 		super(context);
@@ -50,7 +51,9 @@ public class PinpointView extends ImageView {
 		mZooming = false;
 		mPaint = new Paint();
 		mDirection = 0;
-		Log.d("bit", "bitmap = " + mBitmap);
+		mCirclePaint = new Paint();
+		mCirclePaint.setColor(0x77ff0000);
+		mCirclePaint.setAlpha(125);
 	}
 
 	@Override
@@ -85,34 +88,40 @@ public class PinpointView extends ImageView {
 	}
 
 	public void setZoomPos(float x, float y) {
-		mXPos = Math.round(x);
-		mYPos = Math.round(y);
+		//Rect bounds = this.getDrawable().getBounds();
+		//int bitLeft = (this.getWidth() - bounds.right) / 2;
+		//int bitTop = (this.getHeight() - bounds.bottom) / 2;
+		mXPos = Math.round(x);// - bounds.left;
+		mYPos = Math.round(y);// - bounds.top;
 
 	}
-	
-	public int getXPos(){
+
+	public int getXPos() {
 		return mXPos;
 	}
-	
-	public int getYPos(){
+
+	public int getYPos() {
 		return mYPos;
 	}
-	
-	public int getColor(){
+
+	public int getColor() {
 		return mColor;
 	}
-	
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		mBitmap = ((BitmapDrawable) this.getDrawable()).getBitmap();
-		mCanvas = canvas;
-
+		if (mBitmap == null || mCanvas == null) {
+			mBitmap = ((BitmapDrawable) this.getDrawable()).getBitmap();
+			mCanvas = canvas;
+		}
 		if (mZooming) {
 			mColor = mBitmap.getPixel(mXPos, mYPos);
 			mPaint.setColor(mColor);
 			drawZoom();
+			mCanvas.drawCircle(mXPos, mYPos, 10, mCirclePaint);
 		}
+
 
 	}
 
@@ -121,10 +130,10 @@ public class PinpointView extends ImageView {
 		this.invalidate();
 	}
 
-	public boolean isInRectangle() {
-		if (mYPos <= RECT_SIDE_LENGTH) {
-			if (mXPos >= mRectLeft && mXPos <= mRectRight){
-				if (mRectLeft <= mScreenWidth/2){
+	public boolean isInRectangle(float x, float y) {
+		if (y <= RECT_SIDE_LENGTH) {
+			if (x >= mRectLeft && x <= mRectRight) {
+				if (mRectLeft <= mScreenWidth / 2) {
 					mDirection = RIGHT;
 				} else {
 					mDirection = LEFT;

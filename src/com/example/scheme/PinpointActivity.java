@@ -42,6 +42,7 @@ public class PinpointActivity extends ActionBarActivity {
 		String path = intent.getStringExtra("path");
 		mBitmap = fixImage(path);
 		mPinpointView.setImageBitmap(mBitmap);
+		
 
 		initTouch();
 
@@ -65,13 +66,13 @@ public class PinpointActivity extends ActionBarActivity {
 
 				switch (action) {
 				case (MotionEvent.ACTION_DOWN): {
-
+					mPinpointView.setZoomPos(x, y);
+					mPinpointView.setZooming(true);
 					return true;
 				}
 				case (MotionEvent.ACTION_MOVE):
 					mPinpointView.setZoomPos(x, y);
-					mPinpointView.setZooming(true);
-					if (mPinpointView.isInRectangle()) {
+					if (mPinpointView.isInRectangle(x, y)) {
 						mRectHandler.postDelayed(new Runnable() {
 							@Override
 							public void run() {
@@ -85,7 +86,6 @@ public class PinpointActivity extends ActionBarActivity {
 					view.invalidate();
 					return true;
 				case (MotionEvent.ACTION_UP):
-					mPinpointView.setZooming(false);
 					Intent colorPickerIntent = new Intent();
 					colorPickerIntent.putExtra("color", mPinpointView.getColor());
 					//TODO: send to colorpicker, make ColorModel

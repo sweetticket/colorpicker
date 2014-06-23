@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +36,7 @@ public class MainActivity extends ActionBarActivity {
 		mToCamera = (ImageView) findViewById(R.id.to_camera);
 		mToPicker = (ImageView) findViewById(R.id.to_picker);
 		initButtons();
+		
 	}
 
 	/** Set listeners, etc. */
@@ -66,6 +68,13 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View view) {
+				ColorModel testColorBlack = new ColorModel(Color.BLACK);
+				ColorModel testColorWhite = new ColorModel(Color.WHITE);
+				ColorModel testColorRed = new ColorModel(Color.RED);
+				ColorModel testColorGreen = new ColorModel(Color.GREEN);
+				ColorModel testColorBlue = new ColorModel(Color.BLUE);
+				ColorModel testColorCyan = new ColorModel(Color.CYAN);
+				ColorModel testColorMagenta = new ColorModel(Color.MAGENTA);
 
 			}
 		});

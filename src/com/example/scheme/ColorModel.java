@@ -1,9 +1,5 @@
 package com.example.scheme;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import android.graphics.Color;
 import android.util.Log;
 
@@ -31,8 +27,9 @@ public class ColorModel {
 
 	private int mComplement;
 	private int[] mTriad;
-	private int[] mSplitComplements;
+	private int[] mSplitComp;
 	private int[] mAnalog;
+	private int[] mMonochrome;
 
 	public ColorModel(int color) {
 		mColorInt = color;
@@ -46,16 +43,27 @@ public class ColorModel {
 		mHue = mHSV[0];
 		mSaturation = mHSV[1];
 		mValue = mHSV[2];
+		//Log.d("color", "hsv: " + mHue + "," + mSaturation + "," + mValue);
 
 		mHexCode = String.format("#%02x%02x%02x", mRed, mGreen, mBlue);
 
 		mCMYK = calcCMYK();
-		
-		mComplement = calcComplement();
-		Log.d("color", "compl original r,g,b : "+ mRed+","+mGreen+","+mBlue);
-		Log.d("color", "compl r,g,b : " + Color.red(mComplement) + "," + Color.green(mComplement) + "," + Color.blue(mComplement));
 
-		// calculate and initialize fields
+		mComplement = calcComplement();
+		/*Log.d("color", "compl original r,g,b : " + mRed + "," + mGreen + ","
+				+ mBlue);
+		Log.d("color",
+				"compl r,g,b : " + Color.red(mComplement) + ","
+						+ Color.green(mComplement) + ","
+						+ Color.blue(mComplement));*/
+
+		mTriad = calcTriad();
+
+		mSplitComp = calcSplitComp();
+
+		mAnalog = calcAnalog();
+
+		mMonochrome = calcMonochrome();
 	}
 
 	private float[] calcCMYK() {
@@ -71,52 +79,58 @@ public class ColorModel {
 			mCyan = (1.0f - red_temp - mKey) / (1.0f - mKey);
 			mMagenta = (1.0f - green_temp - mKey) / (1.0f - mKey);
 			mYellow = (1.0f - blue_temp - mKey) / (1.0f - mKey);
+
 		}
 		return new float[] { mCyan, mMagenta, mYellow, mKey };
 	}
 
 	private int calcComplement() {
-		 return Color.rgb(255 - mRed, 255 - mGreen, 255 - mBlue);
+		return Color.rgb(255 - mRed, 255 - mGreen, 255 - mBlue);
+		// or add 180 to HSV hue value
 	}
-	
-	public static List GenerateColors_Harmony(
-			   int colorCount,
-			   float offsetAngle1,
-			   float offsetAngle2,
-			   float rangeAngle0,
-			   float rangeAngle1,
-			   float rangeAngle2,
-			   float saturation, float luminance)
-			{
-			   ArrayList colors = new ArrayList();
 
-			   float referenceAngle = Random.nextFloat() * 360;
+	private int[] calcTriad() {
+		float[] hsv_temp_1 = new float[] { (mHue + 120) % 360, mSaturation,
+				mValue };
+		float[] hsv_temp_2 = new float[] { (mHue - 120) % 360, mSaturation,
+				mValue };
+		return new int[] { Color.HSVToColor(hsv_temp_1),
+				Color.HSVToColor(hsv_temp_2) };
+	}
 
-			   for (int i = 0; i < colorCount; i++)
-			   {
-			      float randomAngle = 
-			         random.NextFloat() * (rangeAngle0 + rangeAngle1 + rangeAngle2);
+	private int[] calcSplitComp() {
+		float[] hsv_temp_1 = new float[] { (mHue + 150) % 360, mSaturation,
+				mValue };
+		float[] hsv_temp_2 = new float[] { (mHue - 150) % 360, mSaturation,
+				mValue };
+		return new int[] { Color.HSVToColor(hsv_temp_1),
+				Color.HSVToColor(hsv_temp_2) };
+	}
 
-			      if (randomAngle > rangeAngle0)
-			      {
-			         if (randomAngle < rangeAngle0 + rangeAngle1)
-			         {
-			            randomAngle += offsetAngle1;
-			         }
-			         else
-			         {
-			            randomAngle += offsetAngle2;
-			         }
-			      }
+	private int[] calcAnalog() {
+		float[] hsv_temp_1 = new float[] { (mHue + 30) % 360, mSaturation,
+				mValue };
+		float[] hsv_temp_2 = new float[] { (mHue - 30) % 360, mSaturation,
+				mValue };
+		return new int[] { Color.HSVToColor(hsv_temp_1),
+				Color.HSVToColor(hsv_temp_2) };
+	}
 
-			      HSL hslColor = new HSL(
-			         ((referenceAngle + randomAngle) / 360.0f) % 1.0f,
-			         saturation, 
-			         luminance);
+	private int[] calcMonochrome() {
+		float[] hsv_temp_1 = new float[] { mHue, mSaturation, .1f };
+		float[] hsv_temp_2 = new float[] { mHue, mSaturation, .2f };
+		float[] hsv_temp_3 = new float[] { mHue, mSaturation, .3f };
+		float[] hsv_temp_4 = new float[] { mHue, mSaturation, .4f };
+		float[] hsv_temp_5 = new float[] { mHue, mSaturation, .5f };
+		float[] hsv_temp_6 = new float[] { mHue, mSaturation, .6f };
+		float[] hsv_temp_7 = new float[] { mHue, mSaturation, .7f };
+		float[] hsv_temp_8 = new float[] { mHue, mSaturation, .8f };
+		float[] hsv_temp_9 = new float[] { mHue, mSaturation, .9f };
 
-			      colors.Add(hslColor.Color);
-			   }
-
-			   return colors;
-			}
+		return new int[] { Color.HSVToColor(hsv_temp_1),
+				Color.HSVToColor(hsv_temp_2), Color.HSVToColor(hsv_temp_3),
+				Color.HSVToColor(hsv_temp_4), Color.HSVToColor(hsv_temp_5),
+				Color.HSVToColor(hsv_temp_6), Color.HSVToColor(hsv_temp_7),
+				Color.HSVToColor(hsv_temp_8), Color.HSVToColor(hsv_temp_9) };
+	}
 }

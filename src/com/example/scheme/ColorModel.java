@@ -43,19 +43,18 @@ public class ColorModel {
 		mHue = mHSV[0];
 		mSaturation = mHSV[1];
 		mValue = mHSV[2];
-		//Log.d("color", "hsv: " + mHue + "," + mSaturation + "," + mValue);
+		// Log.d("color", "hsv: " + mHue + "," + mSaturation + "," + mValue);
 
 		mHexCode = String.format("#%02x%02x%02x", mRed, mGreen, mBlue);
 
 		mCMYK = calcCMYK();
 
 		mComplement = calcComplement();
-		/*Log.d("color", "compl original r,g,b : " + mRed + "," + mGreen + ","
-				+ mBlue);
-		Log.d("color",
-				"compl r,g,b : " + Color.red(mComplement) + ","
-						+ Color.green(mComplement) + ","
-						+ Color.blue(mComplement));*/
+		/*
+		 * Log.d("color", "compl original r,g,b : " + mRed + "," + mGreen + ","
+		 * + mBlue); Log.d("color", "compl r,g,b : " + Color.red(mComplement) +
+		 * "," + Color.green(mComplement) + "," + Color.blue(mComplement));
+		 */
 
 		mTriad = calcTriad();
 
@@ -64,6 +63,27 @@ public class ColorModel {
 		mAnalog = calcAnalog();
 
 		mMonochrome = calcMonochrome();
+	}
+
+	public ColorModel(int r, int g, int b) {
+		this(Color.rgb(r, g, b));
+	}
+
+	public ColorModel(float[] hsv) {
+		this(Color.HSVToColor(hsv));
+	}
+
+	public ColorModel(float c, float m, float y, float k) {
+		this(Math.round(255.0f * (1.0f - c) * (1.0f - k)), Math.round(255.0f
+				* (1.0f - m) * (1.0f - k)), Math.round(255.0f * (1.0f - y)
+				* (1.0f - k)));
+
+	}
+
+	public ColorModel(String hexcode) {
+		this(Integer.valueOf(hexcode.substring(1, 3), 16), Integer.valueOf(
+				hexcode.substring(3, 5), 16), Integer.valueOf(
+				hexcode.substring(5, 7), 16));
 	}
 
 	private float[] calcCMYK() {

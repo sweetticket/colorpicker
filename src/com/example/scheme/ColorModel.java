@@ -90,6 +90,54 @@ public class ColorModel {
 		return mColorInt;
 	}
 	
+	public float getHue(){
+		return mHue;
+	}
+	
+	public float getSaturation(){
+		return mSaturation;
+	}
+	
+	public float getValue(){
+		return mValue;
+	}
+	
+	public String getHexCode(){
+		return mHexCode;
+	}
+	
+	public int[] getRGB(){
+		return mRGB;
+	}
+	
+	public float[] getHSV(){
+		return mHSV;
+	}
+	
+	public float[] getCMYK(){
+		return mCMYK;
+	}
+	
+	public int[] getTriad(){
+		return mTriad;
+	}
+	
+	public int getComplement(){
+		return mComplement;
+	}
+	
+	public int[] getAnalog(){
+		return mAnalog;
+	}
+	
+	public int[] getSplitComp(){
+		return mSplitComp;
+	}
+	
+	public int[] getMonochrome(){
+		return mMonochrome;
+	}
+	
 	private float[] calcCMYK() {
 		float red_temp = mRed / 255;
 		float green_temp = mGreen / 255;

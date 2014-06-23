@@ -68,14 +68,7 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View view) {
-				ColorModel testColorBlack = new ColorModel(Color.BLACK);
-				ColorModel testColorWhite = new ColorModel(Color.WHITE);
-				ColorModel testColorRed = new ColorModel(Color.RED);
-				ColorModel testColorGreen = new ColorModel(Color.GREEN);
-				ColorModel testColorBlue = new ColorModel(Color.BLUE);
-				ColorModel testColorCyan = new ColorModel(Color.CYAN);
-				ColorModel testColorMagenta = new ColorModel(Color.MAGENTA);
-
+				startColorPicker(Color.WHITE);
 			}
 		});
 
@@ -105,10 +98,6 @@ public class MainActivity extends ActionBarActivity {
 			Intent pinpointIntent = new Intent(this, PinpointActivity.class);
 			pinpointIntent.putExtra("path", imagePath);
 			startActivity(pinpointIntent.setData(pickedImage));
-			/*
-			 * Bundle extras = data.getExtras(); Bitmap imageBitmap = (Bitmap)
-			 * extras.get("data"); mImageView.setImageBitmap(imageBitmap);
-			 */
 		}
 	}
 
@@ -124,6 +113,13 @@ public class MainActivity extends ActionBarActivity {
 		} catch (Exception e) {
 			return contentUri.getPath();
 		}
+	}
+	
+	private void startColorPicker(int color){
+		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
+		colorPickerIntent.putExtra("color", color);
+		startActivity(colorPickerIntent);
+		
 	}
 
 	@Override

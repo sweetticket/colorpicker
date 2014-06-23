@@ -87,8 +87,8 @@ public class PinpointActivity extends ActionBarActivity {
 					view.invalidate();
 					return true;
 				case (MotionEvent.ACTION_UP):
-					// Continue button
-					view.invalidate();
+					startColorPicker(mPinpointView.getColor());
+					//view.invalidate();
 					return true;
 				default:
 					return true;

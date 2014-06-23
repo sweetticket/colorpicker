@@ -86,6 +86,10 @@ public class ColorModel {
 				hexcode.substring(5, 7), 16));
 	}
 
+	public int getColor(){
+		return mColorInt;
+	}
+	
 	private float[] calcCMYK() {
 		float red_temp = mRed / 255;
 		float green_temp = mGreen / 255;

@@ -116,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void startColorPicker(int color){
-		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
+		Intent colorPickerIntent = new Intent(this, ColorPickerActivity2.class);
 		colorPickerIntent.putExtra("color", color);
 		startActivity(colorPickerIntent);
 		

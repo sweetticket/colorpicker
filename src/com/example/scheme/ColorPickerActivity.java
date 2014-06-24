@@ -252,7 +252,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return 360;
+			return 100;
 		}
 
 		@Override
@@ -293,9 +293,9 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return 360;
+			return 100;
 		}
-
+		
 		@Override
 		public CharSequence getPageTitle(int value) {
 			float[] hsv_temp = new float[] { mColorModel.getHue(),

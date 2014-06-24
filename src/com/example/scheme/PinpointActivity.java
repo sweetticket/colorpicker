@@ -26,8 +26,12 @@ import android.os.Build;
 
 public class PinpointActivity extends ActionBarActivity {
 
-	public final int REQUIRED_SIZE = 80;
-	public final int FRAME_RATE = 10;
+	public final static int REQUIRED_SIZE = 80;
+	public final static int FRAME_RATE = 10;
+	public final static int BY_HUE = 9035;
+	public final static int BY_SATURATION = 2039;
+	public final static int BY_VALUE = 5893;
+	
 	private PinpointView mPinpointView;
 	private Bitmap mBitmap;
 	private Handler mRectHandler;
@@ -157,8 +161,10 @@ public class PinpointActivity extends ActionBarActivity {
 	
 	private void startColorPicker(int color){
 		Log.d("here", "colorpicker start with: "+color);
-		Intent colorPickerIntent = new Intent(this, ColorPickerActivity2.class);
+		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
 		colorPickerIntent.putExtra("color", color);
+		colorPickerIntent.putExtra("toast_text", "Swipe to browse by HUE");
+		colorPickerIntent.putExtra("browse_by", BY_HUE);
 		startActivity(colorPickerIntent);
 	}
 

@@ -92,7 +92,7 @@ public class PinpointView extends ImageView {
 	public void setZoomPos(float x, float y) {
 		mXPos = Math.round(x);
 		mYPos = Math.round(y);
-
+		mColor = getProjectedColor();
 	}
 
 	public int getXPos() {
@@ -110,12 +110,12 @@ public class PinpointView extends ImageView {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		
 		if (mPhotoBit == null || mCanvas == null) {
 			mPhotoBit = ((BitmapDrawable) this.getDrawable()).getBitmap();
 			mCanvas = canvas;
 		}
 		if (mZooming) {
-			mColor = getProjectedColor();
 			mPaint.setColor(mColor);
 			drawZoom();
 			mCanvas.drawCircle(mXPos, mYPos, 10, mCirclePaint);

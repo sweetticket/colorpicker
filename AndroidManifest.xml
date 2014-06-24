@@ -39,6 +39,10 @@
             android:name="com.example.scheme.ColorPickerActivity"
             android:label="@string/title_activity_color_picker" >
         </activity>
+        <activity
+            android:name="com.example.scheme.ColorPickerActivity2"
+            android:label="@string/title_activity_color_picker_activity2" >
+        </activity>
     </application>
 
 </manifest>

@@ -64,21 +64,18 @@ public class PinpointActivity extends ActionBarActivity {
 				int action = MotionEventCompat.getActionMasked(event);
 				float x = event.getX();
 				float y = event.getY();
-
+				mPinpointView.setZoomPos(x, y);
 				switch (action) {
 				case (MotionEvent.ACTION_DOWN): {
-					mPinpointView.setZoomPos(x, y);
 					mPinpointView.setZooming(true);
 					return true;
 				}
 				case (MotionEvent.ACTION_MOVE):
-					mPinpointView.setZoomPos(x, y);
 					if (mPinpointView.isInRectangle(x, y)) {
 						mRectHandler.postDelayed(new Runnable() {
 							@Override
 							public void run() {
 								mPinpointView.setRectPos();
-
 								mRectHandler.postDelayed(this, FRAME_RATE);
 							}
 						}, FRAME_RATE);
@@ -87,8 +84,8 @@ public class PinpointActivity extends ActionBarActivity {
 					view.invalidate();
 					return true;
 				case (MotionEvent.ACTION_UP):
+					view.invalidate();
 					startColorPicker(mPinpointView.getColor());
-					//view.invalidate();
 					return true;
 				default:
 					return true;
@@ -159,10 +156,10 @@ public class PinpointActivity extends ActionBarActivity {
 	}
 	
 	private void startColorPicker(int color){
+		Log.d("here", "colorpicker start with: "+color);
 		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
 		colorPickerIntent.putExtra("color", color);
 		startActivity(colorPickerIntent);
-		
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.example.scheme;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -36,13 +37,15 @@ public class ColorPickerActivity2 extends FragmentActivity {
 	 */
 	ViewPager mViewPager;
 	private int mColor;
+	private ColorModel mColorModel;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_color_picker_activity2);
-		
+
 		Intent intent = getIntent();
 		mColor = intent.getIntExtra("color", 0);
+		mColorModel = new ColorModel(mColor);
 
 		// Create an adapter that when requested, will return a fragment
 		// representing an object in
@@ -53,7 +56,7 @@ public class ColorPickerActivity2 extends FragmentActivity {
 		// getSupportFragmentManager.
 		mHueCollectionPagerAdapter = new HuePagerAdapter(
 				getSupportFragmentManager());
-		//mDemoCollectionPagerAdapter.setColor(mColor);
+		mHueCollectionPagerAdapter.setColor(mColor);
 		// Set up action bar.
 		final ActionBar actionBar = getActionBar();
 
@@ -65,7 +68,8 @@ public class ColorPickerActivity2 extends FragmentActivity {
 		// Set up the ViewPager, attaching the adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mHueCollectionPagerAdapter);
-		mViewPager.setCurrentItem(mColor);
+		mViewPager.setCurrentItem(Math.round(mColorModel.getHue()));
+
 	}
 
 	@Override
@@ -101,33 +105,29 @@ public class ColorPickerActivity2 extends FragmentActivity {
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.
 	 */
-	public static class HuePagerAdapter extends
-			FragmentStatePagerAdapter {
+	public static class HuePagerAdapter extends FragmentStatePagerAdapter {
 
-		// private int mColor;
-		// private ColorModel mColorModel;
+		private ColorModel mColorModel;
 
 		public HuePagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
 
-		/*
-		 * public void setColor(int color){ mColor = color; mColorModel = new
-		 * ColorModel(color);
-		 * 
-		 * }
-		 */
+		public void setColor(int color) {
+			mColorModel = new ColorModel(color);
+
+		}
 
 		@Override
-		public Fragment getItem(int color) {
+		public Fragment getItem(int hue) {
 			Fragment fragment = new DemoObjectFragment();
 			Bundle args = new Bundle();
-			ColorModel currentColorModel = new ColorModel(color);
-			float[] hsv_temp = new float[] { currentColorModel.getHue() + 10.0f,
-					currentColorModel.getSaturation(),
-					currentColorModel.getValue() };
+			float[] hsv_temp = new float[] {
+					hue + 1.0f,
+					mColorModel.getSaturation(),
+					mColorModel.getValue() };
 			ColorModel nextColorModel = new ColorModel(hsv_temp);
-			Log.d("nextcolor", "nextcolor hue: "+nextColorModel.getHue());
+			Log.d("nextcolor", "nextcolor hue: " + nextColorModel.getHue());
 			args.putInt(DemoObjectFragment.ARG_COLOR_INT,
 					nextColorModel.getColor()); // Our object is just an integer
 												// :-P\
@@ -137,17 +137,17 @@ public class ColorPickerActivity2 extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			// For this contrived example, we have a 100-object collection.
-			return 36;
+			return 360;
 		}
 
 		@Override
-		public CharSequence getPageTitle(int color) {
-			ColorModel currentColorModel = new ColorModel(color);
-			float[] hsv_temp = new float[] { currentColorModel.getHue() + 10.0f,
-					currentColorModel.getSaturation(),
-					currentColorModel.getValue() };
+		public CharSequence getPageTitle(int hue) {
+			float[] hsv_temp = new float[] {
+					hue + 1.0f,
+					mColorModel.getSaturation(),
+					mColorModel.getValue() };
 			ColorModel nextColorModel = new ColorModel(hsv_temp);
+			Log.d("nextcolor", "nextcolor hue: " + nextColorModel.getHue());
 			return nextColorModel.getHexCode();
 		}
 	}
@@ -163,6 +163,7 @@ public class ColorPickerActivity2 extends FragmentActivity {
 
 		private int mColor;
 		private ColorModel mColorModel;
+		private TextView mTextView;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -172,8 +173,18 @@ public class ColorPickerActivity2 extends FragmentActivity {
 			Bundle args = getArguments();
 			mColor = args.getInt(ARG_COLOR_INT);
 			mColorModel = new ColorModel(mColor);
-			((TextView) rootView.findViewById(android.R.id.text1))
-					.setBackgroundColor(mColor);
+			int[] rgb = mColorModel.getRGB();
+			float[] cmyk = mColorModel.getCMYK();
+			float[] hsv = mColorModel.getHSV();
+			
+			mTextView = (TextView) rootView.findViewById(android.R.id.text1);
+			mTextView.setBackgroundColor(mColor);
+			int textColor = mColorModel.getValue() > .5f ? Color.BLACK : Color.WHITE;
+			mTextView.setTextColor(textColor);
+			mTextView.setText("RGB: \n" + rgb[0] + ", " + rgb[1] + ", " + rgb[2]
+				+ "\n" + "CMYK: \n" + cmyk[0] + ", " + cmyk[1] + ", " + cmyk[2]
+				+ ", " + cmyk[3] + "\n" + "HSV: \n" + hsv[0] + ", " + hsv[1]
+				+ ", " + hsv[2]);
 
 			return rootView;
 		}

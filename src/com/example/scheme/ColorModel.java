@@ -139,9 +139,9 @@ public class ColorModel {
 	}
 	
 	private float[] calcCMYK() {
-		float red_temp = mRed / 255;
-		float green_temp = mGreen / 255;
-		float blue_temp = mBlue / 255;
+		float red_temp = mRed / 255.0f;
+		float green_temp = mGreen / 255.0f;
+		float blue_temp = mBlue / 255.0f;
 		mKey = 1.0f - Math.max(red_temp, Math.max(green_temp, blue_temp));
 		if (mKey == 1.0f) {
 			mCyan = 0.0f;

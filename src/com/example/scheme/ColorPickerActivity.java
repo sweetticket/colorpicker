@@ -64,7 +64,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		mColor = intent.getIntExtra("color", 0);
 		mColorModel = new ColorModel(mColor);
-
+		
 		mBrowseBy = intent.getIntExtra("browse_by", BY_HUE);
 
 		// Set up action bar.
@@ -85,11 +85,11 @@ public class ColorPickerActivity extends FragmentActivity {
 			mToastText = "Swipe to browse by HUE";
 			break;
 		case BY_SATURATION:
-			mViewPager.setCurrentItem(Math.round(mColorModel.getSaturation() * 100));
+			mViewPager.setCurrentItem(Math.round(mColorModel.getSaturation() * 100.0f));
 			mToastText = "Swipe to browse by SATURATION";
 			break;
 		case BY_VALUE:
-			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100));
+			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100.0f));
 			mToastText = "Swipe to browse by VALUE";
 			break;
 		}
@@ -190,7 +190,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		public Fragment getItem(int position) {
 			Fragment fragment = new ColorObjectFragment();
 			Bundle args = new Bundle();
-			setNextItem(position);
+			setNextColor(position);
 			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
 					mColorModel.getColor());
 			fragment.setArguments(args);
@@ -204,7 +204,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			return fragment;
 		}
 		
-		private void setNextItem(int position){
+		private void setNextColor(int position){
 			float[] hsv_temp;
 			switch(mBrowseBy){
 			case BY_VALUE:

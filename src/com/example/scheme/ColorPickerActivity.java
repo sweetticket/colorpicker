@@ -1,6 +1,7 @@
 package com.example.scheme;
 
-import com.example.scheme.R;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -332,11 +333,19 @@ public class ColorPickerActivity extends FragmentActivity {
 					: Color.WHITE;
 			mTextView.setTextColor(textColor);
 			mTextView.setText("RGB: \n" + rgb[0] + ", " + rgb[1] + ", "
-					+ rgb[2] + "\n" + "CMYK: \n" + cmyk[0] + ", " + cmyk[1]
-					+ ", " + cmyk[2] + ", " + cmyk[3] + "\n" + "HSV: \n"
-					+ hsv[0] + ", " + hsv[1] + ", " + hsv[2]);
+					+ rgb[2] + "\n" + "CMYK: \n" + round(cmyk[0],2) + ", " + round(cmyk[1],2)
+					+ ", " + round(cmyk[2],2) + ", " + round(cmyk[3],2) + "\n" + "HSV: \n"
+					+ round(hsv[0],0) + ", " + round(hsv[1],2) + ", " + round(hsv[2],2));
 
 			return rootView;
+		}
+		
+		private static float round(float value, int places) {
+		    if (places < 0) throw new IllegalArgumentException();
+
+		    BigDecimal bd = new BigDecimal(value);
+		    bd = bd.setScale(places, RoundingMode.HALF_UP);
+		    return bd.floatValue();
 		}
 	}
 }

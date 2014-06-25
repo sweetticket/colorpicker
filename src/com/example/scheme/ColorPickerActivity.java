@@ -95,14 +95,15 @@ public class ColorPickerActivity extends FragmentActivity {
 		Toast toast = Toast.makeText(context, mToastText, duration);
 		toast.show();
 		
-		/*mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
 			@Override
 			public void onPageSelected(int position){
-				ColorObjectFragment page = (ColorObjectFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
-				mColor = page.getColor();
-				mColorModel = new ColorModel(mColor);
+				mColorModel = mHSVPagerAdapter.getCurrentColor();
+				mColor = mColorModel.getColor();
+				Log.d("current color", "current color: "+mColorModel.getHexCode());
+
 			}
-		});*/
+		});
 	}
 
 	@Override
@@ -180,7 +181,11 @@ public class ColorPickerActivity extends FragmentActivity {
 		public void setColor(int color) {
 			mColorModel = new ColorModel(color);
 		}
-
+		
+		public ColorModel getCurrentColor(){
+			return mColorModel;
+		}
+		
 		@Override
 		public Fragment getItem(int position) {
 			Fragment fragment = new ColorObjectFragment();
@@ -189,6 +194,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
 					mNextColorModel.getColor());
 			fragment.setArguments(args);
+			mColorModel = mNextColorModel;
 			return fragment;
 		}
 		

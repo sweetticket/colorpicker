@@ -2,6 +2,7 @@ package com.example.scheme;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -30,7 +31,9 @@ public class ColorPickerActivity extends FragmentActivity {
 	public final static int BY_HUE = 9035;
 	public final static int BY_SATURATION = 2039;
 	public final static int BY_VALUE = 5893;
-
+	
+	public static HashMap<Integer, String> mHexCodeMap = new HashMap<Integer, String>();
+	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments representing each object in a collection. We use a
@@ -100,8 +103,6 @@ public class ColorPickerActivity extends FragmentActivity {
 			public void onPageSelected(int position){
 				mColorModel = mHSVPagerAdapter.getCurrentColor();
 				mColor = mColorModel.getColor();
-				Log.d("current color", "current color: "+mColorModel.getHexCode());
-
 			}
 		});
 	}
@@ -172,7 +173,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	public static class HSVPagerAdapter extends FragmentStatePagerAdapter {
 
 		private ColorModel mColorModel;
-		private ColorModel mNextColorModel;
+		//private ColorModel mNextColorModel;
 
 		public HSVPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -192,9 +193,10 @@ public class ColorPickerActivity extends FragmentActivity {
 			Bundle args = new Bundle();
 			setNextItem(position);
 			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
-					mNextColorModel.getColor());
+					mColorModel.getColor());
 			fragment.setArguments(args);
-			mColorModel = mNextColorModel;
+			mHexCodeMap.put(position, mColorModel.getHexCode());
+			//mColorModel = mNextColorModel;
 			return fragment;
 		}
 		
@@ -203,38 +205,34 @@ public class ColorPickerActivity extends FragmentActivity {
 			switch(mBrowseBy){
 			case BY_VALUE:
 				hsv_temp = new float[] { mColorModel.getHue(),
-						mColorModel.getSaturation(), (position + 1) * 0.01f };
+						mColorModel.getSaturation(), position * 0.01f };
 				break;
 			case BY_SATURATION:
 				hsv_temp = new float[] { mColorModel.getHue(),
-						(position + 1) * 0.01f, mColorModel.getValue() };
+						position * 0.01f, mColorModel.getValue() };
 				break;
 			default:
-				hsv_temp = new float[] { position + 1.0f,
+				hsv_temp = new float[] { position,
 						mColorModel.getSaturation(), mColorModel.getValue() };
 				break;
 			}
-			mNextColorModel = new ColorModel(hsv_temp);
+			mColorModel = new ColorModel(hsv_temp);
 		}
 
 		@Override
 		public int getCount() {
-			switch(mBrowseBy){
-			case BY_VALUE:
-				return 100;
-			case BY_SATURATION:
-				return 100;
-			default:
-				return 360;
-			}
+			return Integer.MAX_VALUE;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			if (mNextColorModel == null){
-				setNextItem(position);
+			if (position == 0){
+				return mColorModel.getHexCode();
 			}
-			return mNextColorModel.getHexCode();
+			if (mHexCodeMap.get(position) == null){
+				getItem(position);
+			}
+			return mHexCodeMap.get(position);
 		}
 	}
 
@@ -250,7 +248,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		private int mColor;
 		private ColorModel mColorModel;
 		private TextView mTextView;
-
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -268,7 +266,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			int textColor = mColorModel.getValue() > .5f ? Color.BLACK
 					: Color.WHITE;
 			mTextView.setTextColor(textColor);
-			mTextView.setText("RGB: \n" + rgb[0] + ", " + rgb[1] + ", "
+			mTextView.setText(mColorModel.getHexCode()+"\n RGB: \n" + rgb[0] + ", " + rgb[1] + ", "
 					+ rgb[2] + "\n" + "CMYK: \n" + round(cmyk[0],2) + ", " + round(cmyk[1],2)
 					+ ", " + round(cmyk[2],2) + ", " + round(cmyk[3],2) + "\n" + "HSV: \n"
 					+ round(hsv[0],0) + ", " + round(hsv[1],2) + ", " + round(hsv[2],2));
@@ -276,8 +274,8 @@ public class ColorPickerActivity extends FragmentActivity {
 			return rootView;
 		}
 		
-		public int getColor(){
-			return mColor;
+		public String getHexCode(){
+			return mColorModel.getHexCode();
 		}
 		
 		private static float round(float value, int places) {

@@ -26,6 +26,10 @@ import android.widget.Toast;
 
 public class ColorPickerActivity extends FragmentActivity {
 
+	public final static int BY_HUE = 9035;
+	public final static int BY_SATURATION = 2039;
+	public final static int BY_VALUE = 5893;
+
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments representing each object in a collection. We use a
@@ -39,7 +43,6 @@ public class ColorPickerActivity extends FragmentActivity {
 	private SaturationPagerAdapter mSaturationPagerAdapter;
 	private ValuePagerAdapter mValuePagerAdapter;
 	private Activity mColorPickerActivity;
-	
 
 	/**
 	 * The {@link android.support.v4.view.ViewPager} that will display the
@@ -58,16 +61,10 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		Intent intent = getIntent();
 
-		mToastText = intent.getCharSequenceExtra("toast_text");
-		Context context = getApplicationContext();
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(context, mToastText, duration);
-		toast.show();
-
 		mColor = intent.getIntExtra("color", 0);
 		mColorModel = new ColorModel(mColor);
 
-		mBrowseBy = intent.getIntExtra("browse_by", PinpointActivity.BY_HUE);
+		mBrowseBy = intent.getIntExtra("browse_by", BY_HUE);
 
 		// Create an adapter that when requested, will return a fragment
 		// representing an object in
@@ -88,29 +85,35 @@ public class ColorPickerActivity extends FragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 
 		switch (mBrowseBy) {
-		case PinpointActivity.BY_HUE:
+		case BY_HUE:
 			mHuePagerAdapter = new HuePagerAdapter(getSupportFragmentManager());
 			mHuePagerAdapter.setColor(mColor);
 			mViewPager.setAdapter(mHuePagerAdapter);
 			mViewPager.setCurrentItem(Math.round(mColorModel.getHue()));
+			mToastText = "Swipe to browse by HUE";
 			break;
-		case PinpointActivity.BY_SATURATION:
+		case BY_SATURATION:
 			mSaturationPagerAdapter = new SaturationPagerAdapter(
 					getSupportFragmentManager());
 			mSaturationPagerAdapter.setColor(mColor);
 			mViewPager.setAdapter(mSaturationPagerAdapter);
 			mViewPager
 					.setCurrentItem(Math.round(mColorModel.getSaturation() * 100));
+			mToastText = "Swipe to browse by SATURATION";
 			break;
-		case PinpointActivity.BY_VALUE:
+		case BY_VALUE:
 			mValuePagerAdapter = new ValuePagerAdapter(
 					getSupportFragmentManager());
 			mValuePagerAdapter.setColor(mColor);
 			mViewPager.setAdapter(mValuePagerAdapter);
-			mViewPager
-					.setCurrentItem(Math.round(mColorModel.getValue() * 100));
+			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100));
+			mToastText = "Swipe to browse by VALUE";
 			break;
 		}
+		Context context = getApplicationContext();
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, mToastText, duration);
+		toast.show();
 	}
 
 	@Override
@@ -150,28 +153,21 @@ public class ColorPickerActivity extends FragmentActivity {
 			Intent hueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			hueIntent.putExtra("color", mColor);
-			hueIntent.putExtra("toast_text", "Swipe to browse by HUE");
-			hueIntent.putExtra("browse_by", PinpointActivity.BY_HUE);
+			hueIntent.putExtra("browse_by", BY_HUE);
 			startActivity(hueIntent);
 			return true;
 		case R.id.action_by_saturation:
 			Intent saturationIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			saturationIntent.putExtra("color", mColor);
-			saturationIntent.putExtra("toast_text",
-					"Swipe to browse by SATURATION");
-			saturationIntent.putExtra("browse_by",
-					PinpointActivity.BY_SATURATION);
+			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
 			return true;
 		case R.id.action_by_value:
 			Intent valueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			valueIntent.putExtra("color", mColor);
-			valueIntent.putExtra("toast_text",
-					"Swipe to browse by VALUE");
-			valueIntent.putExtra("browse_by",
-					PinpointActivity.BY_VALUE);
+			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
 			return true;
 		}
@@ -295,7 +291,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		public int getCount() {
 			return 100;
 		}
-		
+
 		@Override
 		public CharSequence getPageTitle(int value) {
 			float[] hsv_temp = new float[] { mColorModel.getHue(),

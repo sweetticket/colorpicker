@@ -40,9 +40,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	 * memory and is a best practice when allowing navigation between objects in
 	 * a potentially large collection.
 	 */
-	private HuePagerAdapter mHuePagerAdapter;
-	private SaturationPagerAdapter mSaturationPagerAdapter;
-	private ValuePagerAdapter mValuePagerAdapter;
+	private HSVPagerAdapter mHSVPagerAdapter;
 	private Activity mColorPickerActivity;
 
 	/**
@@ -53,27 +51,18 @@ public class ColorPickerActivity extends FragmentActivity {
 	private int mColor;
 	private ColorModel mColorModel;
 	private CharSequence mToastText;
-	private int mBrowseBy;
+	private static int mBrowseBy;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
 		setContentView(R.layout.fragment_color_picker_activity2);
-
 		Intent intent = getIntent();
 
 		mColor = intent.getIntExtra("color", 0);
 		mColorModel = new ColorModel(mColor);
 
 		mBrowseBy = intent.getIntExtra("browse_by", BY_HUE);
-
-		// Create an adapter that when requested, will return a fragment
-		// representing an object in
-		// the collection.
-		//
-		// ViewPager and its adapters use support library fragments, so we must
-		// use
-		// getSupportFragmentManager.
 
 		// Set up action bar.
 		final ActionBar actionBar = getActionBar();
@@ -84,29 +73,19 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		// Set up the ViewPager, attaching the adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-
+		mHSVPagerAdapter = new HSVPagerAdapter(getSupportFragmentManager());
+		mHSVPagerAdapter.setColor(mColor);
+		mViewPager.setAdapter(mHSVPagerAdapter);
 		switch (mBrowseBy) {
 		case BY_HUE:
-			mHuePagerAdapter = new HuePagerAdapter(getSupportFragmentManager());
-			mHuePagerAdapter.setColor(mColor);
-			mViewPager.setAdapter(mHuePagerAdapter);
 			mViewPager.setCurrentItem(Math.round(mColorModel.getHue()));
 			mToastText = "Swipe to browse by HUE";
 			break;
 		case BY_SATURATION:
-			mSaturationPagerAdapter = new SaturationPagerAdapter(
-					getSupportFragmentManager());
-			mSaturationPagerAdapter.setColor(mColor);
-			mViewPager.setAdapter(mSaturationPagerAdapter);
-			mViewPager
-					.setCurrentItem(Math.round(mColorModel.getSaturation() * 100));
+			mViewPager.setCurrentItem(Math.round(mColorModel.getSaturation() * 100));
 			mToastText = "Swipe to browse by SATURATION";
 			break;
 		case BY_VALUE:
-			mValuePagerAdapter = new ValuePagerAdapter(
-					getSupportFragmentManager());
-			mValuePagerAdapter.setColor(mColor);
-			mViewPager.setAdapter(mValuePagerAdapter);
 			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100));
 			mToastText = "Swipe to browse by VALUE";
 			break;
@@ -115,6 +94,15 @@ public class ColorPickerActivity extends FragmentActivity {
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, mToastText, duration);
 		toast.show();
+		
+		/*mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+			@Override
+			public void onPageSelected(int position){
+				ColorObjectFragment page = (ColorObjectFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
+				mColor = page.getColor();
+				mColorModel = new ColorModel(mColor);
+			}
+		});*/
 	}
 
 	@Override
@@ -127,6 +115,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This is called when the Home (Up) button is pressed in the action
@@ -179,11 +168,12 @@ public class ColorPickerActivity extends FragmentActivity {
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.
 	 */
-	public static class HuePagerAdapter extends FragmentStatePagerAdapter {
+	public static class HSVPagerAdapter extends FragmentStatePagerAdapter {
 
 		private ColorModel mColorModel;
+		private ColorModel mNextColorModel;
 
-		public HuePagerAdapter(FragmentManager fm) {
+		public HSVPagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
 
@@ -192,116 +182,56 @@ public class ColorPickerActivity extends FragmentActivity {
 		}
 
 		@Override
-		public Fragment getItem(int hue) {
+		public Fragment getItem(int position) {
 			Fragment fragment = new ColorObjectFragment();
 			Bundle args = new Bundle();
-			float[] hsv_temp = new float[] { hue + 1.0f,
-					mColorModel.getSaturation(), mColorModel.getValue() };
-			ColorModel nextColorModel = new ColorModel(hsv_temp);
-			Log.d("nextcolor", "nextcolor hue: " + nextColorModel.getHue());
+			setNextItem(position);
 			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
-					nextColorModel.getColor());
+					mNextColorModel.getColor());
 			fragment.setArguments(args);
 			return fragment;
+		}
+		
+		private void setNextItem(int position){
+			float[] hsv_temp;
+			switch(mBrowseBy){
+			case BY_VALUE:
+				hsv_temp = new float[] { mColorModel.getHue(),
+						mColorModel.getSaturation(), (position + 1) * 0.01f };
+				break;
+			case BY_SATURATION:
+				hsv_temp = new float[] { mColorModel.getHue(),
+						(position + 1) * 0.01f, mColorModel.getValue() };
+				break;
+			default:
+				hsv_temp = new float[] { position + 1.0f,
+						mColorModel.getSaturation(), mColorModel.getValue() };
+				break;
+			}
+			mNextColorModel = new ColorModel(hsv_temp);
 		}
 
 		@Override
 		public int getCount() {
-			return 360;
+			switch(mBrowseBy){
+			case BY_VALUE:
+				return 100;
+			case BY_SATURATION:
+				return 100;
+			default:
+				return 360;
+			}
 		}
 
 		@Override
-		public CharSequence getPageTitle(int hue) {
-			float[] hsv_temp = new float[] { hue + 1.0f,
-					mColorModel.getSaturation(), mColorModel.getValue() };
-			ColorModel nextColorModel = new ColorModel(hsv_temp);
-			Log.d("nextcolor", "nextcolor hue: " + nextColorModel.getHue());
-			return nextColorModel.getHexCode();
+		public CharSequence getPageTitle(int position) {
+			if (mNextColorModel == null){
+				setNextItem(position);
+			}
+			return mNextColorModel.getHexCode();
 		}
 	}
 
-	public static class SaturationPagerAdapter extends
-			FragmentStatePagerAdapter {
-
-		private ColorModel mColorModel;
-
-		public SaturationPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
-		public void setColor(int color) {
-			mColorModel = new ColorModel(color);
-
-		}
-
-		@Override
-		public Fragment getItem(int saturation) {
-			Fragment fragment = new ColorObjectFragment();
-			Bundle args = new Bundle();
-			float[] hsv_temp = new float[] { mColorModel.getHue(),
-					(saturation + 1) * 0.01f, mColorModel.getValue() };
-			ColorModel nextColorModel = new ColorModel(hsv_temp);
-			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
-					nextColorModel.getColor());
-			fragment.setArguments(args);
-			return fragment;
-		}
-
-		@Override
-		public int getCount() {
-			return 100;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int saturation) {
-			float[] hsv_temp = new float[] { mColorModel.getHue(),
-					(saturation + 1) * 0.01f, mColorModel.getValue() };
-			ColorModel nextColorModel = new ColorModel(hsv_temp);
-
-			return nextColorModel.getHexCode();
-		}
-	}
-
-	public static class ValuePagerAdapter extends FragmentStatePagerAdapter {
-
-		private ColorModel mColorModel;
-
-		public ValuePagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
-		public void setColor(int color) {
-			mColorModel = new ColorModel(color);
-
-		}
-
-		@Override
-		public Fragment getItem(int value) {
-			Fragment fragment = new ColorObjectFragment();
-			Bundle args = new Bundle();
-			float[] hsv_temp = new float[] { mColorModel.getHue(),
-					mColorModel.getSaturation(), (value + 1) * 0.01f };
-			ColorModel nextColorModel = new ColorModel(hsv_temp);
-			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
-					nextColorModel.getColor());
-			fragment.setArguments(args);
-			return fragment;
-		}
-
-		@Override
-		public int getCount() {
-			return 100;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int value) {
-			float[] hsv_temp = new float[] { mColorModel.getHue(),
-					mColorModel.getSaturation(), (value + 1) * 0.01f };
-			ColorModel nextColorModel = new ColorModel(hsv_temp);
-
-			return nextColorModel.getHexCode();
-		}
-	}
 
 	/**
 	 * A fragment representing a color.
@@ -338,6 +268,10 @@ public class ColorPickerActivity extends FragmentActivity {
 					+ round(hsv[0],0) + ", " + round(hsv[1],2) + ", " + round(hsv[2],2));
 
 			return rootView;
+		}
+		
+		public int getColor(){
+			return mColor;
 		}
 		
 		private static float round(float value, int places) {

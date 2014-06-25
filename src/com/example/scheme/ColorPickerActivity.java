@@ -213,10 +213,10 @@ public class ColorPickerActivity extends FragmentActivity {
 				break;
 			case BY_SATURATION:
 				hsv_temp = new float[] { mColorModel.getHue(),
-						position * 0.01f, mColorModel.getValue() };
+						position%101 * 0.01f, mColorModel.getValue() };
 				break;
 			default:
-				hsv_temp = new float[] { position,
+				hsv_temp = new float[] { position%361,
 						mColorModel.getSaturation(), mColorModel.getValue() };
 				break;
 			}
@@ -267,7 +267,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 			mTextView = (TextView) rootView.findViewById(android.R.id.text1);
 			mTextView.setBackgroundColor(mColor);
-			int textColor = mColorModel.getValue() > .5f ? Color.BLACK
+			int textColor = mColorModel.getValue() > .6f && mColorModel.getSaturation() < .5f? Color.BLACK
 					: Color.WHITE;
 			mTextView.setTextColor(textColor);
 			mTextView.setText(mColorModel.getHexCode()+"\n RGB: \n" + rgb[0] + ", " + rgb[1] + ", "

@@ -173,7 +173,6 @@ public class ColorPickerActivity extends FragmentActivity {
 	public static class HSVPagerAdapter extends FragmentStatePagerAdapter {
 
 		private ColorModel mColorModel;
-		//private ColorModel mNextColorModel;
 
 		public HSVPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -196,7 +195,12 @@ public class ColorPickerActivity extends FragmentActivity {
 					mColorModel.getColor());
 			fragment.setArguments(args);
 			mHexCodeMap.put(position, mColorModel.getHexCode());
-			//mColorModel = mNextColorModel;
+			if(mHexCodeMap.containsKey(position+2)){
+				mHexCodeMap.remove(position+2);
+			}
+			if(mHexCodeMap.containsKey(position-2)){
+				mHexCodeMap.remove(position-2);
+			}
 			return fragment;
 		}
 		

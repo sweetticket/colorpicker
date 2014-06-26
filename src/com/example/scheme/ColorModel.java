@@ -153,6 +153,7 @@ public class ColorModel {
 			mYellow = (1.0f - blue_temp - mKey) / (1.0f - mKey);
 
 		}
+		
 		return new float[] { mCyan, mMagenta, mYellow, mKey };
 	}
 
@@ -205,4 +206,6 @@ public class ColorModel {
 				Color.HSVToColor(hsv_temp_6), Color.HSVToColor(hsv_temp_7),
 				Color.HSVToColor(hsv_temp_8), Color.HSVToColor(hsv_temp_9) };
 	}
+	
+	
 }

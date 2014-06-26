@@ -106,7 +106,8 @@ public class ColorPickerActivity extends FragmentActivity {
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
 			@Override
 			public void onPageSelected(int position){
-				mColorModel = mHSVPagerAdapter.getCurrentColor();
+				mColorModel = new ColorModel(mHSVPagerAdapter.getPageTitle(position)+"");
+				Log.d("awer", "current color: "+mColorModel.getHexCode());
 				mColor = mColorModel.getColor();
 			}
 		});

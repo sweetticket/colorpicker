@@ -31,9 +31,9 @@ public class ColorPickerActivity extends FragmentActivity {
 	public final static int BY_HUE = 9035;
 	public final static int BY_SATURATION = 2039;
 	public final static int BY_VALUE = 5893;
-
+	
 	public static HashMap<Integer, String> mHexCodeMap = new HashMap<Integer, String>();
-
+	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments representing each object in a collection. We use a
@@ -64,7 +64,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		mColor = intent.getIntExtra("color", 0);
 		mColorModel = new ColorModel(mColor);
-
+		
 		mBrowseBy = intent.getIntExtra("browse_by", 0);
 
 		// Set up action bar.
@@ -85,13 +85,11 @@ public class ColorPickerActivity extends FragmentActivity {
 			mToastText = "Swipe to browse by HUE";
 			break;
 		case BY_SATURATION:
-			mViewPager
-					.setCurrentItem(Math.round(mColorModel.getSaturation() * 100.0f));
+			mViewPager.setCurrentItem(Math.round(mColorModel.getSaturation() * 100.0f));
 			mToastText = "Swipe to browse by SATURATION";
 			break;
 		case BY_VALUE:
-			mViewPager
-					.setCurrentItem(Math.round(mColorModel.getValue() * 100.0f));
+			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100.0f));
 			mToastText = "Swipe to browse by VALUE";
 			break;
 		default:
@@ -103,15 +101,14 @@ public class ColorPickerActivity extends FragmentActivity {
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, mToastText, duration);
 		toast.show();
-
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						mColorModel = mHSVPagerAdapter.getCurrentColor();
-						mColor = mColorModel.getColor();
-					}
-				});
+		
+		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+			@Override
+			public void onPageSelected(int position){
+				mColorModel = mHSVPagerAdapter.getCurrentColor();
+				mColor = mColorModel.getColor();
+			}
+		});
 	}
 
 	@Override
@@ -124,7 +121,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
+		
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This is called when the Home (Up) button is pressed in the action
@@ -159,34 +156,34 @@ public class ColorPickerActivity extends FragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 	@Override
 	public void onBackPressed() {
-		moveTaskBack();
+	    moveTaskBack();
 	}
-
-	private void moveTaskBack() {
-		if (mBrowseBy != 0) {
-			Intent upIntent = new Intent(this, MainActivity.class);
-			if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-				// This activity is not part of the application's task, so
-				// create a new task
-				// with a synthesized back stack.
-				TaskStackBuilder.create(this)
-				// If there are ancestor activities, they should be added here.
-						.addNextIntent(upIntent).startActivities();
-				finish();
-			} else {
-				// This activity is part of the application's task, so simply
-				// navigate up to the hierarchical parent activity.
-				NavUtils.navigateUpTo(this, upIntent);
-			}
-
+	
+	private void moveTaskBack(){
+		if (mBrowseBy != 0){
+		Intent upIntent = new Intent(this, MainActivity.class);
+		if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+			// This activity is not part of the application's task, so
+			// create a new task
+			// with a synthesized back stack.
+			TaskStackBuilder.create(this)
+			// If there are ancestor activities, they should be added here.
+					.addNextIntent(upIntent).startActivities();
+			finish();
 		} else {
-			super.onBackPressed();
+			// This activity is part of the application's task, so simply
+			// navigate up to the hierarchical parent activity.
+			NavUtils.navigateUpTo(this, upIntent);
 		}
+	
+	}else{
+		super.onBackPressed();
 	}
-
+	}
+	
 	/**
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.
@@ -202,11 +199,11 @@ public class ColorPickerActivity extends FragmentActivity {
 		public void setColor(int color) {
 			mColorModel = new ColorModel(color);
 		}
-
-		public ColorModel getCurrentColor() {
+		
+		public ColorModel getCurrentColor(){
 			return mColorModel;
 		}
-
+		
 		@Override
 		public Fragment getItem(int position) {
 			Fragment fragment = new ColorObjectFragment();
@@ -216,28 +213,28 @@ public class ColorPickerActivity extends FragmentActivity {
 					mColorModel.getColor());
 			fragment.setArguments(args);
 			mHexCodeMap.put(position, mColorModel.getHexCode());
-			if (mHexCodeMap.containsKey(position + 2)) {
-				mHexCodeMap.remove(position + 2);
+			if(mHexCodeMap.containsKey(position+2)){
+				mHexCodeMap.remove(position+2);
 			}
-			if (mHexCodeMap.containsKey(position - 2)) {
-				mHexCodeMap.remove(position - 2);
+			if(mHexCodeMap.containsKey(position-2)){
+				mHexCodeMap.remove(position-2);
 			}
 			return fragment;
 		}
-
-		private void setNextColor(int position) {
+		
+		private void setNextColor(int position){
 			float[] hsv_temp;
-			switch (mBrowseBy) {
+			switch(mBrowseBy){
 			case BY_VALUE:
 				hsv_temp = new float[] { mColorModel.getHue(),
 						mColorModel.getSaturation(), position * 0.01f };
 				break;
 			case BY_SATURATION:
 				hsv_temp = new float[] { mColorModel.getHue(),
-						position % 101 * 0.01f, mColorModel.getValue() };
+						position%101 * 0.01f, mColorModel.getValue() };
 				break;
 			default:
-				hsv_temp = new float[] { position % 360,
+				hsv_temp = new float[] { position%360,
 						mColorModel.getSaturation(), mColorModel.getValue() };
 				break;
 			}
@@ -251,15 +248,16 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			if (position == 0) {
+			if (position == 0){
 				return mColorModel.getHexCode();
 			}
-			if (mHexCodeMap.get(position) == null) {
+			if (mHexCodeMap.get(position) == null){
 				getItem(position);
 			}
 			return mHexCodeMap.get(position);
 		}
 	}
+
 
 	/**
 	 * A fragment representing a color.
@@ -272,7 +270,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		private int mColor;
 		private ColorModel mColorModel;
 		private TextView mTextView;
-
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -287,31 +285,27 @@ public class ColorPickerActivity extends FragmentActivity {
 
 			mTextView = (TextView) rootView.findViewById(android.R.id.text1);
 			mTextView.setBackgroundColor(mColor);
-			int textColor = mColorModel.getValue() > .6f
-					&& mColorModel.getSaturation() < .5f ? Color.BLACK
+			int textColor = mColorModel.getValue() > .6f && mColorModel.getSaturation() < .5f? Color.BLACK
 					: Color.WHITE;
 			mTextView.setTextColor(textColor);
-			mTextView.setText(mColorModel.getHexCode() + "\n RGB: \n" + rgb[0]
-					+ ", " + rgb[1] + ", " + rgb[2] + "\n" + "CMYK: \n"
-					+ round(cmyk[0], 2) + ", " + round(cmyk[1], 2) + ", "
-					+ round(cmyk[2], 2) + ", " + round(cmyk[3], 2) + "\n"
-					+ "HSV: \n" + round(hsv[0], 0) + ", " + round(hsv[1], 2)
-					+ ", " + round(hsv[2], 2));
+			mTextView.setText(mColorModel.getHexCode()+"\n RGB: \n" + rgb[0] + ", " + rgb[1] + ", "
+					+ rgb[2] + "\n" + "CMYK: \n" + round(cmyk[0],2) + ", " + round(cmyk[1],2)
+					+ ", " + round(cmyk[2],2) + ", " + round(cmyk[3],2) + "\n" + "HSV: \n"
+					+ round(hsv[0],0) + ", " + round(hsv[1],2) + ", " + round(hsv[2],2));
 
 			return rootView;
 		}
-
-		public String getHexCode() {
+		
+		public String getHexCode(){
 			return mColorModel.getHexCode();
 		}
-
+		
 		private static float round(float value, int places) {
-			if (places < 0)
-				throw new IllegalArgumentException();
+		    if (places < 0) throw new IllegalArgumentException();
 
-			BigDecimal bd = new BigDecimal(value);
-			bd = bd.setScale(places, RoundingMode.HALF_UP);
-			return bd.floatValue();
+		    BigDecimal bd = new BigDecimal(value);
+		    bd = bd.setScale(places, RoundingMode.HALF_UP);
+		    return bd.floatValue();
 		}
 	}
 }

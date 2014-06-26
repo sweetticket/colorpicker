@@ -65,7 +65,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		mColor = intent.getIntExtra("color", 0);
 		mColorModel = new ColorModel(mColor);
 		
-		mBrowseBy = intent.getIntExtra("browse_by", BY_HUE);
+		mBrowseBy = intent.getIntExtra("browse_by", 0);
 
 		// Set up action bar.
 		final ActionBar actionBar = getActionBar();
@@ -91,6 +91,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		case BY_VALUE:
 			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100.0f));
 			mToastText = "Swipe to browse by VALUE";
+			break;
+		default:
+			mViewPager.setCurrentItem(Math.round(mColorModel.getHue()));
+			mToastText = "Swipe to browse by HUE";
 			break;
 		}
 		Context context = getApplicationContext();
@@ -126,20 +130,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			// activity and
 			// use NavUtils in the Support Package to ensure proper handling of
 			// Up.
-			Intent upIntent = new Intent(this, MainActivity.class);
-			if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-				// This activity is not part of the application's task, so
-				// create a new task
-				// with a synthesized back stack.
-				TaskStackBuilder.create(this)
-				// If there are ancestor activities, they should be added here.
-						.addNextIntent(upIntent).startActivities();
-				finish();
-			} else {
-				// This activity is part of the application's task, so simply
-				// navigate up to the hierarchical parent activity.
-				NavUtils.navigateUpTo(this, upIntent);
-			}
+			moveTaskBack();
 			return true;
 		case R.id.action_by_hue:
 			Intent hueIntent = new Intent(mColorPickerActivity,
@@ -165,7 +156,34 @@ public class ColorPickerActivity extends FragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+	@Override
+	public void onBackPressed() {
+	    moveTaskBack();
+	}
+	
+	private void moveTaskBack(){
+		if (mBrowseBy != 0){
+		Intent upIntent = new Intent(this, MainActivity.class);
+		if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+			// This activity is not part of the application's task, so
+			// create a new task
+			// with a synthesized back stack.
+			TaskStackBuilder.create(this)
+			// If there are ancestor activities, they should be added here.
+					.addNextIntent(upIntent).startActivities();
+			finish();
+		} else {
+			// This activity is part of the application's task, so simply
+			// navigate up to the hierarchical parent activity.
+			NavUtils.navigateUpTo(this, upIntent);
+		}
+	
+	}else{
+		super.onBackPressed();
+	}
+	}
+	
 	/**
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.

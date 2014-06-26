@@ -105,7 +105,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
 			@Override
 			public void onPageSelected(int position){
-				mColorModel = mHSVPagerAdapter.getCurrentColor();
+				mColorModel = new ColorModel(mHSVPagerAdapter.getPageTitle(position)+"");
 				mColor = mColorModel.getColor();
 			}
 		});
@@ -136,6 +136,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			Intent hueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			hueIntent.putExtra("color", mColor);
+			Log.d("awe", "sent color = "+mColorModel.getHexCode());
 			hueIntent.putExtra("browse_by", BY_HUE);
 			startActivity(hueIntent);
 			return true;
@@ -143,6 +144,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			Intent saturationIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			saturationIntent.putExtra("color", mColor);
+			Log.d("awe", "sent color = "+mColorModel.getHexCode());
 			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
 			return true;
@@ -150,6 +152,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			Intent valueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			valueIntent.putExtra("color", mColor);
+			Log.d("awe", "sent color = "+mColorModel.getHexCode());
 			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
 			return true;

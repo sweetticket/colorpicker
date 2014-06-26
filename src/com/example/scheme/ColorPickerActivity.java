@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
@@ -33,6 +34,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	public final static int BY_VALUE = 5893;
 	
 	public static HashMap<Integer, String> mHexCodeMap = new HashMap<Integer, String>();
+	public static HashMap<Integer, ColorObjectFragment> mFragmentMap;
 	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -61,7 +63,8 @@ public class ColorPickerActivity extends FragmentActivity {
 		mColorPickerActivity = this;
 		setContentView(R.layout.fragment_color_picker_activity2);
 		Intent intent = getIntent();
-
+		
+		mFragmentMap = new HashMap<Integer, ColorObjectFragment>();
 		mColor = intent.getIntExtra("color", 0);
 		mColorModel = new ColorModel(mColor);
 		
@@ -106,7 +109,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
 			@Override
 			public void onPageSelected(int position){
-				mColorModel = new ColorModel(mHSVPagerAdapter.getPageTitle(position)+"");
+				mColorModel = mFragmentMap.get(position).getColorModel();
 				Log.d("awer", "current color: "+mColorModel.getHexCode());
 				mColor = mColorModel.getColor();
 			}
@@ -193,7 +196,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.
 	 */
-	public static class HSVPagerAdapter extends FragmentStatePagerAdapter {
+	public static class HSVPagerAdapter extends FragmentPagerAdapter {
 
 		private ColorModel mAdapterColorModel;
 
@@ -211,6 +214,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		
 		@Override
 		public Fragment getItem(int position) {
+			if (mFragmentMap.get(position) == null){
 			Fragment fragment = new ColorObjectFragment();
 			Bundle args = new Bundle();
 			setNextColor(position);
@@ -218,13 +222,9 @@ public class ColorPickerActivity extends FragmentActivity {
 					mAdapterColorModel.getColor());
 			fragment.setArguments(args);
 			mHexCodeMap.put(position, mAdapterColorModel.getHexCode());
-			if(mHexCodeMap.containsKey(position+2)){
-				mHexCodeMap.remove(position+2);
+			mFragmentMap.put(position, (ColorObjectFragment)fragment);
 			}
-			if(mHexCodeMap.containsKey(position-2)){
-				mHexCodeMap.remove(position-2);
-			}
-			return fragment;
+			return mFragmentMap.get(position);
 		}
 		
 		private void setNextColor(int position){
@@ -303,6 +303,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		
 		public String getHexCode(){
 			return mFragmentColorModel.getHexCode();
+		}
+		
+		public ColorModel getColorModel(){
+			return mFragmentColorModel;
 		}
 		
 		private static float round(float value, int places) {

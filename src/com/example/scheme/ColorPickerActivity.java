@@ -216,7 +216,7 @@ public class ColorPickerActivity extends FragmentActivity {
 						position%101 * 0.01f, mColorModel.getValue() };
 				break;
 			default:
-				hsv_temp = new float[] { position%361,
+				hsv_temp = new float[] { position%360,
 						mColorModel.getSaturation(), mColorModel.getValue() };
 				break;
 			}

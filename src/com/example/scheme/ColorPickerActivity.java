@@ -67,10 +67,12 @@ public class ColorPickerActivity extends FragmentActivity {
 		mBaseColor = intent.getIntExtra("color", NO_COLOR);
 		mBaseColorModel = new ColorModel(mBaseColor);
 		if (mBaseColor == NO_COLOR) {
+			Log.d("wer", "no color base model");
 			mBaseHue = intent.getFloatExtra("hue", 0.0f);
 			mBaseSat = intent.getFloatExtra("sat", 0.0f);
 			mBaseVal = intent.getFloatExtra("val", 0.0f);
 		} else {
+			Log.d("laiwe", "else base model");
 			mBaseHue = round(mBaseColorModel.getHue(), 0);
 			mBaseSat = round(mBaseColorModel.getSaturation(), 2);
 			mBaseVal = round(mBaseColorModel.getValue(), 2);
@@ -127,27 +129,25 @@ public class ColorPickerActivity extends FragmentActivity {
 		Log.d("awer", "pos map size: " + mColorToPosMap.size());
 		switch (mBrowseBy) {
 		case BY_HUE:
-			mViewPager.setCurrentItem(mColorToPosMap.get(mBaseHue));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseHue)));
 			break;
 		case BY_SATURATION:
-			mViewPager.setCurrentItem(mColorToPosMap.get(mBaseSat));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseSat)));
 		case BY_VALUE:
-			mViewPager.setCurrentItem(mColorToPosMap.get(mBaseVal));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseVal)));
 			break;
 		default:
-			mViewPager.setCurrentItem(mColorToPosMap.get(mBaseHue));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseHue)));
 			break;
 		}
 
-		Log.d("awer", "pos: " + mColorToPosMap.get(mBaseColor));
 
 		Context context = getApplicationContext();
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, mToastText, duration);
 		toast.show();
 
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
 						switch (mBrowseBy) {
@@ -167,6 +167,9 @@ public class ColorPickerActivity extends FragmentActivity {
 									.floatValue();
 							break;
 						}
+						Log.d("tqo", "current pos: "+mPosToColorMap.get(position));
+						
+						
 					}
 				});
 	}
@@ -299,26 +302,6 @@ public class ColorPickerActivity extends FragmentActivity {
 					mAdaptSat);
 			fragment.setArguments(args);
 			mPosToHexMap.put(position, (new ColorModel(new float[]{mAdaptHue, mAdaptSat, mAdaptVal})).getHexCode());
-			switch(mBrowseBy){
-			case BY_HUE:
-				mColorToPosMap.put(new BigDecimal(mAdaptHue), position);
-				mPosToColorMap.put(position, new BigDecimal(mAdaptHue));
-				break;
-			case BY_SATURATION:
-				mColorToPosMap.put(new BigDecimal(mAdaptSat), position);
-				mPosToColorMap.put(position, new BigDecimal(mAdaptSat));
-				break;
-			case BY_VALUE:
-				mColorToPosMap.put(new BigDecimal(mAdaptVal), position);
-				mPosToColorMap.put(position, new BigDecimal(mAdaptVal));
-				break;
-			default:
-				mColorToPosMap.put(new BigDecimal(mAdaptHue), position);
-				mPosToColorMap.put(position, new BigDecimal(mAdaptHue));
-				Log.d("dljf", "setting color to pos, pos: "+mColorToPosMap.get(mAdaptHue));
-				Log.d("dljf", "setting color to pos, adaptHue: "+mColorToPosMap.get(position));
-				break;
-			}
 			
 			return fragment;
 		}
@@ -331,6 +314,8 @@ public class ColorPickerActivity extends FragmentActivity {
 				}else{
 					mAdaptVal = round(position *0.01f, 2);
 				}
+				mColorToPosMap.put(new BigDecimal(mAdaptVal), position);
+				mPosToColorMap.put(position, new BigDecimal(mAdaptVal));
 				break;
 			case BY_SATURATION:
 				if (mAdaptSat == round(position *0.01f, 2)){
@@ -338,11 +323,22 @@ public class ColorPickerActivity extends FragmentActivity {
 				}else{
 					mAdaptSat = round(position *0.01f, 2);
 				}
+				mColorToPosMap.put(new BigDecimal(mAdaptSat), position);
+				mPosToColorMap.put(position, new BigDecimal(mAdaptSat));
+				break;
+			case BY_HUE:
+				mAdaptHue = position;
+				mColorToPosMap.put(new BigDecimal(mAdaptHue), position);
+				mPosToColorMap.put(position, new BigDecimal(mAdaptHue));
 				break;
 			default:
 				mAdaptHue = position;
-				Log.d("dljf", "setting next color adaptHSV: "+mAdaptHue+","+mAdaptSat+","+mAdaptVal);
-
+				mColorToPosMap.put(new BigDecimal(mAdaptHue), position);
+				mPosToColorMap.put(position, new BigDecimal(mAdaptHue));
+				Log.d("dljf", "setting color to pos, pos: "+mColorToPosMap.get(new BigDecimal(mAdaptHue)));
+				Log.d("dljf", "setting color to pos, adaptHue: "+mPosToColorMap.get(position));
+				Log.d("dljf", "setting color to pos, vals: "+mColorToPosMap.entrySet());
+				Log.d("dljf", "setting color to pos, vals: "+mPosToColorMap.entrySet());
 				break;
 			}
 		}

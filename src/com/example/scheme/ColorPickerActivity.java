@@ -43,6 +43,10 @@ public class ColorPickerActivity extends FragmentActivity {
 	ViewPager mViewPager;
 	private int mBaseColor;
 	private static ColorModel mBaseColorModel;
+	private static float mBaseHue;
+	private static float mBaseSat;
+	private static float mBaseVal;
+	
 	private static Integer mCurrentColor;
 	private CharSequence mToastText;
 	private static int mBrowseBy;
@@ -58,6 +62,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		Intent intent = getIntent();
 		mBaseColor = intent.getIntExtra("color", 0);
 		mBaseColorModel = new ColorModel(mBaseColor);
+		mBaseHue = round(mBaseColorModel.getHue(), 0);
+		mBaseSat = round(mBaseColorModel.getSaturation(), 2);
+		mBaseVal = round(mBaseColorModel.getValue(), 2);
+		mCurrentColor = mBaseColor;
 		mBrowseBy = intent.getIntExtra("browse_by", 0);
 
 		final ActionBar actionBar = getActionBar();
@@ -98,6 +106,8 @@ public class ColorPickerActivity extends FragmentActivity {
 		}
 		
 		// generate FragmentMap, set current item
+		Log.d("awer", "base hsv: "+mBaseColorModel.getHue()+","+mBaseColorModel.getSaturation()+","+mBaseColorModel.getValue());
+
 				mHSVPagerAdapter.generateMap();
 				Log.d("awer", "pos map size: "+mColorToPosMap.size());
 				mViewPager.setCurrentItem(mColorToPosMap.get(mBaseColor));
@@ -193,6 +203,14 @@ public class ColorPickerActivity extends FragmentActivity {
 	}
 	}
 	
+	public static float round(float value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.floatValue();
+	}
+	
 	/**
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.
@@ -239,16 +257,16 @@ public class ColorPickerActivity extends FragmentActivity {
 			float[] hsv_temp;
 			switch(mBrowseBy){
 			case BY_VALUE:
-				hsv_temp = new float[] { mBaseColorModel.getHue(),
-						mBaseColorModel.getSaturation(), position*0.01f };
+				hsv_temp = new float[] { mBaseHue,
+						mBaseSat, round(position*0.01f, 2) };
 				break;
 			case BY_SATURATION:
-				hsv_temp = new float[] { mBaseColorModel.getHue(),
-						position*0.01f, mBaseColorModel.getValue() };
+				hsv_temp = new float[] { mBaseHue,
+						round(position*0.01f, 2), round(mBaseColorModel.getValue(), 2) };
 				break;
 			default:
 				hsv_temp = new float[] { position,
-						mBaseColorModel.getSaturation(), mBaseColorModel.getValue() };
+						mBaseSat, mBaseVal };
 				break;
 			}
 			mAdapterColorModel = new ColorModel(hsv_temp);

@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View view) {
-				startColorPicker(Color.HSVToColor(new float[]{359.0f, 1.0f, 1.0f}));
+				startColorPicker(Color.HSVToColor(new float[]{20.0f, 0.7f, 0.7f}));
 			}
 		});
 

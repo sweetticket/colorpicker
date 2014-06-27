@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
@@ -32,27 +33,17 @@ public class ColorPickerActivity extends FragmentActivity {
 	public final static int BY_SATURATION = 2039;
 	public final static int BY_VALUE = 5893;
 	
-	public static HashMap<Integer, String> mHexCodeMap = new HashMap<Integer, String>();
+	public static int COLOR_COUNT;
 	
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments representing each object in a collection. We use a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter} derivative,
-	 * which will destroy and re-create fragments as needed, saving and
-	 * restoring their state in the process. This is important to conserve
-	 * memory and is a best practice when allowing navigation between objects in
-	 * a potentially large collection.
-	 */
+	public static HashMap<Integer, String> mPosToHexMap;
+	public static HashMap<Integer, Integer> mColorToPosMap;
+	public static HashMap<Integer, Integer> mPosToColorMap;
 	private HSVPagerAdapter mHSVPagerAdapter;
 	private Activity mColorPickerActivity;
-
-	/**
-	 * The {@link android.support.v4.view.ViewPager} that will display the
-	 * object collection.
-	 */
 	ViewPager mViewPager;
-	private int mColor;
-	private ColorModel mColorModel;
+	private int mBaseColor;
+	private static ColorModel mBaseColorModel;
+	private static Integer mCurrentColor;
 	private CharSequence mToastText;
 	private static int mBrowseBy;
 
@@ -60,14 +51,15 @@ public class ColorPickerActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
 		setContentView(R.layout.fragment_color_picker_activity2);
+		mPosToHexMap = new HashMap<Integer, String>();
+		mColorToPosMap = new HashMap<Integer, Integer>();
+		mPosToColorMap = new HashMap<Integer, Integer>();
+		// get data from intent
 		Intent intent = getIntent();
-
-		mColor = intent.getIntExtra("color", 0);
-		mColorModel = new ColorModel(mColor);
-		
+		mBaseColor = intent.getIntExtra("color", 0);
+		mBaseColorModel = new ColorModel(mBaseColor);
 		mBrowseBy = intent.getIntExtra("browse_by", 0);
 
-		// Set up action bar.
 		final ActionBar actionBar = getActionBar();
 		// Specify that the Home button should show an "Up" caret, indicating
 		// that touching the
@@ -77,27 +69,41 @@ public class ColorPickerActivity extends FragmentActivity {
 		// Set up the ViewPager, attaching the adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mHSVPagerAdapter = new HSVPagerAdapter(getSupportFragmentManager());
-		mHSVPagerAdapter.setColor(mColor);
-		Log.d("awer", "received color: "+mColorModel.getHexCode());
+		mHSVPagerAdapter.setColor(mBaseColor);
+		Log.d("awer", "received color: "+mBaseColor);
 		mViewPager.setAdapter(mHSVPagerAdapter);
+		
+		// set mToastText, number of fragments
 		switch (mBrowseBy) {
 		case BY_HUE:
-			mViewPager.setCurrentItem(Math.round(mColorModel.getHue()));
+			COLOR_COUNT = 360;
+			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by HUE";
 			break;
 		case BY_SATURATION:
-			mViewPager.setCurrentItem(Math.round(mColorModel.getSaturation() * 100.0f));
+			COLOR_COUNT = 101;
+			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by SATURATION";
 			break;
 		case BY_VALUE:
-			mViewPager.setCurrentItem(Math.round(mColorModel.getValue() * 100.0f));
+			COLOR_COUNT = 101;
+			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by VALUE";
 			break;
 		default:
-			mViewPager.setCurrentItem(Math.round(mColorModel.getHue()));
+			COLOR_COUNT = 360;
+			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by HUE";
 			break;
 		}
+		
+		// generate FragmentMap, set current item
+				mHSVPagerAdapter.generateMap();
+				Log.d("awer", "pos map size: "+mColorToPosMap.size());
+				mViewPager.setCurrentItem(mColorToPosMap.get(mBaseColor));
+				Log.d("awer", "pos: "+mColorToPosMap.get(mBaseColor));
+
+				
 		Context context = getApplicationContext();
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, mToastText, duration);
@@ -106,9 +112,8 @@ public class ColorPickerActivity extends FragmentActivity {
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
 			@Override
 			public void onPageSelected(int position){
-				mColorModel = new ColorModel(mHSVPagerAdapter.getPageTitle(position)+"");
-				Log.d("awer", "current color: "+mColorModel.getHexCode());
-				mColor = mColorModel.getColor();
+				mCurrentColor = mPosToColorMap.get(position);
+				Log.d("awer", "current color: "+mCurrentColor);
 			}
 		});
 	}
@@ -123,7 +128,6 @@ public class ColorPickerActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This is called when the Home (Up) button is pressed in the action
@@ -137,24 +141,24 @@ public class ColorPickerActivity extends FragmentActivity {
 		case R.id.action_by_hue:
 			Intent hueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
-			hueIntent.putExtra("color", mColor);
-			Log.d("awer", "sent color: "+mColorModel.getHexCode());
+			hueIntent.putExtra("color", mCurrentColor);
+			Log.d("awer", "sent color: "+mCurrentColor);
 			hueIntent.putExtra("browse_by", BY_HUE);
 			startActivity(hueIntent);
 			return true;
 		case R.id.action_by_saturation:
 			Intent saturationIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
-			saturationIntent.putExtra("color", mColor);
-			Log.d("awer", "sent color: "+mColorModel.getHexCode());
+			saturationIntent.putExtra("color", mCurrentColor);
+			Log.d("awer", "sent color: "+mCurrentColor);
 			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
 			return true;
 		case R.id.action_by_value:
 			Intent valueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
-			valueIntent.putExtra("color", mColor);
-			Log.d("awer", "sent color: "+mColorModel.getHexCode());
+			valueIntent.putExtra("color", mCurrentColor);
+			Log.d("awer", "sent color: "+mCurrentColor);
 			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
 			return true;
@@ -193,7 +197,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	 * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
 	 * fragment representing an object in the collection.
 	 */
-	public static class HSVPagerAdapter extends FragmentStatePagerAdapter {
+	public static class HSVPagerAdapter extends FragmentPagerAdapter {
 
 		private ColorModel mAdapterColorModel;
 
@@ -201,12 +205,20 @@ public class ColorPickerActivity extends FragmentActivity {
 			super(fm);
 		}
 
-		public void setColor(int color) {
-			mAdapterColorModel = new ColorModel(color);
+		public void setColor(int base_color) {
+			mAdapterColorModel = new ColorModel(base_color);
 		}
 		
 		public ColorModel getCurrentColor(){
 			return mAdapterColorModel;
+		}
+		
+		
+		public void generateMap(){
+			//HashMap<String, ColorObjectFragment> map = new HashMap<String, ColorObjectFragment>();
+			for (int pos=0; pos <= COLOR_COUNT; pos++){
+				getItem(pos);
+			}
 		}
 		
 		@Override
@@ -217,13 +229,9 @@ public class ColorPickerActivity extends FragmentActivity {
 			args.putInt(ColorObjectFragment.ARG_COLOR_INT,
 					mAdapterColorModel.getColor());
 			fragment.setArguments(args);
-			mHexCodeMap.put(position, mAdapterColorModel.getHexCode());
-			if(mHexCodeMap.containsKey(position+2)){
-				mHexCodeMap.remove(position+2);
-			}
-			if(mHexCodeMap.containsKey(position-2)){
-				mHexCodeMap.remove(position-2);
-			}
+			mPosToHexMap.put(position, mAdapterColorModel.getHexCode());
+			mColorToPosMap.put(mAdapterColorModel.getColor(), position);
+			mPosToColorMap.put(position, mAdapterColorModel.getColor());
 			return fragment;
 		}
 		
@@ -231,16 +239,16 @@ public class ColorPickerActivity extends FragmentActivity {
 			float[] hsv_temp;
 			switch(mBrowseBy){
 			case BY_VALUE:
-				hsv_temp = new float[] { mAdapterColorModel.getHue(),
-						mAdapterColorModel.getSaturation(), position * 0.01f };
+				hsv_temp = new float[] { mBaseColorModel.getHue(),
+						mBaseColorModel.getSaturation(), position*0.01f };
 				break;
 			case BY_SATURATION:
-				hsv_temp = new float[] { mAdapterColorModel.getHue(),
-						position%101 * 0.01f, mAdapterColorModel.getValue() };
+				hsv_temp = new float[] { mBaseColorModel.getHue(),
+						position*0.01f, mBaseColorModel.getValue() };
 				break;
 			default:
-				hsv_temp = new float[] { position%360,
-						mAdapterColorModel.getSaturation(), mAdapterColorModel.getValue() };
+				hsv_temp = new float[] { position,
+						mBaseColorModel.getSaturation(), mBaseColorModel.getValue() };
 				break;
 			}
 			mAdapterColorModel = new ColorModel(hsv_temp);
@@ -248,18 +256,18 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return Integer.MAX_VALUE;
+			return COLOR_COUNT;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			if (position == 0){
-				return mAdapterColorModel.getHexCode();
+				return mBaseColorModel.getHexCode();
 			}
-			if (mHexCodeMap.get(position) == null){
+			if (mPosToHexMap.get(position) == null){
 				getItem(position);
 			}
-			return mHexCodeMap.get(position);
+			return mPosToHexMap.get(position);
 		}
 	}
 
@@ -275,6 +283,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		private int mFragmentColor;
 		private ColorModel mFragmentColorModel;
 		private TextView mTextView;
+		private int mPosition;
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,

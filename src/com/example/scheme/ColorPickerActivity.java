@@ -65,10 +65,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		mBaseHue = round(mBaseColorModel.getHue(), 0);
 		mBaseSat = round(mBaseColorModel.getSaturation(), 2);
 		mBaseVal = round(mBaseColorModel.getValue(), 2);
-		/*
-		 * mBaseColorModel = new ColorModel(new float[]{mBaseHue, mBaseSat,
-		 * mBaseSat}); mBaseColor = mBaseColorModel.getColor();
-		 */
+		mBaseColorModel = new ColorModel(new float[] { mBaseHue, mBaseSat,
+				mBaseVal });
+		mBaseColor = mBaseColorModel.getColor();
+
 		mCurrentColor = mBaseColor;
 		mBrowseBy = intent.getIntExtra("browse_by", 0);
 
@@ -93,12 +93,12 @@ public class ColorPickerActivity extends FragmentActivity {
 			mToastText = "Swipe to browse by HUE";
 			break;
 		case BY_SATURATION:
-			COLOR_COUNT = 101;
+			COLOR_COUNT = 100;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by SATURATION";
 			break;
 		case BY_VALUE:
-			COLOR_COUNT = 101;
+			COLOR_COUNT = 100;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by VALUE";
 			break;
@@ -120,7 +120,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		try {
 			mViewPager.setCurrentItem(mColorToPosMap.get(mBaseColor));
 		} catch (NullPointerException np) {
-			setBaseColor(mBaseColorModel);
+			// setBaseColor(mBaseColorModel);
 		}
 		Log.d("awer", "pos: " + mColorToPosMap.get(mBaseColor));
 
@@ -303,13 +303,22 @@ public class ColorPickerActivity extends FragmentActivity {
 			case BY_VALUE:
 				hsv_temp = new float[] { mBaseHue, mBaseSat,
 						round(position * 0.01f, 2) };
+				if (hsv_temp[2] == round(mAdapterColorModel.getValue(), 2)) {
+					hsv_temp[2] = round(hsv_temp[2] + 0.01f, 2);
+				}
 				break;
 			case BY_SATURATION:
 				hsv_temp = new float[] { mBaseHue, round(position * 0.01f, 2),
-						round(mBaseColorModel.getValue(), 2) };
+						mBaseVal };
+				if (hsv_temp[1] == round(mAdapterColorModel.getSaturation(), 2)) {
+					hsv_temp[1] = round(hsv_temp[1] + 0.01f, 2);
+				}
 				break;
 			default:
 				hsv_temp = new float[] { position, mBaseSat, mBaseVal };
+				if (hsv_temp[0] == round(mAdapterColorModel.getHue(), 2)) {
+					hsv_temp[0] = round(hsv_temp[0] + 1.0f, 2);
+				}
 				break;
 			}
 			mAdapterColorModel = new ColorModel(hsv_temp);
@@ -339,11 +348,9 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		public static final String ARG_OBJECT = "object";
 		public static final String ARG_COLOR_INT = "color_int";
-
 		private int mFragmentColor;
 		private ColorModel mFragmentColorModel;
 		private TextView mTextView;
-		private int mPosition;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,

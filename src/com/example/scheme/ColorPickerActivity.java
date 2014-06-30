@@ -237,6 +237,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			// use NavUtils in the Support Package to ensure proper handling of
 			// Up.
 			moveTaskBack();
+			finish();
 			return true;
 		case R.id.action_by_hue:
 			Intent hueIntent = new Intent(mColorPickerActivity,
@@ -246,6 +247,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			hueIntent.putExtra("val", mCurrentVal);
 			hueIntent.putExtra("browse_by", BY_HUE);
 			startActivity(hueIntent);
+			finish();
 			return true;
 		case R.id.action_by_saturation:
 			Intent saturationIntent = new Intent(mColorPickerActivity,
@@ -255,6 +257,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			saturationIntent.putExtra("val", mCurrentVal);
 			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
+			finish();
 			return true;
 		case R.id.action_by_value:
 			Intent valueIntent = new Intent(mColorPickerActivity,
@@ -264,6 +267,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			valueIntent.putExtra("val", mCurrentVal);
 			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
+			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

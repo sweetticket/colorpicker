@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
@@ -66,12 +64,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		mBaseColor = intent.getIntExtra("color", NO_COLOR);
 		mBaseColorModel = new ColorModel(mBaseColor);
 		if (mBaseColor == NO_COLOR) {
-			Log.d("wer", "no color base model");
 			mBaseHue = intent.getFloatExtra("hue", 0.0f);
 			mBaseSat = intent.getFloatExtra("sat", 0.0f);
 			mBaseVal = intent.getFloatExtra("val", 0.0f);
 		} else {
-			Log.d("laiwe", "else base model");
 			mBaseHue = round(mBaseColorModel.getHue(), 0);
 			mBaseSat = round(mBaseColorModel.getSaturation(), 2);
 			mBaseVal = round(mBaseColorModel.getValue(), 2);
@@ -100,22 +96,26 @@ public class ColorPickerActivity extends FragmentActivity {
 		// set mToastText, number of fragments
 		switch (mBrowseBy) {
 		case BY_HUE:
+			setTitle("Browse Hues");
 			COLOR_COUNT = 360;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by HUE";
 			break;
 		case BY_SATURATION:
-			COLOR_COUNT = 100;
+			setTitle("Browse Saturations");
+			COLOR_COUNT = 101;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by SATURATION";
 			break;
 		case BY_VALUE:
-			COLOR_COUNT = 100;
+			setTitle("Browse Values");
+			COLOR_COUNT = 101;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by VALUE";
 			break;
 		default:
-			COLOR_COUNT = 359;
+			setTitle("Browse Hues");
+			COLOR_COUNT = 360;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by HUE";
 			break;
@@ -123,29 +123,32 @@ public class ColorPickerActivity extends FragmentActivity {
 
 		// generate FragmentMap, set current item
 		mHSVPagerAdapter.generateMap();
-		Log.d("awer", "pos map size: " + mColorToPosMap.size());
 		switch (mBrowseBy) {
 		case BY_HUE:
-			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseHue)));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(
+					mBaseHue)));
 			break;
 		case BY_SATURATION:
-			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseSat)));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(
+					mBaseSat)));
 			break;
 		case BY_VALUE:
-			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseVal)));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(
+					mBaseVal)));
 			break;
 		default:
-			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseHue)));
+			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(
+					mBaseHue)));
 			break;
 		}
-
 
 		Context context = getApplicationContext();
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, mToastText, duration);
 		toast.show();
 
-		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
 						switch (mBrowseBy) {
@@ -166,58 +169,55 @@ public class ColorPickerActivity extends FragmentActivity {
 									.floatValue();
 							break;
 						}
-						Log.d("tqo", "current pos : "+mPosToColorMap.get(position));
-						
-						
 					}
 				});
 	}
-	
+
 	// GETTERS
-	public HashMap<Integer, BigDecimal> getPosToColorMap(){
+	public HashMap<Integer, BigDecimal> getPosToColorMap() {
 		return mPosToColorMap;
 	}
-	
-	public HashMap<BigDecimal, Integer> getColorToPosMap(){
+
+	public HashMap<BigDecimal, Integer> getColorToPosMap() {
 		return mColorToPosMap;
 	}
-	
-	public HashMap<Integer, String> getPosToHexMap(){
+
+	public HashMap<Integer, String> getPosToHexMap() {
 		return mPosToHexMap;
 	}
-	
-	public float getBaseHue(){
+
+	public float getBaseHue() {
 		return mBaseHue;
 	}
-	
-	public float getBaseSat(){
+
+	public float getBaseSat() {
 		return mBaseSat;
 	}
-	
-	public float getBaseVal(){
+
+	public float getBaseVal() {
 		return mBaseVal;
 	}
-	
-	public ColorModel getBaseColorModel(){
+
+	public ColorModel getBaseColorModel() {
 		return mBaseColorModel;
 	}
-	
-	public float getCurrentHue(){
+
+	public float getCurrentHue() {
 		return mCurrentHue;
 	}
-	
-	public float getCurrentSat(){
+
+	public float getCurrentSat() {
 		return mCurrentSat;
 	}
-	
-	public float getCurrentVal(){
+
+	public float getCurrentVal() {
 		return mCurrentVal;
 	}
-	
-	public int getBrowseBy(){
+
+	public int getBrowseBy() {
 		return mBrowseBy;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -253,7 +253,6 @@ public class ColorPickerActivity extends FragmentActivity {
 			saturationIntent.putExtra("hue", mCurrentHue);
 			saturationIntent.putExtra("sat", mCurrentSat);
 			saturationIntent.putExtra("val", mCurrentVal);
-			Log.d("send", "sending sat "+ mCurrentSat + " value "+mCurrentVal);
 			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
 			return true;
@@ -263,7 +262,6 @@ public class ColorPickerActivity extends FragmentActivity {
 			valueIntent.putExtra("hue", mCurrentHue);
 			valueIntent.putExtra("sat", mCurrentSat);
 			valueIntent.putExtra("val", mCurrentVal);
-			Log.d("send", "sending sat "+ mCurrentSat + " value "+mCurrentVal);
 			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
 			return true;
@@ -327,16 +325,15 @@ public class ColorPickerActivity extends FragmentActivity {
 			mAdaptSat = s;
 			mAdaptVal = v;
 		}
-		
-		public void setActivity(ColorPickerActivity ca){
+
+		public void setActivity(ColorPickerActivity ca) {
 			mActivity = ca;
 		}
-		
+
 		public void generateMap() {
 			for (int pos = 0; pos <= COLOR_COUNT; pos++) {
 				getItem(pos);
 			}
-			Log.d("generateMap", "map has been generated: " + mActivity.getPosToColorMap());
 		}
 
 		@Override
@@ -344,47 +341,55 @@ public class ColorPickerActivity extends FragmentActivity {
 			Fragment fragment = new ColorObjectFragment();
 			Bundle args = new Bundle();
 			setNextColor(position);
-			args.putFloat(ColorObjectFragment.ARG_HUE,
-					mAdaptHue);
-			args.putFloat(ColorObjectFragment.ARG_VAL,
-					mAdaptVal);
-			args.putFloat(ColorObjectFragment.ARG_SAT,
-					mAdaptSat);
+			args.putFloat(ColorObjectFragment.ARG_HUE, mAdaptHue);
+			args.putFloat(ColorObjectFragment.ARG_VAL, mAdaptVal);
+			args.putFloat(ColorObjectFragment.ARG_SAT, mAdaptSat);
 			fragment.setArguments(args);
-			mActivity.getPosToHexMap().put(position, (new ColorModel(new float[]{mAdaptHue, mAdaptSat, mAdaptVal})).getHexCode());
-			
+			mActivity.getPosToHexMap().put(
+					position,
+					(new ColorModel(new float[] { mAdaptHue, mAdaptSat,
+							mAdaptVal })).getHexCode());
+
 			return fragment;
 		}
 
 		private void setNextColor(int position) {
 			switch (mActivity.getBrowseBy()) {
 			case BY_VALUE:
-				if (mAdaptVal == round(position *0.01f, 2)){
-					mAdaptVal = round((position+1) *0.01f, 2);
-				}else{
-					mAdaptVal = round(position *0.01f, 2);
+				if (mAdaptVal == round(position * 0.01f, 2)) {
+					mAdaptVal = round((position + 1) * 0.01f, 2);
+				} else {
+					mAdaptVal = round(position * 0.01f, 2);
 				}
-				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptVal), position);
-				mActivity.getPosToColorMap().put(position, new BigDecimal(mAdaptVal));
+				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptVal),
+						position);
+				mActivity.getPosToColorMap().put(position,
+						new BigDecimal(mAdaptVal));
 				break;
 			case BY_SATURATION:
-				if (mAdaptSat == round(position *0.01f, 2)){
-					mAdaptSat = round((position+1) *0.01f, 2);
-				}else{
-					mAdaptSat = round(position *0.01f, 2);
+				if (mAdaptSat == round(position * 0.01f, 2)) {
+					mAdaptSat = round((position + 1) * 0.01f, 2);
+				} else {
+					mAdaptSat = round(position * 0.01f, 2);
 				}
-				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptSat), position);
-				mActivity.getPosToColorMap().put(position, new BigDecimal(mAdaptSat));
+				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptSat),
+						position);
+				mActivity.getPosToColorMap().put(position,
+						new BigDecimal(mAdaptSat));
 				break;
 			case BY_HUE:
 				mAdaptHue = position;
-				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptHue), position);
-				mActivity.getPosToColorMap().put(position, new BigDecimal(mAdaptHue));
+				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptHue),
+						position);
+				mActivity.getPosToColorMap().put(position,
+						new BigDecimal(mAdaptHue));
 				break;
 			default:
 				mAdaptHue = position;
-				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptHue), position);
-				mActivity.getPosToColorMap().put(position, new BigDecimal(mAdaptHue));
+				mActivity.getColorToPosMap().put(new BigDecimal(mAdaptHue),
+						position);
+				mActivity.getPosToColorMap().put(position,
+						new BigDecimal(mAdaptHue));
 				break;
 			}
 		}
@@ -426,28 +431,29 @@ public class ColorPickerActivity extends FragmentActivity {
 			View rootView = inflater.inflate(
 					R.layout.fragment_colorpicker_object, container, false);
 			Bundle args = getArguments();
-			
-			float hue =  args.getFloat(ARG_HUE);
-			float sat =  args.getFloat(ARG_SAT);
+
+			float hue = args.getFloat(ARG_HUE);
+			float sat = args.getFloat(ARG_SAT);
 			float val = args.getFloat(ARG_VAL);
-			mFragmentColorModel = new ColorModel(new float[]{hue,sat,val});
+			mFragmentColorModel = new ColorModel(new float[] { hue, sat, val });
 			mFragmentColor = mFragmentColorModel.getColor();
 
 			int[] rgb = mFragmentColorModel.getRGB();
 			float[] cmyk = mFragmentColorModel.getCMYK();
-			
+
 			mTextView = (TextView) rootView.findViewById(android.R.id.text1);
 			mTextView.setBackgroundColor(mFragmentColor);
-			int textColor = mFragmentColorModel.getValue() > .6f
-					&& mFragmentColorModel.getSaturation() < .5f ? Color.BLACK
+			int textColor = (mFragmentColorModel.getValue() > .7f && mFragmentColorModel
+					.getSaturation() < .5f)
+					|| (mFragmentColorModel.getValue() > .9f && (mFragmentColorModel
+							.getHue() >= 53.0f && mFragmentColorModel.getHue() <= 183.0f)) ? Color.BLACK
 					: Color.WHITE;
 			mTextView.setTextColor(textColor);
 			mTextView.setText(mFragmentColorModel.getHexCode() + "\n RGB: \n"
 					+ rgb[0] + ", " + rgb[1] + ", " + rgb[2] + "\n"
 					+ "CMYK: \n" + round(cmyk[0], 2) + ", " + round(cmyk[1], 2)
 					+ ", " + round(cmyk[2], 2) + ", " + round(cmyk[3], 2)
-					+ "\n" + "HSV: \n" + hue + ", "
-					+ sat + ", " + val);
+					+ "\n" + "HSV: \n" + hue + ", " + sat + ", " + val);
 
 			return rootView;
 		}

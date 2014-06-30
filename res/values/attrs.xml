@@ -2,5 +2,7 @@
 <resources>
 
     <declare-styleable name="PinpointView"></declare-styleable>
+    <declare-styleable name="SchemingView"></declare-styleable>
+    
 
 </resources>

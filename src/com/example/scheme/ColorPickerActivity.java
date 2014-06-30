@@ -54,7 +54,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
-		setContentView(R.layout.fragment_color_picker_activity2);
+		setContentView(R.layout.fragment_color_picker_activity);
 		mPosToHexMap = new HashMap<Integer, String>();
 		mColorToPosMap = new HashMap<BigDecimal, Integer>();
 		mPosToColorMap = new HashMap<Integer, BigDecimal>();
@@ -458,21 +458,15 @@ public class ColorPickerActivity extends FragmentActivity {
 					+ "CMYK: \n" + round(cmyk[0], 2) + ", " + round(cmyk[1], 2)
 					+ ", " + round(cmyk[2], 2) + ", " + round(cmyk[3], 2)
 					+ "\n" + "HSV: \n" + hue + ", " + sat + ", " + val);
-
+			
+			
+			
+			
 			return rootView;
 		}
 
 		public String getHexCode() {
 			return mFragmentColorModel.getHexCode();
-		}
-
-		private static float round(float value, int places) {
-			if (places < 0)
-				throw new IllegalArgumentException();
-
-			BigDecimal bd = new BigDecimal(value);
-			bd = bd.setScale(places, RoundingMode.HALF_UP);
-			return bd.floatValue();
 		}
 	}
 }

@@ -16,12 +16,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -427,7 +429,8 @@ public class ColorPickerActivity extends FragmentActivity {
 		public static final String ARG_VAL = "value";
 		private int mFragmentColor;
 		private ColorModel mFragmentColorModel;
-		private TextView mTextView;
+		private TextView mMainTextView;
+		private LinearLayout mInfoPanel;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -445,28 +448,32 @@ public class ColorPickerActivity extends FragmentActivity {
 			int[] rgb = mFragmentColorModel.getRGB();
 			float[] cmyk = mFragmentColorModel.getCMYK();
 
-			mTextView = (TextView) rootView.findViewById(android.R.id.text1);
-			mTextView.setBackgroundColor(mFragmentColor);
+			mMainTextView = (TextView) rootView.findViewById(android.R.id.text1);
+			mMainTextView.setBackgroundColor(mFragmentColor);
 			int textColor = (mFragmentColorModel.getValue() > .7f && mFragmentColorModel
 					.getSaturation() < .5f)
 					|| (mFragmentColorModel.getValue() > .9f && (mFragmentColorModel
 							.getHue() >= 53.0f && mFragmentColorModel.getHue() <= 183.0f)) ? Color.BLACK
 					: Color.WHITE;
-			mTextView.setTextColor(textColor);
-			mTextView.setText(mFragmentColorModel.getHexCode() + "\n RGB: \n"
+			mMainTextView.setTextColor(textColor);
+			mMainTextView.setText(mFragmentColorModel.getHexCode() + "\n RGB: \n"
 					+ rgb[0] + ", " + rgb[1] + ", " + rgb[2] + "\n"
 					+ "CMYK: \n" + round(cmyk[0], 2) + ", " + round(cmyk[1], 2)
 					+ ", " + round(cmyk[2], 2) + ", " + round(cmyk[3], 2)
 					+ "\n" + "HSV: \n" + hue + ", " + sat + ", " + val);
 			
-			
-			
+			mInfoPanel = (LinearLayout) rootView.findViewById(R.id.panel);
+			mInfoPanel.setTop(); //get screenheight...
 			
 			return rootView;
 		}
 
 		public String getHexCode() {
 			return mFragmentColorModel.getHexCode();
+		}
+		
+		public void slidePanelUp(){
+			//TODO
 		}
 	}
 }

@@ -21,7 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
+import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -448,7 +448,8 @@ public class ColorPickerActivity extends FragmentActivity {
 			int[] rgb = mFragmentColorModel.getRGB();
 			float[] cmyk = mFragmentColorModel.getCMYK();
 
-			mMainTextView = (TextView) rootView.findViewById(android.R.id.text1);
+			mMainTextView = (TextView) rootView
+					.findViewById(android.R.id.text1);
 			mMainTextView.setBackgroundColor(mFragmentColor);
 			int textColor = (mFragmentColorModel.getValue() > .7f && mFragmentColorModel
 					.getSaturation() < .5f)
@@ -456,24 +457,32 @@ public class ColorPickerActivity extends FragmentActivity {
 							.getHue() >= 53.0f && mFragmentColorModel.getHue() <= 183.0f)) ? Color.BLACK
 					: Color.WHITE;
 			mMainTextView.setTextColor(textColor);
-			mMainTextView.setText(mFragmentColorModel.getHexCode() + "\n RGB: \n"
-					+ rgb[0] + ", " + rgb[1] + ", " + rgb[2] + "\n"
-					+ "CMYK: \n" + round(cmyk[0], 2) + ", " + round(cmyk[1], 2)
-					+ ", " + round(cmyk[2], 2) + ", " + round(cmyk[3], 2)
-					+ "\n" + "HSV: \n" + hue + ", " + sat + ", " + val);
-			
+			mMainTextView.setText(mFragmentColorModel.getHexCode()
+					+ "\n RGB: \n" + rgb[0] + ", " + rgb[1] + ", " + rgb[2]
+					+ "\n" + "CMYK: \n" + round(cmyk[0], 2) + ", "
+					+ round(cmyk[1], 2) + ", " + round(cmyk[2], 2) + ", "
+					+ round(cmyk[3], 2) + "\n" + "HSV: \n" + hue + ", " + sat
+					+ ", " + val);
+
 			mInfoPanel = (LinearLayout) rootView.findViewById(R.id.panel);
-			mInfoPanel.setTop(); //get screenheight...
-			
+			mInfoPanel.setTop(mMainTextView.getHeight()); // get screenheight...
 			return rootView;
 		}
 
 		public String getHexCode() {
 			return mFragmentColorModel.getHexCode();
 		}
-		
-		public void slidePanelUp(){
-			//TODO
+
+		public void slidePanelUp() {
+			int xCurrent = mInfoPanel.getLeft();
+			int yCurrent = mInfoPanel.getTop();
+
+			Animation anim = new TranslateAnimation(xCurrent, xCurrent,
+					yCurrent, yCurrent + mInfoPanel.getHeight());
+			anim.setDuration(1000);
+			anim.setFillAfter(true);
+			anim.setFillEnabled(true);
+			//TODO finish
 		}
 	}
 }

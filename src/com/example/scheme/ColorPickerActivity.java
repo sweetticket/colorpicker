@@ -130,6 +130,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			break;
 		case BY_SATURATION:
 			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseSat)));
+			break;
 		case BY_VALUE:
 			mViewPager.setCurrentItem(mColorToPosMap.get(new BigDecimal(mBaseVal)));
 			break;
@@ -155,6 +156,7 @@ public class ColorPickerActivity extends FragmentActivity {
 						case BY_SATURATION:
 							mCurrentSat = mPosToColorMap.get(position)
 									.floatValue();
+							break;
 						case BY_VALUE:
 							mCurrentVal = mPosToColorMap.get(position)
 									.floatValue();
@@ -251,6 +253,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			saturationIntent.putExtra("hue", mCurrentHue);
 			saturationIntent.putExtra("sat", mCurrentSat);
 			saturationIntent.putExtra("val", mCurrentVal);
+			Log.d("send", "sending sat "+ mCurrentSat + " value "+mCurrentVal);
 			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
 			return true;
@@ -260,6 +263,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			valueIntent.putExtra("hue", mCurrentHue);
 			valueIntent.putExtra("sat", mCurrentSat);
 			valueIntent.putExtra("val", mCurrentVal);
+			Log.d("send", "sending sat "+ mCurrentSat + " value "+mCurrentVal);
 			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
 			return true;

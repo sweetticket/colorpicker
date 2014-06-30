@@ -50,7 +50,6 @@ public class ColorPickerActivity extends FragmentActivity {
 	private float mCurrentHue;
 	private float mCurrentSat;
 	private float mCurrentVal;
-	private Integer mCurrentColor;
 	private CharSequence mToastText;
 	private int mBrowseBy;
 
@@ -79,12 +78,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		}
 		mBaseColorModel = new ColorModel(new float[] { mBaseHue, mBaseSat,
 				mBaseVal });
-		mBaseColor = mBaseColorModel.getColor();
 
 		mCurrentHue = mBaseHue;
 		mCurrentVal = mBaseVal;
 		mCurrentSat = mBaseSat;
-		mCurrentColor = mBaseColor;
 		mBrowseBy = intent.getIntExtra("browse_by", 0);
 
 		final ActionBar actionBar = getActionBar();
@@ -98,7 +95,6 @@ public class ColorPickerActivity extends FragmentActivity {
 		mHSVPagerAdapter = new HSVPagerAdapter(getSupportFragmentManager());
 		mHSVPagerAdapter.setColor(mBaseHue, mBaseSat, mBaseVal);
 		mHSVPagerAdapter.setActivity(mColorPickerActivity);
-		Log.d("awer", "received color: " + mBaseColor);
 		mViewPager.setAdapter(mHSVPagerAdapter);
 
 		// set mToastText, number of fragments
@@ -119,7 +115,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			mToastText = "Swipe to browse by VALUE";
 			break;
 		default:
-			COLOR_COUNT = 360;
+			COLOR_COUNT = 359;
 			mHSVPagerAdapter.notifyDataSetChanged();
 			mToastText = "Swipe to browse by HUE";
 			break;
@@ -216,10 +212,6 @@ public class ColorPickerActivity extends FragmentActivity {
 		return mCurrentVal;
 	}
 	
-	public int getCurrentColor(){
-		return mCurrentColor;
-	}
-	
 	public int getBrowseBy(){
 		return mBrowseBy;
 	}
@@ -248,25 +240,25 @@ public class ColorPickerActivity extends FragmentActivity {
 			Intent hueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
 			hueIntent.putExtra("hue", mCurrentHue);
-			hueIntent.putExtra("sat", mBaseSat);
-			hueIntent.putExtra("val", mBaseVal);
+			hueIntent.putExtra("sat", mCurrentSat);
+			hueIntent.putExtra("val", mCurrentVal);
 			hueIntent.putExtra("browse_by", BY_HUE);
 			startActivity(hueIntent);
 			return true;
 		case R.id.action_by_saturation:
 			Intent saturationIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
-			saturationIntent.putExtra("hue", mBaseHue);
+			saturationIntent.putExtra("hue", mCurrentHue);
 			saturationIntent.putExtra("sat", mCurrentSat);
-			saturationIntent.putExtra("val", mBaseVal);
+			saturationIntent.putExtra("val", mCurrentVal);
 			saturationIntent.putExtra("browse_by", BY_SATURATION);
 			startActivity(saturationIntent);
 			return true;
 		case R.id.action_by_value:
 			Intent valueIntent = new Intent(mColorPickerActivity,
 					ColorPickerActivity.class);
-			valueIntent.putExtra("hue", mBaseHue);
-			valueIntent.putExtra("sat", mBaseSat);
+			valueIntent.putExtra("hue", mCurrentHue);
+			valueIntent.putExtra("sat", mCurrentSat);
 			valueIntent.putExtra("val", mCurrentVal);
 			valueIntent.putExtra("browse_by", BY_VALUE);
 			startActivity(valueIntent);
@@ -337,11 +329,10 @@ public class ColorPickerActivity extends FragmentActivity {
 		}
 		
 		public void generateMap() {
-			// HashMap<String, ColorObjectFragment> map = new HashMap<String,
-			// ColorObjectFragment>();
 			for (int pos = 0; pos <= COLOR_COUNT; pos++) {
 				getItem(pos);
 			}
+			Log.d("generateMap", "map has been generated: " + mActivity.getPosToColorMap());
 		}
 
 		@Override

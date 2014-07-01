@@ -19,7 +19,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -52,6 +54,9 @@ public class ColorPickerActivity extends FragmentActivity {
 	private int mBrowseBy;
 	private SlidingPanel mPanel;
 	private FrameLayout mContainer;
+	private float pointX;
+	private float pointY;
+	private int tolerance = 50;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -175,6 +180,28 @@ public class ColorPickerActivity extends FragmentActivity {
 						}
 					}
 				});
+			
+	mViewPager.setOnTouchListener(new OnTouchListener(){
+		@Override
+		public boolean onTouch(View view, MotionEvent event) {
+			switch(event.getAction()){
+			case MotionEvent.ACTION_MOVE:
+				return false;
+			case MotionEvent.ACTION_DOWN:
+				pointX = event.getX();
+				pointY = event.getY();
+				break;
+			case MotionEvent.ACTION_UP:
+				boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
+				boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
+				if (sameX && sameY){
+					mPanel.toggle();
+				}
+			}
+			return false;
+		}	
+	});
+		
 	}
 
 	// GETTERS

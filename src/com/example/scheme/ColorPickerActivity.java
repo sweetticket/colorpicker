@@ -9,22 +9,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,17 @@ public class ColorPickerActivity extends FragmentActivity {
 	private float pointX;
 	private float pointY;
 	private int tolerance = 50;
+	
+	private Button mTriadButton;
+	private Button mAnalogButton;
+	private Button mMonoButton;
+	private Button mCompButton;
+	private Button mSplitCompButton;
+	
+	private SlidingPanel mPanel1;
+	private SlidingPanel mPanel2;
+	private SlidingPanel mPanel3;
+
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -203,9 +215,76 @@ public class ColorPickerActivity extends FragmentActivity {
 			return false;
 		}	
 	});
+	
+	initButtons();
 		
 	}
-
+	
+	public void initButtons(){
+		mTriadButton = (Button)findViewById(R.id.triad);
+		mTriadButton.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				ColorModel currentColor = new ColorModel(new float[]{mCurrentHue, mCurrentSat, mCurrentVal});
+				int[] colorScheme = currentColor.getTriad();
+				toggleScheme(currentColor, colorScheme);
+			}
+		});
+		
+		mAnalogButton = (Button)findViewById(R.id.analog);
+		mAnalogButton.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				ColorModel currentColor = new ColorModel(new float[]{mCurrentHue, mCurrentSat, mCurrentVal});
+				int[] colorScheme = currentColor.getAnalog();
+				toggleScheme(currentColor, colorScheme);
+			}
+		});
+		
+		mSplitCompButton = (Button)findViewById(R.id.split_comp);
+		mSplitCompButton.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				ColorModel currentColor = new ColorModel(new float[]{mCurrentHue, mCurrentSat, mCurrentVal});
+				int[] colorScheme = currentColor.getSplitComp();
+				toggleScheme(currentColor, colorScheme);
+			}
+		});
+		
+	}
+	
+	public void toggleScheme(ColorModel currentColor, int[] colorScheme){
+		mBottomPanel.toggle();
+		mTopPanel.toggle();
+		mPanel1 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth1);
+		mPanel1.setBackgroundColor(colorScheme[0]);
+		mPanel2 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth2);
+		mPanel2.setBackgroundColor(colorScheme[1]);
+		mPanel3 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth3);
+		mPanel3.setBackgroundColor(currentColor.getColor());
+		
+		Handler toggleHandler = new Handler();
+		toggleHandler.postDelayed(new Runnable(){
+			@Override
+			public void run() {
+				mPanel1.toggle();
+			}
+		}, 500);
+		toggleHandler.postDelayed(new Runnable(){
+			@Override public void run(){
+				mPanel2.toggle();
+			}
+		}, 1000);
+		toggleHandler.postDelayed(new Runnable(){
+			@Override public void run(){
+				mPanel3.toggle();
+			}
+		}, 1500);
+		
+		//TODO set onClick listeners to toggle
+		//fix orientation to portrait
+	}
+	
 	// GETTERS
 	public HashMap<Integer, BigDecimal> getPosToColorMap() {
 		return mPosToColorMap;

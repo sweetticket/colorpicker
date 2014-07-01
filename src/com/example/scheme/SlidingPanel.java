@@ -14,6 +14,9 @@ public class SlidingPanel extends LinearLayout {
 	
 	public static final int FROM_TOP = 23592435;
 	public static final int FROM_BOTTOM = 2351354;
+	public static final int FROM_RIGHT = 8775473;
+	public static final int FROM_LEFT = 2999138;
+
 
 	private int mSpeed = 300;
 	private boolean mIsOpen = false;
@@ -32,12 +35,37 @@ public class SlidingPanel extends LinearLayout {
 		super(context, attrs, defStyle);
 		init(context, attrs);
 	}
-
+	
+	public void setSpeed(int speed){
+		mSpeed = speed;
+	}
+	
+	public void setGravity(String panelGravity){
+		if (panelGravity.equals("top")){
+			mGravity = FROM_TOP;
+		}else if (panelGravity.equals("bottom")){
+			mGravity = FROM_BOTTOM;
+		}else if (panelGravity.equals("right")){
+			mGravity = FROM_RIGHT;
+		}else{
+			mGravity = FROM_LEFT;
+		}
+	}
+	
 	public void init(Context context, AttributeSet attrs) {
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.SlidingPanel, 0, 0);
 		mSpeed = a.getInt(R.styleable.SlidingPanel_speed, 300);
-		mGravity = a.getString(R.styleable.SlidingPanel_panelGravity).equals("top") ? FROM_TOP : FROM_BOTTOM;
+		String panelGravity = a.getString(R.styleable.SlidingPanel_panelGravity);
+		if (panelGravity.equals("top")){
+			mGravity = FROM_TOP;
+		}else if (panelGravity.equals("bottom")){
+			mGravity = FROM_BOTTOM;
+		}else if (panelGravity.equals("right")){
+			mGravity = FROM_RIGHT;
+		}else{
+			mGravity = FROM_LEFT;
+		}
 		a.recycle();
 	}
 	
@@ -52,12 +80,28 @@ public class SlidingPanel extends LinearLayout {
 				anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, getHeight());
 				anim.setAnimationListener(collapseListener);
 			}
-		}else{
+		}else if (mGravity == FROM_TOP){
 			if (mIsOpen) {
 				setVisibility(View.VISIBLE);
 				anim = new TranslateAnimation(0.0f, 0.0f, -getHeight(), 0.0f);
 			} else {
 				anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, -getHeight());
+				anim.setAnimationListener(collapseListener);
+			}
+		}else if (mGravity == FROM_RIGHT){
+			if (mIsOpen) {
+				setVisibility(View.VISIBLE);
+				anim = new TranslateAnimation(-getWidth(), 0.0f, 0.0f, 0.0f);
+			} else {
+				anim = new TranslateAnimation(0.0f, -getWidth(), 0.0f, 0.0f);
+				anim.setAnimationListener(collapseListener);
+			}
+		}else{
+			if (mIsOpen) {
+				setVisibility(View.VISIBLE);
+				anim = new TranslateAnimation(0.0f, -getWidth(), 0.0f, 0.0f);
+			} else {
+				anim = new TranslateAnimation(-getWidth(), 0.0f, 0.0f, 0.0f);
 				anim.setAnimationListener(collapseListener);
 			}
 		}

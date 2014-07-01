@@ -21,9 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +37,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	public HashMap<BigDecimal, Integer> mColorToPosMap;
 	public HashMap<Integer, BigDecimal> mPosToColorMap;
 	private HSVPagerAdapter mHSVPagerAdapter;
-	private ColorPickerActivity mColorPickerActivity;
+	private static ColorPickerActivity mColorPickerActivity;
 	ViewPager mViewPager;
 	private int mBaseColor;
 	private ColorModel mBaseColorModel;
@@ -52,11 +50,15 @@ public class ColorPickerActivity extends FragmentActivity {
 	private float mCurrentVal;
 	private CharSequence mToastText;
 	private int mBrowseBy;
+	private SlidingPanel mPanel;
+	private FrameLayout mContainer;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
 		setContentView(R.layout.fragment_color_picker_activity);
+		mPanel = (SlidingPanel) findViewById(R.id.panel);
+		mContainer = (FrameLayout) findViewById(R.id.container);
 		mPosToHexMap = new HashMap<Integer, String>();
 		mColorToPosMap = new HashMap<BigDecimal, Integer>();
 		mPosToColorMap = new HashMap<Integer, BigDecimal>();
@@ -271,6 +273,9 @@ public class ColorPickerActivity extends FragmentActivity {
 			startActivity(valueIntent);
 			finish();
 			return true;
+		case R.id.toggle_panel:
+			mPanel.toggle();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -430,7 +435,6 @@ public class ColorPickerActivity extends FragmentActivity {
 		private int mFragmentColor;
 		private ColorModel mFragmentColorModel;
 		private TextView mMainTextView;
-		private LinearLayout mInfoPanel;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -462,27 +466,12 @@ public class ColorPickerActivity extends FragmentActivity {
 					+ "\n" + "CMYK: \n" + round(cmyk[0], 2) + ", "
 					+ round(cmyk[1], 2) + ", " + round(cmyk[2], 2) + ", "
 					+ round(cmyk[3], 2) + "\n" + "HSV: \n" + hue + ", " + sat
-					+ ", " + val);
-
-			mInfoPanel = (LinearLayout) rootView.findViewById(R.id.panel);
-			mInfoPanel.setTop(mMainTextView.getHeight()); // get screenheight...
+					+ ", " + val);			
 			return rootView;
 		}
 
 		public String getHexCode() {
 			return mFragmentColorModel.getHexCode();
-		}
-
-		public void slidePanelUp() {
-			int xCurrent = mInfoPanel.getLeft();
-			int yCurrent = mInfoPanel.getTop();
-
-			Animation anim = new TranslateAnimation(xCurrent, xCurrent,
-					yCurrent, yCurrent + mInfoPanel.getHeight());
-			anim.setDuration(1000);
-			anim.setFillAfter(true);
-			anim.setFillEnabled(true);
-			//TODO finish
 		}
 	}
 }

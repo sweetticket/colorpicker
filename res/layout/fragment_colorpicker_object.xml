@@ -1,9 +1,18 @@
-
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:textSize="20sp"
-    android:padding="32dp" />
+    tools:context="com.example.scheme.MainActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="32dp"
+        android:textSize="20sp" />
+
+    
+</FrameLayout>

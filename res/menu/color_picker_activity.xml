@@ -32,5 +32,11 @@
         android:orderInCategory="100"
         android:title="@string/action_by_value"
         app:showAsAction="always" />
+      
+      <item
+        android:id="@+id/toggle_panel"
+        android:orderInCategory="100"
+        android:title="@string/toggle_panel"
+        app:showAsAction="always" />
 
 </menu>

@@ -23,6 +23,8 @@
     <string name="action_by_hue">By Hue</string>
     <string name="action_by_saturation">By Saturation</string>
     <string name="action_by_value">By Value</string>
+    <string name="toggle_panel">Show Schemes</string>
+    
 
 
 </resources>

@@ -3,6 +3,9 @@
 
     <declare-styleable name="PinpointView"></declare-styleable>
     <declare-styleable name="SchemingView"></declare-styleable>
-    
+    <declare-styleable name="SlidingPanel">
+        <attr name="speed" format="integer" />
+        <attr name="targetHeight" format="dimension" />
+    </declare-styleable>
 
 </resources>

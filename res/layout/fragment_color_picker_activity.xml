@@ -1,38 +1,54 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res/com.commonsware.android.anim"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
 
-    <android.support.v4.view.PagerTitleStrip
-        android:id="@+id/pager_title_strip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="#000000"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
-        android:textColor="#fff" />
-
-    <LinearLayout
+    <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/panel"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical" >
+        android:layout_height="match_parent" >
 
-        <com.example.scheme.SchemingView
-            android:id="@+id/triad"
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="32dp"
-            android:textSize="20sp"
-            android:textColor="#fff"
+            android:layout_gravity="top"
             android:background="#000000"
-            android:alpha="0.5"
-            android:visibility="invisible" />
-    </LinearLayout>
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:textColor="#fff" />
+    </android.support.v4.view.ViewPager>
+    <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/panel"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_alignParentBottom="true"
+            android:background="#22FFFFFF"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:speed="250"
+            app:targetHeight="75dp" >
 
-</android.support.v4.view.ViewPager>
+            <Button
+                android:layout_width="0px"
+                android:layout_height="75dp"
+                android:layout_weight="1"
+                android:text="Button #1" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_weight="1"
+                android:text="Button #2" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_weight="1"
+                android:text="Button #3" />
+        </com.example.scheme.SlidingPanel>
+
+</RelativeLayout>

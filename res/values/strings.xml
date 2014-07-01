@@ -24,6 +24,11 @@
     <string name="action_by_saturation">By Saturation</string>
     <string name="action_by_value">By Value</string>
     <string name="toggle_panel">Show Schemes</string>
+    <string name="mono">Mono</string>
+    <string name="analog">Analog</string>
+    <string name="triad">Triad</string>
+    <string name="split_comp">Split Comp</string>
+    <string name="comp">Comp</string>
     
 
 

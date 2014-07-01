@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res/com.commonsware.android.anim"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  >
+    xmlns:app="http://schemas.android.com/apk/res/com.commonsware.android.anim"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relative_container" >
 
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,35 +20,70 @@
             android:paddingTop="4dp"
             android:textColor="#fff" />
     </android.support.v4.view.ViewPager>
+
     <com.example.scheme.SlidingPanel
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/panel"
-            android:layout_width="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/scheme_bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:background="#22FFFFFF"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:panelGravity="bottom"
+        app:speed="250"
+        app:targetHeight="75dp" >
+
+        <Button
+            android:id="@+id/triad"
+            android:layout_width="0dp"
             android:layout_height="75dp"
-            android:layout_alignParentBottom="true"
-            android:background="#22FFFFFF"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:speed="250"
-            app:targetHeight="75dp" >
+            android:layout_weight="1"
+            android:text="@string/triad" />
 
-            <Button
-                android:layout_width="0px"
-                android:layout_height="75dp"
-                android:layout_weight="1"
-                android:text="Button #1" />
+        <Button
+            android:id="@+id/analog"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:text="@string/analog" />
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="75dp"
-                android:layout_weight="1"
-                android:text="Button #2" />
+        <Button
+            android:id="@+id/mono"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:text="@string/mono" />
+    </com.example.scheme.SlidingPanel>
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="75dp"
-                android:layout_weight="1"
-                android:text="Button #3" />
-        </com.example.scheme.SlidingPanel>
+    <com.example.scheme.SlidingPanel
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/scheme_top_panel"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:background="#22FFFFFF"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:panelGravity="top"
+        app:speed="250"
+        app:targetHeight="75dp" >
+
+        <Button
+            android:id="@+id/comp"
+            android:layout_width="0px"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:text="@string/comp" />
+
+        <Button
+            android:id="@+id/split_comp"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:text="@string/split_comp" />
+        
+    </com.example.scheme.SlidingPanel>
 
 </RelativeLayout>

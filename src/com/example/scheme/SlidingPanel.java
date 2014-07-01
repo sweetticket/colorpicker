@@ -11,9 +11,13 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
 public class SlidingPanel extends LinearLayout {
+	
+	public static final int FROM_TOP = 23592435;
+	public static final int FROM_BOTTOM = 2351354;
 
-	private int speed = 300;
-	private boolean isOpen = false;
+	private int mSpeed = 300;
+	private boolean mIsOpen = false;
+	private int mGravity;	
 
 	public SlidingPanel(Context context) {
 		super(context);
@@ -32,22 +36,33 @@ public class SlidingPanel extends LinearLayout {
 	public void init(Context context, AttributeSet attrs) {
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.SlidingPanel, 0, 0);
-		speed = a.getInt(R.styleable.SlidingPanel_speed, 300);
+		mSpeed = a.getInt(R.styleable.SlidingPanel_speed, 300);
+		mGravity = a.getString(R.styleable.SlidingPanel_panelGravity).equals("top") ? FROM_TOP : FROM_BOTTOM;
 		a.recycle();
 	}
-
+	
 	public void toggle() {
 		TranslateAnimation anim = null;
-		isOpen = !isOpen;
-
-		if (isOpen) {
-			setVisibility(View.VISIBLE);
-			anim = new TranslateAnimation(0.0f, 0.0f, getHeight(), 0.0f);
-		} else {
-			anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, getHeight());
-			anim.setAnimationListener(collapseListener);
+		mIsOpen = !mIsOpen;
+		if (mGravity == FROM_BOTTOM){
+			if (mIsOpen) {
+				setVisibility(View.VISIBLE);
+				anim = new TranslateAnimation(0.0f, 0.0f, getHeight(), 0.0f);
+			} else {
+				anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, getHeight());
+				anim.setAnimationListener(collapseListener);
+			}
+		}else{
+			if (mIsOpen) {
+				setVisibility(View.VISIBLE);
+				anim = new TranslateAnimation(0.0f, 0.0f, -getHeight(), 0.0f);
+			} else {
+				anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, -getHeight());
+				anim.setAnimationListener(collapseListener);
+			}
 		}
-		anim.setDuration(speed);
+		
+		anim.setDuration(mSpeed);
 		anim.setInterpolator(new AccelerateInterpolator(1.0f));
 		startAnimation(anim);
 		Log.d("tap", "tap toggle");

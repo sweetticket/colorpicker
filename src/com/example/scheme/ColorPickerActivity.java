@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,8 +53,8 @@ public class ColorPickerActivity extends FragmentActivity {
 	private float mCurrentVal;
 	private CharSequence mToastText;
 	private int mBrowseBy;
-	private SlidingPanel mPanel;
-	private FrameLayout mContainer;
+	private SlidingPanel mBottomPanel;
+	private SlidingPanel mTopPanel;
 	private float pointX;
 	private float pointY;
 	private int tolerance = 50;
@@ -62,8 +63,8 @@ public class ColorPickerActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
 		setContentView(R.layout.fragment_color_picker_activity);
-		mPanel = (SlidingPanel) findViewById(R.id.panel);
-		mContainer = (FrameLayout) findViewById(R.id.container);
+		mBottomPanel = (SlidingPanel) findViewById(R.id.scheme_bottom_panel);
+		mTopPanel = (SlidingPanel) findViewById(R.id.scheme_top_panel);
 		mPosToHexMap = new HashMap<Integer, String>();
 		mColorToPosMap = new HashMap<BigDecimal, Integer>();
 		mPosToColorMap = new HashMap<Integer, BigDecimal>();
@@ -195,7 +196,8 @@ public class ColorPickerActivity extends FragmentActivity {
 				boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
 				boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
 				if (sameX && sameY){
-					mPanel.toggle();
+					mBottomPanel.toggle();
+					mTopPanel.toggle();
 				}
 			}
 			return false;
@@ -301,7 +303,8 @@ public class ColorPickerActivity extends FragmentActivity {
 			finish();
 			return true;
 		case R.id.toggle_panel:
-			mPanel.toggle();
+			mBottomPanel.toggle();
+			mTopPanel.toggle();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

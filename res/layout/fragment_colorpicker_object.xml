@@ -13,6 +13,12 @@
         android:gravity="center"
         android:padding="32dp"
         android:textSize="20sp" />
-
+	
+    <com.example.scheme.SchemingView 
+        android:id="@+id/scheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="invisible" />
     
 </FrameLayout>

@@ -29,7 +29,13 @@
     <string name="triad">Triad</string>
     <string name="split_comp">Split Comp</string>
     <string name="comp">Comp</string>
-    
+    <string name="adjust">Adjust</string>
+    <string name="adjust_hsv">Adjust HSV</string>
+    <string name="cancel">Cancel</string>
+    <string name="hue">Hue</string>
+    <string name="val">Saturation</string>
+    <string name="sat">Value</string>
+    <string name="action_adjust">Adjust&#8230;</string>
 
 
 </resources>

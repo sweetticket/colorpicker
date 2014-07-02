@@ -38,5 +38,10 @@
         android:orderInCategory="100"
         android:title="@string/toggle_panel"
         app:showAsAction="always" />
+      <item
+        android:id="@+id/action_adjust"
+        android:orderInCategory="100"
+        android:title="@string/action_adjust"
+        app:showAsAction="always" />
 
 </menu>

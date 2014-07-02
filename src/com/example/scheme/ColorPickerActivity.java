@@ -5,13 +5,18 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,20 +24,18 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ColorPickerActivity extends FragmentActivity {
+public class ColorPickerActivity extends FragmentActivity implements AdjustDialogFragment.AdjustDialogListener {
 
 	public final static int BY_HUE = 9035;
 	public final static int BY_SATURATION = 2039;
@@ -78,7 +81,7 @@ public class ColorPickerActivity extends FragmentActivity {
 	private SlidingPanel mPanel6;
 	private SlidingPanel mPanel7;
 	private SlidingPanel mPanel8;
-	
+
 	private SlidingPanel mPanel9;
 	private SlidingPanel mPanel10;
 
@@ -208,7 +211,22 @@ public class ColorPickerActivity extends FragmentActivity {
 				});
 
 		initButtons();
-
+		
+	}
+	
+	public void showAdjustDialog(){
+		DialogFragment dialog = new AdjustDialogFragment();
+		dialog.show(getSupportFragmentManager(), "AdjustDialogFragment");
+	}
+	
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog){
+		//TODO
+	}
+	
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog){
+		dialog.dismiss();
 	}
 
 	public void toggleOptions() {
@@ -261,7 +279,7 @@ public class ColorPickerActivity extends FragmentActivity {
 				toggleScheme5(currentColor, colorScheme);
 			}
 		});
-		
+
 		mCompButton = (Button) findViewById(R.id.comp);
 		mCompButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -461,12 +479,11 @@ public class ColorPickerActivity extends FragmentActivity {
 		}, 1000);
 
 	}
-	
+
 	public void toggleScheme2(ColorModel currentColor, int comp) {
 		mBottomPanel.toggle();
 		mTopPanel.toggle();
-		mPanel9 = (SlidingPanel) mColorPickerActivity
-				.findViewById(R.id.half1);
+		mPanel9 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.half1);
 		mPanel9.setBackgroundColor(comp);
 		mPanel9.setOnClickListener(new OnClickListener() {
 			@Override
@@ -479,8 +496,7 @@ public class ColorPickerActivity extends FragmentActivity {
 
 			}
 		});
-		mPanel10 = (SlidingPanel) mColorPickerActivity
-				.findViewById(R.id.half2);
+		mPanel10 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.half2);
 		mPanel10.setBackgroundColor(currentColor.getColor());
 		mPanel10.setOnClickListener(new OnClickListener() {
 			@Override
@@ -619,6 +635,8 @@ public class ColorPickerActivity extends FragmentActivity {
 			mBottomPanel.toggle();
 			mTopPanel.toggle();
 			return true;
+		case R.id.action_adjust:
+			showAdjustDialog();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -629,15 +647,15 @@ public class ColorPickerActivity extends FragmentActivity {
 			moveTaskBack();
 		} else {
 			boolean goBack = true;
-			for (SlidingPanel sp : mAllPanels){
-				if (sp.getIsOpen()){
+			for (SlidingPanel sp : mAllPanels) {
+				if (sp.getIsOpen()) {
 					goBack = false;
 				}
 			}
 			if (goBack) {
 				moveTaskBack();
-			}else{
-				if (mAllPanels.length == 5){
+			} else {
+				if (mAllPanels.length == 5) {
 					Handler toggleHandler = new Handler();
 					toggleHandler.postDelayed(new Runnable() {
 						@Override
@@ -669,7 +687,7 @@ public class ColorPickerActivity extends FragmentActivity {
 							mPanel4.toggle();
 						}
 					}, 1000);
-				}else if (mAllPanels.length == 3){
+				} else if (mAllPanels.length == 3) {
 					Handler toggleHandler = new Handler();
 					toggleHandler.postDelayed(new Runnable() {
 						@Override
@@ -689,7 +707,7 @@ public class ColorPickerActivity extends FragmentActivity {
 							mPanel1.toggle();
 						}
 					}, 600);
-				}else if (mAllPanels.length == 2){
+				} else if (mAllPanels.length == 2) {
 					Handler toggleHandler = new Handler();
 					toggleHandler.postDelayed(new Runnable() {
 						@Override
@@ -922,4 +940,5 @@ public class ColorPickerActivity extends FragmentActivity {
 			return mFragmentColorModel.getHexCode();
 		}
 	}
+
 }

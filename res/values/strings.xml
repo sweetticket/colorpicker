@@ -18,7 +18,7 @@
     <string name="title_section3">Section 3</string>
     <string name="current_hexcode">current hex code</string>
     <string name="current_info">current info</string>
-    <string name="title_activity_color_picker_activity2">ColorPickerActivity2</string>
+    <string name="title_activity_color_picker_activity">ColorPickerActivity</string>
     <string name="action_search">Search</string>
     <string name="action_by_hue">By Hue</string>
     <string name="action_by_saturation">By Saturation</string>

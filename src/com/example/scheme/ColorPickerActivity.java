@@ -265,6 +265,7 @@ public class ColorPickerActivity extends FragmentActivity {
 				Intent sendColorIntent = new Intent(mColorPickerActivity, ColorPickerActivity.class);
 				sendColorIntent.putExtra("color", mPanel1.getBackgroundColor());
 				startActivity(sendColorIntent);
+				finish();
 				
 			}
 		});
@@ -276,7 +277,7 @@ public class ColorPickerActivity extends FragmentActivity {
 				Intent sendColorIntent = new Intent(mColorPickerActivity, ColorPickerActivity.class);
 				sendColorIntent.putExtra("color", mPanel3.getBackgroundColor());
 				startActivity(sendColorIntent);
-				
+				finish();
 			}
 		});
 		mPanel2 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth3);
@@ -324,8 +325,6 @@ public class ColorPickerActivity extends FragmentActivity {
 			}
 		}, 1500);
 		
-		//TODO set onClick listeners to toggle
-		//fix orientation to portrait
 	}
 	
 	// GETTERS

@@ -90,17 +90,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="3" >
+
         <com.example.scheme.SlidingPanel
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/fourth1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginTop="30dp"
+            android:layout_weight="1"
             android:gravity="top"
             android:visibility="gone"
             app:panelGravity="top"
-            app:speed="400"
+            app:speed="200"
             app:targetHeight="75dp" />
 
         <com.example.scheme.SlidingPanel
@@ -111,7 +112,7 @@
             android:layout_weight="1"
             android:visibility="gone"
             app:panelGravity="right"
-            app:speed="400"
+            app:speed="200"
             app:targetHeight="75dp" />
 
         <com.example.scheme.SlidingPanel
@@ -122,7 +123,101 @@
             android:layout_weight="1"
             android:visibility="gone"
             app:panelGravity="left"
-            app:speed="400"
+            app:speed="200"
+            app:targetHeight="75dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="5" >
+
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fifth1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:visibility="gone"
+            app:panelGravity="left"
+            app:speed="200"
+            app:targetHeight="75dp" />
+
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fifth2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:panelGravity="right"
+            app:speed="200"
+            app:targetHeight="75dp" />
+
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fifth3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:panelGravity="left"
+            app:speed="200"
+            app:targetHeight="75dp" />
+
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fifth4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:panelGravity="right"
+            app:speed="200"
+            app:targetHeight="75dp" />
+
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fifth5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:panelGravity="left"
+            app:speed="200"
+            app:targetHeight="75dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2" >
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/half1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:visibility="gone"
+            app:panelGravity="left"
+            app:speed="200"
+            app:targetHeight="75dp" />
+
+        <com.example.scheme.SlidingPanel
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/half2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:panelGravity="right"
+            app:speed="200"
             app:targetHeight="75dp" />
     </LinearLayout>
 

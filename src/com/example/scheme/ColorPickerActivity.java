@@ -19,17 +19,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,17 +62,27 @@ public class ColorPickerActivity extends FragmentActivity {
 	private float pointX;
 	private float pointY;
 	private int tolerance = 50;
-	
+
 	private Button mTriadButton;
 	private Button mAnalogButton;
 	private Button mMonoButton;
 	private Button mCompButton;
 	private Button mSplitCompButton;
-	
+
 	private SlidingPanel mPanel1;
 	private SlidingPanel mPanel2;
 	private SlidingPanel mPanel3;
 
+	private SlidingPanel mPanel4;
+	private SlidingPanel mPanel5;
+	private SlidingPanel mPanel6;
+	private SlidingPanel mPanel7;
+	private SlidingPanel mPanel8;
+	
+	private SlidingPanel mPanel9;
+	private SlidingPanel mPanel10;
+
+	private SlidingPanel[] mAllPanels;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -197,139 +206,319 @@ public class ColorPickerActivity extends FragmentActivity {
 						}
 					}
 				});
-			
-	mViewPager.setOnTouchListener(new OnTouchListener(){
-		@Override
-		public boolean onTouch(View view, MotionEvent event) {
-			switch(event.getAction()){
-			case MotionEvent.ACTION_MOVE:
-				return false;
-			case MotionEvent.ACTION_DOWN:
-				pointX = event.getX();
-				pointY = event.getY();
-				break;
-			case MotionEvent.ACTION_UP:
-				boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
-				boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
-				if (sameX && sameY){
-					mBottomPanel.toggle();
-					mTopPanel.toggle();
-				}
-			}
-			return false;
-		}	
-	});
-	
-	initButtons();
-		
+
+		initButtons();
+
 	}
-	
-	public void initButtons(){
-		mTriadButton = (Button)findViewById(R.id.triad);
-		mTriadButton.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v){
-				ColorModel currentColor = new ColorModel(new float[]{mCurrentHue, mCurrentSat, mCurrentVal});
-				int[] colorScheme = currentColor.getTriad();
-				toggleScheme(currentColor, colorScheme);
-			}
-		});
-		
-		mAnalogButton = (Button)findViewById(R.id.analog);
-		mAnalogButton.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v){
-				ColorModel currentColor = new ColorModel(new float[]{mCurrentHue, mCurrentSat, mCurrentVal});
-				int[] colorScheme = currentColor.getAnalog();
-				toggleScheme(currentColor, colorScheme);
-			}
-		});
-		
-		mSplitCompButton = (Button)findViewById(R.id.split_comp);
-		mSplitCompButton.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v){
-				ColorModel currentColor = new ColorModel(new float[]{mCurrentHue, mCurrentSat, mCurrentVal});
-				int[] colorScheme = currentColor.getSplitComp();
-				toggleScheme(currentColor, colorScheme);
-			}
-		});
-		
-	}
-	
-	public void toggleScheme(ColorModel currentColor, int[] colorScheme){
+
+	public void toggleOptions() {
 		mBottomPanel.toggle();
 		mTopPanel.toggle();
-		mPanel1 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth1);
-		mPanel1.setBackgroundColor(colorScheme[0]);
-		mPanel1.setOnClickListener(new OnClickListener(){
+	}
+
+	public void initButtons() {
+		mTriadButton = (Button) findViewById(R.id.triad);
+		mTriadButton.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v){
-				Intent sendColorIntent = new Intent(mColorPickerActivity, ColorPickerActivity.class);
+			public void onClick(View v) {
+				ColorModel currentColor = new ColorModel(new float[] {
+						mCurrentHue, mCurrentSat, mCurrentVal });
+				int[] colorScheme = currentColor.getTriad();
+				toggleScheme3(currentColor, colorScheme);
+			}
+		});
+
+		mAnalogButton = (Button) findViewById(R.id.analog);
+		mAnalogButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ColorModel currentColor = new ColorModel(new float[] {
+						mCurrentHue, mCurrentSat, mCurrentVal });
+				int[] colorScheme = currentColor.getAnalog();
+				toggleScheme3(currentColor, colorScheme);
+			}
+
+		});
+
+		mSplitCompButton = (Button) findViewById(R.id.split_comp);
+		mSplitCompButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ColorModel currentColor = new ColorModel(new float[] {
+						mCurrentHue, mCurrentSat, mCurrentVal });
+				int[] colorScheme = currentColor.getSplitComp();
+				toggleScheme3(currentColor, colorScheme);
+			}
+		});
+
+		mMonoButton = (Button) findViewById(R.id.mono);
+		mMonoButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ColorModel currentColor = new ColorModel(new float[] {
+						mCurrentHue, mCurrentSat, mCurrentVal });
+				int[] colorScheme = currentColor.getMonochrome();
+				toggleScheme5(currentColor, colorScheme);
+			}
+		});
+		
+		mCompButton = (Button) findViewById(R.id.comp);
+		mCompButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ColorModel currentColor = new ColorModel(new float[] {
+						mCurrentHue, mCurrentSat, mCurrentVal });
+				int comp = currentColor.getComplement();
+				toggleScheme2(currentColor, comp);
+			}
+		});
+
+	}
+
+	public void toggleScheme3(ColorModel currentColor, int[] colorScheme) {
+		mBottomPanel.toggle();
+		mTopPanel.toggle();
+		mPanel1 = (SlidingPanel) mColorPickerActivity
+				.findViewById(R.id.fourth1);
+		mPanel1.setBackgroundColor(colorScheme[0]);
+		mPanel1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
 				sendColorIntent.putExtra("color", mPanel1.getBackgroundColor());
 				startActivity(sendColorIntent);
 				finish();
-				
+
 			}
 		});
-		mPanel3 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth2);
+		mPanel3 = (SlidingPanel) mColorPickerActivity
+				.findViewById(R.id.fourth2);
 		mPanel3.setBackgroundColor(colorScheme[1]);
-		mPanel3.setOnClickListener(new OnClickListener(){
+		mPanel3.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v){
-				Intent sendColorIntent = new Intent(mColorPickerActivity, ColorPickerActivity.class);
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
 				sendColorIntent.putExtra("color", mPanel3.getBackgroundColor());
 				startActivity(sendColorIntent);
 				finish();
 			}
 		});
-		mPanel2 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth3);
+		mPanel2 = (SlidingPanel) mColorPickerActivity
+				.findViewById(R.id.fourth3);
 		mPanel2.setBackgroundColor(currentColor.getColor());
-		mPanel2.setOnClickListener(new OnClickListener(){
+		mPanel2.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v){
+			public void onClick(View v) {
 				Handler toggleHandler = new Handler();
-				toggleHandler.postDelayed(new Runnable(){
+				toggleHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						mPanel3.toggle();
-						}
+					}
 				}, 200);
-				toggleHandler.postDelayed(new Runnable(){
-					@Override public void run(){
+				toggleHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
 						mPanel2.toggle();
 					}
-				}, 700);
-				toggleHandler.postDelayed(new Runnable(){
-					@Override public void run(){
+				}, 400);
+				toggleHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
 						mPanel1.toggle();
 					}
-				}, 1200);
-				
+				}, 600);
+
 			}
 		});
-		
-		
+
+		mAllPanels = new SlidingPanel[] { mPanel1, mPanel2, mPanel3 };
+
 		Handler toggleHandler = new Handler();
-		toggleHandler.postDelayed(new Runnable(){
+		toggleHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				mPanel1.toggle();
 			}
-		}, 500);
-		toggleHandler.postDelayed(new Runnable(){
-			@Override public void run(){
+		}, 200);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
 				mPanel2.toggle();
 			}
-		}, 1000);
-		toggleHandler.postDelayed(new Runnable(){
-			@Override public void run(){
+		}, 400);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
 				mPanel3.toggle();
 			}
-		}, 1500);
-		
+		}, 600);
+
+	}
+
+	public void toggleScheme5(ColorModel currentColor, int[] colorScheme) {
+		mBottomPanel.toggle();
+		mTopPanel.toggle();
+
+		mPanel4 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fifth1);
+		mPanel4.setBackgroundColor(colorScheme[0]);
+		mPanel4.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel4.getBackgroundColor());
+				startActivity(sendColorIntent);
+				finish();
+
+			}
+		});
+		mPanel5 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fifth2);
+		mPanel5.setBackgroundColor(colorScheme[1]);
+		mPanel5.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel5.getBackgroundColor());
+				startActivity(sendColorIntent);
+				finish();
+			}
+		});
+
+		mPanel6 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fifth3);
+		mPanel6.setBackgroundColor(colorScheme[2]);
+		mPanel6.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel6.getBackgroundColor());
+				startActivity(sendColorIntent);
+				finish();
+			}
+		});
+		mPanel7 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fifth4);
+		mPanel7.setBackgroundColor(colorScheme[3]);
+		mPanel7.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel7.getBackgroundColor());
+				startActivity(sendColorIntent);
+				finish();
+			}
+		});
+		mPanel8 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fifth5);
+		mPanel8.setBackgroundColor(colorScheme[4]);
+		mPanel8.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel8.getBackgroundColor());
+				startActivity(sendColorIntent);
+				finish();
+			}
+		});
+
+		mAllPanels = new SlidingPanel[] { mPanel4, mPanel5, mPanel6, mPanel7,
+				mPanel8 };
+
+		Handler toggleHandler = new Handler();
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel4.toggle();
+			}
+		}, 200);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel5.toggle();
+			}
+		}, 400);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel6.toggle();
+			}
+		}, 600);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel7.toggle();
+			}
+		}, 800);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel8.toggle();
+			}
+		}, 1000);
+
 	}
 	
+	public void toggleScheme2(ColorModel currentColor, int comp) {
+		mBottomPanel.toggle();
+		mTopPanel.toggle();
+		mPanel9 = (SlidingPanel) mColorPickerActivity
+				.findViewById(R.id.half1);
+		mPanel9.setBackgroundColor(comp);
+		mPanel9.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendColorIntent = new Intent(mColorPickerActivity,
+						ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel9.getBackgroundColor());
+				startActivity(sendColorIntent);
+				finish();
+
+			}
+		});
+		mPanel10 = (SlidingPanel) mColorPickerActivity
+				.findViewById(R.id.half2);
+		mPanel10.setBackgroundColor(currentColor.getColor());
+		mPanel10.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Handler toggleHandler = new Handler();
+				toggleHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						mPanel10.toggle();
+					}
+				}, 200);
+				toggleHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						mPanel9.toggle();
+					}
+				}, 400);
+			}
+		});
+
+		mAllPanels = new SlidingPanel[] { mPanel9, mPanel10 };
+
+		Handler toggleHandler = new Handler();
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel9.toggle();
+			}
+		}, 500);
+		toggleHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mPanel10.toggle();
+			}
+		}, 1000);
+
+	}
+
 	// GETTERS
 	public HashMap<Integer, BigDecimal> getPosToColorMap() {
 		return mPosToColorMap;
@@ -436,7 +625,87 @@ public class ColorPickerActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		moveTaskBack();
+		if (mAllPanels == null) {
+			moveTaskBack();
+		} else {
+			boolean goBack = true;
+			for (SlidingPanel sp : mAllPanels){
+				if (sp.getIsOpen()){
+					goBack = false;
+				}
+			}
+			if (goBack) {
+				moveTaskBack();
+			}else{
+				if (mAllPanels.length == 5){
+					Handler toggleHandler = new Handler();
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel8.toggle();
+						}
+					}, 200);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel7.toggle();
+						}
+					}, 400);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel6.toggle();
+						}
+					}, 600);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel5.toggle();
+						}
+					}, 800);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel4.toggle();
+						}
+					}, 1000);
+				}else if (mAllPanels.length == 3){
+					Handler toggleHandler = new Handler();
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel3.toggle();
+						}
+					}, 200);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel2.toggle();
+						}
+					}, 400);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel1.toggle();
+						}
+					}, 600);
+				}else if (mAllPanels.length == 2){
+					Handler toggleHandler = new Handler();
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel10.toggle();
+						}
+					}, 200);
+					toggleHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							mPanel9.toggle();
+						}
+					}, 400);
+				}
+			}
+		}
 	}
 
 	private void moveTaskBack() {
@@ -621,22 +890,31 @@ public class ColorPickerActivity extends FragmentActivity {
 					+ round(cmyk[1], 2) + ", " + round(cmyk[2], 2) + ", "
 					+ round(cmyk[3], 2) + "\n" + "HSV: \n" + hue + ", " + sat
 					+ ", " + val);
-			
-			mMainTextView.setOnLongClickListener(new OnLongClickListener(){
+
+			mMainTextView.setOnLongClickListener(new OnLongClickListener() {
 				@Override
-				public boolean onLongClick(View view){
+				public boolean onLongClick(View view) {
 					String copy = mMainTextView.getText().toString();
-					ClipboardManager clipboard = (ClipboardManager) mColorPickerActivity.getSystemService(CLIPBOARD_SERVICE);
+					ClipboardManager clipboard = (ClipboardManager) mColorPickerActivity
+							.getSystemService(CLIPBOARD_SERVICE);
 					ClipData clip = ClipData.newPlainText("color_info", copy);
 					clipboard.setPrimaryClip(clip);
-					Context context = mColorPickerActivity.getApplicationContext();
+					Context context = mColorPickerActivity
+							.getApplicationContext();
 					int duration = Toast.LENGTH_SHORT;
 					Toast toast = Toast.makeText(context, "Copied", duration);
 					toast.show();
 					return true;
 				}
 			});
-			
+
+			mMainTextView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					mColorPickerActivity.toggleOptions();
+				}
+			});
+
 			return rootView;
 		}
 

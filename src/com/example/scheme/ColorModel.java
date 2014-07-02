@@ -86,58 +86,58 @@ public class ColorModel {
 				hexcode.substring(5, 7), 16));
 	}
 
-	public int getColor(){
+	public int getColor() {
 		return mColorInt;
 	}
-	
-	public float getHue(){
+
+	public float getHue() {
 		return mHue;
 	}
-	
-	public float getSaturation(){
+
+	public float getSaturation() {
 		return mSaturation;
 	}
-	
-	public float getValue(){
+
+	public float getValue() {
 		return mValue;
 	}
-	
-	public String getHexCode(){
+
+	public String getHexCode() {
 		return mHexCode;
 	}
-	
-	public int[] getRGB(){
+
+	public int[] getRGB() {
 		return mRGB;
 	}
-	
-	public float[] getHSV(){
+
+	public float[] getHSV() {
 		return mHSV;
 	}
-	
-	public float[] getCMYK(){
+
+	public float[] getCMYK() {
 		return mCMYK;
 	}
-	
-	public int[] getTriad(){
+
+	public int[] getTriad() {
 		return mTriad;
 	}
-	
-	public int getComplement(){
+
+	public int getComplement() {
 		return mComplement;
 	}
-	
-	public int[] getAnalog(){
+
+	public int[] getAnalog() {
 		return mAnalog;
 	}
-	
-	public int[] getSplitComp(){
+
+	public int[] getSplitComp() {
 		return mSplitComp;
 	}
-	
-	public int[] getMonochrome(){
+
+	public int[] getMonochrome() {
 		return mMonochrome;
 	}
-	
+
 	private float[] calcCMYK() {
 		float red_temp = mRed / 255.0f;
 		float green_temp = mGreen / 255.0f;
@@ -153,7 +153,7 @@ public class ColorModel {
 			mYellow = (1.0f - blue_temp - mKey) / (1.0f - mKey);
 
 		}
-		
+
 		return new float[] { mCyan, mMagenta, mYellow, mKey };
 	}
 
@@ -191,21 +191,14 @@ public class ColorModel {
 
 	private int[] calcMonochrome() {
 		float[] hsv_temp_1 = new float[] { mHue, mSaturation, .1f };
-		float[] hsv_temp_2 = new float[] { mHue, mSaturation, .2f };
 		float[] hsv_temp_3 = new float[] { mHue, mSaturation, .3f };
-		float[] hsv_temp_4 = new float[] { mHue, mSaturation, .4f };
 		float[] hsv_temp_5 = new float[] { mHue, mSaturation, .5f };
-		float[] hsv_temp_6 = new float[] { mHue, mSaturation, .6f };
 		float[] hsv_temp_7 = new float[] { mHue, mSaturation, .7f };
-		float[] hsv_temp_8 = new float[] { mHue, mSaturation, .8f };
 		float[] hsv_temp_9 = new float[] { mHue, mSaturation, .9f };
 
 		return new int[] { Color.HSVToColor(hsv_temp_1),
-				Color.HSVToColor(hsv_temp_2), Color.HSVToColor(hsv_temp_3),
-				Color.HSVToColor(hsv_temp_4), Color.HSVToColor(hsv_temp_5),
-				Color.HSVToColor(hsv_temp_6), Color.HSVToColor(hsv_temp_7),
-				Color.HSVToColor(hsv_temp_8), Color.HSVToColor(hsv_temp_9) };
+				Color.HSVToColor(hsv_temp_3), Color.HSVToColor(hsv_temp_5),
+				Color.HSVToColor(hsv_temp_7), Color.HSVToColor(hsv_temp_9) };
 	}
-	
-	
+
 }

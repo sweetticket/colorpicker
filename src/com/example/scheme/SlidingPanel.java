@@ -37,6 +37,10 @@ public class SlidingPanel extends LinearLayout {
 		init(context, attrs);
 	}
 	
+	public boolean getIsOpen(){
+		return mIsOpen;
+	}
+	
 	public void setSpeed(int speed){
 		mSpeed = speed;
 	}
@@ -90,6 +94,7 @@ public class SlidingPanel extends LinearLayout {
 				setVisibility(View.VISIBLE);
 				anim = new TranslateAnimation(0.0f, 0.0f, getHeight(), 0.0f);
 			} else {
+				
 				anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, getHeight());
 				anim.setAnimationListener(collapseListener);
 			}

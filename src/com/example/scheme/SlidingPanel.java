@@ -127,7 +127,6 @@ public class SlidingPanel extends LinearLayout {
 		anim.setDuration(mSpeed);
 		anim.setInterpolator(new AccelerateInterpolator(1.0f));
 		startAnimation(anim);
-		Log.d("tap", "tap toggle");
 	}
 
 	Animation.AnimationListener collapseListener = new Animation.AnimationListener() {

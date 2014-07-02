@@ -6,13 +6,15 @@
     tools:context="com.example.scheme.MainActivity"
     tools:ignore="MergeRootFrame" >
 
-    <TextView
+    <EditText
         android:id="@android:id/text1"
+        android:inputType="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="32dp"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:cursorVisible="false" />
 	
     <com.example.scheme.SchemingView 
         android:id="@+id/scheme"

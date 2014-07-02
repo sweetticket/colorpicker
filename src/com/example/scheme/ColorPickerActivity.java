@@ -26,8 +26,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class ColorPickerActivity extends FragmentActivity {
@@ -585,7 +584,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		public static final String ARG_VAL = "value";
 		private int mFragmentColor;
 		private ColorModel mFragmentColorModel;
-		private TextView mMainTextView;
+		private EditText mMainTextView;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -603,7 +602,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			int[] rgb = mFragmentColorModel.getRGB();
 			float[] cmyk = mFragmentColorModel.getCMYK();
 
-			mMainTextView = (TextView) rootView
+			mMainTextView = (EditText) rootView
 					.findViewById(android.R.id.text1);
 			mMainTextView.setBackgroundColor(mFragmentColor);
 			int textColor = (mFragmentColorModel.getValue() > .7f && mFragmentColorModel
@@ -617,7 +616,16 @@ public class ColorPickerActivity extends FragmentActivity {
 					+ "\n" + "CMYK: \n" + round(cmyk[0], 2) + ", "
 					+ round(cmyk[1], 2) + ", " + round(cmyk[2], 2) + ", "
 					+ round(cmyk[3], 2) + "\n" + "HSV: \n" + hue + ", " + sat
-					+ ", " + val);			
+					+ ", " + val);
+			
+			mMainTextView.setOnLongClickListener(new OnClickListener(){
+				@Override
+				public boolean onLongClick(View view){
+					int selection_start = mMainTextView.getSelectionStart();
+					int selection_end = mMainTextView.getSelectionEnd();
+				}
+			});
+			
 			return rootView;
 		}
 

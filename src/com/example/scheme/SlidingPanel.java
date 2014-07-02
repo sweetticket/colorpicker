@@ -72,6 +72,7 @@ public class SlidingPanel extends LinearLayout {
 	public void toggle() {
 		TranslateAnimation anim = null;
 		mIsOpen = !mIsOpen;
+		bringToFront();
 		if (mGravity == FROM_BOTTOM){
 			if (mIsOpen) {
 				setVisibility(View.VISIBLE);

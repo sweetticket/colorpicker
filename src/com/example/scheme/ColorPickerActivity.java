@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 
 import android.app.ActionBar;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,10 +25,12 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ColorPickerActivity extends FragmentActivity {
@@ -584,7 +588,7 @@ public class ColorPickerActivity extends FragmentActivity {
 		public static final String ARG_VAL = "value";
 		private int mFragmentColor;
 		private ColorModel mFragmentColorModel;
-		private EditText mMainTextView;
+		private TextView mMainTextView;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -602,7 +606,7 @@ public class ColorPickerActivity extends FragmentActivity {
 			int[] rgb = mFragmentColorModel.getRGB();
 			float[] cmyk = mFragmentColorModel.getCMYK();
 
-			mMainTextView = (EditText) rootView
+			mMainTextView = (TextView) rootView
 					.findViewById(android.R.id.text1);
 			mMainTextView.setBackgroundColor(mFragmentColor);
 			int textColor = (mFragmentColorModel.getValue() > .7f && mFragmentColorModel
@@ -618,11 +622,18 @@ public class ColorPickerActivity extends FragmentActivity {
 					+ round(cmyk[3], 2) + "\n" + "HSV: \n" + hue + ", " + sat
 					+ ", " + val);
 			
-			mMainTextView.setOnLongClickListener(new OnClickListener(){
+			mMainTextView.setOnLongClickListener(new OnLongClickListener(){
 				@Override
 				public boolean onLongClick(View view){
-					int selection_start = mMainTextView.getSelectionStart();
-					int selection_end = mMainTextView.getSelectionEnd();
+					String copy = mMainTextView.getText().toString();
+					ClipboardManager clipboard = (ClipboardManager) mColorPickerActivity.getSystemService(CLIPBOARD_SERVICE);
+					ClipData clip = ClipData.newPlainText("color_info", copy);
+					clipboard.setPrimaryClip(clip);
+					Context context = mColorPickerActivity.getApplicationContext();
+					int duration = Toast.LENGTH_SHORT;
+					Toast toast = Toast.makeText(context, "Copied", duration);
+					toast.show();
+					return true;
 				}
 			});
 			

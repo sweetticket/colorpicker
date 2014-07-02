@@ -26,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -258,10 +259,52 @@ public class ColorPickerActivity extends FragmentActivity {
 		mTopPanel.toggle();
 		mPanel1 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth1);
 		mPanel1.setBackgroundColor(colorScheme[0]);
-		mPanel2 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth2);
-		mPanel2.setBackgroundColor(colorScheme[1]);
-		mPanel3 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth3);
-		mPanel3.setBackgroundColor(currentColor.getColor());
+		mPanel1.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Intent sendColorIntent = new Intent(mColorPickerActivity, ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel1.getBackgroundColor());
+				startActivity(sendColorIntent);
+				
+			}
+		});
+		mPanel3 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth2);
+		mPanel3.setBackgroundColor(colorScheme[1]);
+		mPanel3.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Intent sendColorIntent = new Intent(mColorPickerActivity, ColorPickerActivity.class);
+				sendColorIntent.putExtra("color", mPanel3.getBackgroundColor());
+				startActivity(sendColorIntent);
+				
+			}
+		});
+		mPanel2 = (SlidingPanel) mColorPickerActivity.findViewById(R.id.fourth3);
+		mPanel2.setBackgroundColor(currentColor.getColor());
+		mPanel2.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Handler toggleHandler = new Handler();
+				toggleHandler.postDelayed(new Runnable(){
+					@Override
+					public void run() {
+						mPanel3.toggle();
+						}
+				}, 200);
+				toggleHandler.postDelayed(new Runnable(){
+					@Override public void run(){
+						mPanel2.toggle();
+					}
+				}, 700);
+				toggleHandler.postDelayed(new Runnable(){
+					@Override public void run(){
+						mPanel1.toggle();
+					}
+				}, 1200);
+				
+			}
+		});
+		
 		
 		Handler toggleHandler = new Handler();
 		toggleHandler.postDelayed(new Runnable(){

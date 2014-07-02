@@ -20,7 +20,8 @@ public class SlidingPanel extends LinearLayout {
 
 	private int mSpeed = 300;
 	private boolean mIsOpen = false;
-	private int mGravity;	
+	private int mGravity;
+	private int mBackgroundColor;
 
 	public SlidingPanel(Context context) {
 		super(context);
@@ -38,6 +39,16 @@ public class SlidingPanel extends LinearLayout {
 	
 	public void setSpeed(int speed){
 		mSpeed = speed;
+	}
+	
+	@Override
+	public void setBackgroundColor(int color){
+		mBackgroundColor = color;
+		super.setBackgroundColor(color);
+	}
+	
+	public int getBackgroundColor(){
+		return mBackgroundColor;
 	}
 	
 	public void setGravity(String panelGravity){
@@ -73,6 +84,7 @@ public class SlidingPanel extends LinearLayout {
 		TranslateAnimation anim = null;
 		mIsOpen = !mIsOpen;
 		bringToFront();
+		
 		if (mGravity == FROM_BOTTOM){
 			if (mIsOpen) {
 				setVisibility(View.VISIBLE);
@@ -89,7 +101,7 @@ public class SlidingPanel extends LinearLayout {
 				anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, -getHeight());
 				anim.setAnimationListener(collapseListener);
 			}
-		}else if (mGravity == FROM_RIGHT){
+		}else if (mGravity == FROM_LEFT){
 			if (mIsOpen) {
 				setVisibility(View.VISIBLE);
 				anim = new TranslateAnimation(-getWidth(), 0.0f, 0.0f, 0.0f);
@@ -100,9 +112,9 @@ public class SlidingPanel extends LinearLayout {
 		}else{
 			if (mIsOpen) {
 				setVisibility(View.VISIBLE);
-				anim = new TranslateAnimation(0.0f, -getWidth(), 0.0f, 0.0f);
+				anim = new TranslateAnimation(getWidth(), 0.0f, 0.0f, 0.0f);
 			} else {
-				anim = new TranslateAnimation(-getWidth(), 0.0f, 0.0f, 0.0f);
+				anim = new TranslateAnimation(0.0f, getWidth(), 0.0f, 0.0f);
 				anim.setAnimationListener(collapseListener);
 			}
 		}

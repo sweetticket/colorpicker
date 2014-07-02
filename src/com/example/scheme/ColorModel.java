@@ -165,8 +165,12 @@ public class ColorModel {
 	private int[] calcTriad() {
 		float[] hsv_temp_1 = new float[] { (mHue + 120) % 360, mSaturation,
 				mValue };
-		float[] hsv_temp_2 = new float[] { (mHue - 120) % 360, mSaturation,
-				mValue };
+		float[] hsv_temp_2;
+		if (mHue < 30) {
+			hsv_temp_2 = new float[] { 360 + (mHue - 120), mSaturation, mValue };
+		} else {
+			hsv_temp_2 = new float[] { (mHue - 120) % 360, mSaturation, mValue };
+		}
 		return new int[] { Color.HSVToColor(hsv_temp_1),
 				Color.HSVToColor(hsv_temp_2) };
 	}
@@ -174,8 +178,12 @@ public class ColorModel {
 	private int[] calcSplitComp() {
 		float[] hsv_temp_1 = new float[] { (mHue + 150) % 360, mSaturation,
 				mValue };
-		float[] hsv_temp_2 = new float[] { (mHue - 150) % 360, mSaturation,
-				mValue };
+		float[] hsv_temp_2;
+		if (mHue < 30) {
+			hsv_temp_2 = new float[] { 360 + (mHue - 150), mSaturation, mValue };
+		} else {
+			hsv_temp_2 = new float[] { (mHue - 150) % 360, mSaturation, mValue };
+		}
 		return new int[] { Color.HSVToColor(hsv_temp_1),
 				Color.HSVToColor(hsv_temp_2) };
 	}
@@ -183,8 +191,12 @@ public class ColorModel {
 	private int[] calcAnalog() {
 		float[] hsv_temp_1 = new float[] { (mHue + 30) % 360, mSaturation,
 				mValue };
-		float[] hsv_temp_2 = new float[] { (mHue - 30) % 360, mSaturation,
-				mValue };
+		float[] hsv_temp_2;
+		if (mHue < 30) {
+			hsv_temp_2 = new float[] { 360 + (mHue - 30), mSaturation, mValue };
+		} else {
+			hsv_temp_2 = new float[] { (mHue - 30) % 360, mSaturation, mValue };
+		}
 		return new int[] { Color.HSVToColor(hsv_temp_1),
 				Color.HSVToColor(hsv_temp_2) };
 	}

@@ -5,17 +5,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 public class PaletteDialogFragment extends DialogFragment {
 	private ArrayList mSelectedPalettes;
 	private Activity mActivity;
-	private SharedPreferences mPalettePrefs;
-	private CharSequence[] mPaletteNames;
 	
 	public interface PaletteDialogListener {
 		public void onDialogPositiveClick(DialogFragment dialog);
@@ -39,15 +35,9 @@ public class PaletteDialogFragment extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Context context = getActivity();
-		mPalettePrefs = context.getSharedPreferences(getString(R.string.palette_file_key), Context.MODE_PRIVATE);
-		mPalettePrefs.getAll();
-		//TODO
 		mSelectedPalettes = new ArrayList();
-		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		
-		builder.setTitle(R.string.add_to_palettes).setMultiChoiceItems(mPaletteNames, null, new DialogInterface.OnMultiChoiceClickListener(){
+		builder.setTitle(R.string.add_to_palettes).setMultiChoiceItems(R.array.palettes, null, new DialogInterface.OnMultiChoiceClickListener(){
 			@Override
 			public void onClick(DialogInterface dialog, int which, boolean isChecked){
 				if (isChecked) {

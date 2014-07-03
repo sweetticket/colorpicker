@@ -181,4 +181,7 @@ public class AdjustDialogFragment extends DialogFragment {
 		mVal = val;
 	}
 	
+	public float[] getHSV(){
+		return new float[]{mHue, mSat, mVal};
+	}
 }

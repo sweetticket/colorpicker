@@ -62,9 +62,6 @@ public class ColorPickerActivity extends FragmentActivity implements AdjustDialo
 	private int mBrowseBy;
 	private SlidingPanel mBottomPanel;
 	private SlidingPanel mTopPanel;
-	private float pointX;
-	private float pointY;
-	private int tolerance = 50;
 
 	private Button mTriadButton;
 	private Button mAnalogButton;
@@ -226,7 +223,12 @@ public class ColorPickerActivity extends FragmentActivity implements AdjustDialo
 	
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog){
-		//TODO
+		Intent sendColorIntent = new Intent(mColorPickerActivity,
+				ColorPickerActivity.class);
+		sendColorIntent.putExtra("color", Color.HSVToColor(((AdjustDialogFragment)dialog).getHSV()));
+		startActivity(sendColorIntent);
+		finish();
+
 	}
 	
 	@Override

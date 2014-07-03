@@ -216,6 +216,11 @@ public class ColorPickerActivity extends FragmentActivity implements AdjustDialo
 	
 	public void showAdjustDialog(){
 		DialogFragment dialog = new AdjustDialogFragment();
+		
+		((AdjustDialogFragment) dialog).setHue(mCurrentHue);
+		((AdjustDialogFragment) dialog).setSat(mCurrentSat);
+		((AdjustDialogFragment) dialog).setVal(mCurrentVal);
+
 		dialog.show(getSupportFragmentManager(), "AdjustDialogFragment");
 	}
 	

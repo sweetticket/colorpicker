@@ -644,6 +644,7 @@ public class ColorPickerActivity extends FragmentActivity implements AdjustDialo
 			return true;
 		case R.id.action_adjust:
 			showAdjustDialog();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

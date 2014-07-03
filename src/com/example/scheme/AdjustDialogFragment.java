@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -79,21 +82,27 @@ public class AdjustDialogFragment extends DialogFragment {
 		mHueSeekText = (TextView) diaRootView.findViewById(R.id.seek_hue_text);
 		mHueSeekBar.setProgress((int)mHue);
 		mHueSeekText.setText("Hue    " + mHueSeekBar.getProgress() + "/" + mHueSeekBar.getMax());
-		mHueSeekBar.setBackgroundColor(firstcolor);
 		
 		mSatSeekBar = (SeekBar) diaRootView.findViewById(R.id.seek_sat);
 		mSatSeekBar.setMax(100);
 		mSatSeekText = (TextView) diaRootView.findViewById(R.id.seek_sat_text);
 		mSatSeekBar.setProgress((int)(mSat * 100));
 		mSatSeekText.setText("Saturation    " + mSatSeekBar.getProgress() + "/" + mSatSeekBar.getMax());
-		mSatSeekBar.setBackgroundColor(firstcolor);
 		
 		mValSeekBar = (SeekBar) diaRootView.findViewById(R.id.seek_val);
 		mValSeekBar.setMax(100);
 		mValSeekText = (TextView) diaRootView.findViewById(R.id.seek_val_text);
 		mValSeekBar.setProgress((int)(mSat * 100));
 		mValSeekText.setText("Value    " + mValSeekBar.getProgress() + "/" + mValSeekBar.getMax());
-		mValSeekBar.setBackgroundColor(firstcolor);		
+		
+		
+		mHueSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mSatSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mValSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		
+		setProgressColor(mHueSeekBar, firstcolor);
+		setProgressColor(mSatSeekBar, firstcolor);
+		setProgressColor(mValSeekBar, firstcolor);
 		
 		mHueSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			int progress = 0;
@@ -104,9 +113,9 @@ public class AdjustDialogFragment extends DialogFragment {
 				mHueSeekText.setText( "Hue    " + progress + "/" + mHueSeekBar.getMax());
 				mHue = progress;
 				int newColor = Color.HSVToColor(new float[]{mHue, mSat, mVal});
-				mHueSeekBar.setBackgroundColor(newColor);
-				mSatSeekBar.setBackgroundColor(newColor);
-				mValSeekBar.setBackgroundColor(newColor);
+				setProgressColor(mHueSeekBar, newColor);
+				setProgressColor(mSatSeekBar, newColor);
+				setProgressColor(mValSeekBar, newColor);
 			}
 		
 			@Override
@@ -129,9 +138,9 @@ public class AdjustDialogFragment extends DialogFragment {
 				mSatSeekText.setText( "Saturation    " + progress + "/" + mSatSeekBar.getMax());
 				mSat = progress / 100.0f;
 				int newColor = Color.HSVToColor(new float[]{mHue, mSat, mVal});
-				mHueSeekBar.setBackgroundColor(newColor);
-				mSatSeekBar.setBackgroundColor(newColor);
-				mValSeekBar.setBackgroundColor(newColor);
+				setProgressColor(mHueSeekBar, newColor);
+				setProgressColor(mSatSeekBar, newColor);
+				setProgressColor(mValSeekBar, newColor);
 			}
 		
 			@Override
@@ -152,9 +161,9 @@ public class AdjustDialogFragment extends DialogFragment {
 				mValSeekText.setText( "Value    " + progress + "/" + mValSeekBar.getMax());
 				mVal = progress / 100.0f;
 				int newColor = Color.HSVToColor(new float[]{mHue, mSat, mVal});
-				mHueSeekBar.setBackgroundColor(newColor);
-				mSatSeekBar.setBackgroundColor(newColor);
-				mValSeekBar.setBackgroundColor(newColor);
+				setProgressColor(mHueSeekBar, newColor);
+				setProgressColor(mSatSeekBar, newColor);
+				setProgressColor(mValSeekBar, newColor);
 			}
 			
 			@Override
@@ -184,4 +193,10 @@ public class AdjustDialogFragment extends DialogFragment {
 	public float[] getHSV(){
 		return new float[]{mHue, mSat, mVal};
 	}
+	
+	public void setProgressColor(SeekBar seekbar, int newColor){ 
+		  LayerDrawable ld = (LayerDrawable) seekbar.getProgressDrawable();
+		  ClipDrawable d1 = (ClipDrawable) ld.findDrawableByLayerId(R.id.progressshape);
+		  d1.setColorFilter(newColor, PorterDuff.Mode.SRC_IN);
+		}
 }

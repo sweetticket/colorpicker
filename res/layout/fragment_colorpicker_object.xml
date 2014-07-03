@@ -6,6 +6,17 @@
     tools:context="com.example.scheme.MainActivity"
     tools:ignore="MergeRootFrame" >
 
+    
+   <!--  <TextView
+        android:id="@+id/text_title"
+        android:inputType="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:padding="32dp"
+        android:textSize="20sp" /> -->
+    
     <TextView
         android:id="@android:id/text1"
         android:inputType="none"

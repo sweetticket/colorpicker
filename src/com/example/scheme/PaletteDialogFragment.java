@@ -37,7 +37,7 @@ public class PaletteDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		mSelectedPalettes = new ArrayList();
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(R.string.add_to_palettes).setMultiChoiceItems(R.array.palettes, null, new DialogInterface.OnMultiChoiceClickListener(){
+		builder.setTitle(R.string.add_to_palettes).setMultiChoiceItems(new CharSequence[]{"some", "array"}, null, new DialogInterface.OnMultiChoiceClickListener(){
 			@Override
 			public void onClick(DialogInterface dialog, int which, boolean isChecked){
 				if (isChecked) {

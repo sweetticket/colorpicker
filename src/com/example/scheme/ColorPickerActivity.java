@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -24,6 +25,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +37,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ColorPickerActivity extends FragmentActivity implements AdjustDialogFragment.AdjustDialogListener {
+public class ColorPickerActivity extends FragmentActivity implements
+		AdjustDialogFragment.AdjustDialogListener {
 
 	public final static int BY_HUE = 9035;
 	public final static int BY_SATURATION = 2039;
@@ -208,31 +211,32 @@ public class ColorPickerActivity extends FragmentActivity implements AdjustDialo
 				});
 
 		initButtons();
-		
+
 	}
-	
-	public void showAdjustDialog(){
+
+	public void showAdjustDialog() {
 		DialogFragment dialog = new AdjustDialogFragment();
-		
+
 		((AdjustDialogFragment) dialog).setHue(mCurrentHue);
 		((AdjustDialogFragment) dialog).setSat(mCurrentSat);
 		((AdjustDialogFragment) dialog).setVal(mCurrentVal);
 
 		dialog.show(getSupportFragmentManager(), "AdjustDialogFragment");
 	}
-	
+
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog){
+	public void onDialogPositiveClick(DialogFragment dialog) {
 		Intent sendColorIntent = new Intent(mColorPickerActivity,
 				ColorPickerActivity.class);
-		sendColorIntent.putExtra("color", Color.HSVToColor(((AdjustDialogFragment)dialog).getHSV()));
+		sendColorIntent.putExtra("color",
+				Color.HSVToColor(((AdjustDialogFragment) dialog).getHSV()));
 		startActivity(sendColorIntent);
 		finish();
 
 	}
-	
+
 	@Override
-	public void onDialogNegativeClick(DialogFragment dialog){
+	public void onDialogNegativeClick(DialogFragment dialog) {
 		dialog.dismiss();
 	}
 
@@ -910,12 +914,16 @@ public class ColorPickerActivity extends FragmentActivity implements AdjustDialo
 							.getHue() >= 53.0f && mFragmentColorModel.getHue() <= 183.0f)) ? Color.BLACK
 					: Color.WHITE;
 			mMainTextView.setTextColor(textColor);
-			mMainTextView.setText(mFragmentColorModel.getHexCode()
-					+ "\n RGB: \n" + rgb[0] + ", " + rgb[1] + ", " + rgb[2]
-					+ "\n" + "CMYK: \n" + round(cmyk[0], 2) + ", "
+			Typeface tf = Typeface.createFromAsset(
+					mColorPickerActivity.getAssets(), "Roboto-Light.ttf");
+			mMainTextView.setTypeface(tf);
+			mMainTextView.setText(Html.fromHtml("<h1><b><large>"
+					+ mFragmentColorModel.getHexCode()
+					+ "</large></b></h1><small>RGB: " + rgb[0] + ", " + rgb[1]
+					+ ", " + rgb[2] + "<br/>CMYK: " + round(cmyk[0], 2) + ", "
 					+ round(cmyk[1], 2) + ", " + round(cmyk[2], 2) + ", "
-					+ round(cmyk[3], 2) + "\n" + "HSV: \n" + hue + ", " + sat
-					+ ", " + val);
+					+ round(cmyk[3], 2) + "<br/>" + "HSV: " + hue + ", " + sat
+					+ ", " + val + "</small>"));
 
 			mMainTextView.setOnLongClickListener(new OnLongClickListener() {
 				@Override

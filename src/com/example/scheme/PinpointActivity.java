@@ -1,11 +1,5 @@
 package com.example.scheme;
 
-import com.example.scheme.R;
-
-import android.R.color;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,15 +8,16 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.MotionEventCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
-import android.os.Build;
 
 public class PinpointActivity extends ActionBarActivity {
 
@@ -32,8 +27,8 @@ public class PinpointActivity extends ActionBarActivity {
 	private PinpointView mPinpointView;
 	private Bitmap mBitmap;
 	private Handler mRectHandler;
-	private float mXPos;
-	private float mYPos;
+	private SlidingPanel mPanel;
+	private Button mYes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +40,14 @@ public class PinpointActivity extends ActionBarActivity {
 		mBitmap = fixImage(path);
 		mPinpointView.setImageBitmap(mBitmap);
 		
+		mPanel = (SlidingPanel) findViewById(R.id.continue_to_picker);
+		mYes = (Button) findViewById(R.id.yes);
+		mYes.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View view){
+				startColorPicker(mPinpointView.getColor());
+			}
+		});
 
 		initTouch();
 
@@ -53,6 +56,8 @@ public class PinpointActivity extends ActionBarActivity {
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+		
+		
 	}
 
 	/** Sets up touch listeners */
@@ -68,6 +73,9 @@ public class PinpointActivity extends ActionBarActivity {
 				mPinpointView.setZoomPos(x, y);
 				switch (action) {
 				case (MotionEvent.ACTION_DOWN): {
+					if (mPanel.getIsOpen()){
+						mPanel.toggle();
+					}
 					mPinpointView.setZooming(true);
 					return true;
 				}
@@ -85,8 +93,8 @@ public class PinpointActivity extends ActionBarActivity {
 					view.invalidate();
 					return true;
 				case (MotionEvent.ACTION_UP):
+					mPanel.toggle();
 					view.invalidate();
-					startColorPicker(mPinpointView.getColor());
 					return true;
 				default:
 					return true;

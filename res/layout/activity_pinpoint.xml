@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -11,7 +11,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/pinpoint_view" />
-	
-    
-    
-</FrameLayout>
+
+    <com.example.scheme.SlidingPanel
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/continue_to_picker"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:background="#22FFFFFF"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="7dp"
+        app:panelGravity="bottom"
+        app:speed="250"
+        app:targetHeight="75dp" >
+
+            <Button
+                android:id="@+id/yes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/cont"
+                android:background="@color/gray" />
+
+    </com.example.scheme.SlidingPanel>
+
+</RelativeLayout>

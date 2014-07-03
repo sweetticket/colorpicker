@@ -36,6 +36,8 @@
     <string name="val">Saturation</string>
     <string name="sat">Value</string>
     <string name="action_adjust">Adjust&#8230;</string>
+    <string name="cont">Continue</string>
+    <string name="use_this">Pick this color?</string>
 
 
 </resources>

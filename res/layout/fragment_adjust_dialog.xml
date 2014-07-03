@@ -14,7 +14,8 @@
     <SeekBar
         android:id="@+id/seek_hue"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="359" />
     
      <TextView 
         android:id="@+id/seek_sat_text" 
@@ -25,7 +26,8 @@
     <SeekBar
         android:id="@+id/seek_sat"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="100" />
     
      <TextView
         android:id="@+id/seek_val_text"  
@@ -36,6 +38,7 @@
     <SeekBar
         android:id="@+id/seek_val"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="100" />
 
 </LinearLayout>

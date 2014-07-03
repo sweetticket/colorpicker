@@ -6,10 +6,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
@@ -75,40 +77,48 @@ public class AdjustDialogFragment extends DialogFragment {
 							}
 						});
 		
-		int firstcolor = Color.HSVToColor(new float[] {mHue, mSat, mVal});
-		
 		mHueSeekBar = (SeekBar) diaRootView.findViewById(R.id.seek_hue);
-		mHueSeekBar.setMax(359);
 		mHueSeekText = (TextView) diaRootView.findViewById(R.id.seek_hue_text);
-		mHueSeekBar.setProgress((int)mHue);
 		mHueSeekText.setText("Hue    " + mHueSeekBar.getProgress() + "/" + mHueSeekBar.getMax());
+		mHueSeekBar.setProgress(0);
+		Rect hueBounds = mHueSeekBar.getProgressDrawable().getBounds();
+		mHueSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mHueSeekBar.getProgressDrawable().setBounds(hueBounds);
+		mHueSeekBar.setProgress((int)mHue);
 		
 		mSatSeekBar = (SeekBar) diaRootView.findViewById(R.id.seek_sat);
-		mSatSeekBar.setMax(100);
 		mSatSeekText = (TextView) diaRootView.findViewById(R.id.seek_sat_text);
-		mSatSeekBar.setProgress((int)(mSat * 100));
 		mSatSeekText.setText("Saturation    " + mSatSeekBar.getProgress() + "/" + mSatSeekBar.getMax());
+		mSatSeekBar.setProgress(0);
+		Rect satBounds = mSatSeekBar.getProgressDrawable().getBounds();
+		mSatSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mSatSeekBar.getProgressDrawable().setBounds(satBounds);
+		mSatSeekBar.setProgress((int)(mSat * 100));
 		
 		mValSeekBar = (SeekBar) diaRootView.findViewById(R.id.seek_val);
-		mValSeekBar.setMax(100);
 		mValSeekText = (TextView) diaRootView.findViewById(R.id.seek_val_text);
-		mValSeekBar.setProgress((int)(mSat * 100));
 		mValSeekText.setText("Value    " + mValSeekBar.getProgress() + "/" + mValSeekBar.getMax());
-		
-		
-		mHueSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
-		mSatSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mValSeekBar.setProgress(0);
+		Rect valBounds = mValSeekBar.getProgressDrawable().getBounds();
 		mValSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mValSeekBar.getProgressDrawable().setBounds(valBounds);
+		mValSeekBar.setProgress((int)(mVal * 100));
 		
+		int firstcolor = Color.HSVToColor(new float[] {mHue, mSat, mVal});
 		setProgressColor(mHueSeekBar, firstcolor);
 		setProgressColor(mSatSeekBar, firstcolor);
 		setProgressColor(mValSeekBar, firstcolor);
+		
+		
 		
 		mHueSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			int progress = 0;
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser){
+				if (!fromUser){
+					return;
+				}
 				progress = progressValue;
 				mHueSeekText.setText( "Hue    " + progress + "/" + mHueSeekBar.getMax());
 				mHue = progress;
@@ -134,6 +144,9 @@ public class AdjustDialogFragment extends DialogFragment {
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser){
+				if (!fromUser){
+					return;
+				}
 				progress = progressValue;
 				mSatSeekText.setText( "Saturation    " + progress + "/" + mSatSeekBar.getMax());
 				mSat = progress / 100.0f;
@@ -154,9 +167,11 @@ public class AdjustDialogFragment extends DialogFragment {
 		
 		mValSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			int progress = 0;
-			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser){
+				if (!fromUser){
+					return;
+				}
 				progress = progressValue;
 				mValSeekText.setText( "Value    " + progress + "/" + mValSeekBar.getMax());
 				mVal = progress / 100.0f;
@@ -195,8 +210,19 @@ public class AdjustDialogFragment extends DialogFragment {
 	}
 	
 	public void setProgressColor(SeekBar seekbar, int newColor){ 
+		Log.d("setProgressColor", "setting progress color");
 		  LayerDrawable ld = (LayerDrawable) seekbar.getProgressDrawable();
 		  ClipDrawable d1 = (ClipDrawable) ld.findDrawableByLayerId(R.id.progressshape);
 		  d1.setColorFilter(newColor, PorterDuff.Mode.SRC_IN);
 		}
+	public void setAllColors(){
+		mHueSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mSatSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		mValSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.seekbar_bg1));
+		
+		int firstcolor = Color.HSVToColor(new float[] {mHue, mSat, mVal});
+		setProgressColor(mHueSeekBar, firstcolor);
+		setProgressColor(mSatSeekBar, firstcolor);
+		setProgressColor(mValSeekBar, firstcolor);
+	}
 }

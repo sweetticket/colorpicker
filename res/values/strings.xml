@@ -37,7 +37,10 @@
     <string name="sat">Value</string>
     <string name="action_adjust">Adjust&#8230;</string>
     <string name="cont">Continue</string>
-    <string name="use_this">Pick this color?</string>
+    <string name="add_to_palettes">Add to Palettes</string>
+    <string name="add">Add</string>
+    <string name="new_palette">New Palette</string>
+    <string name="palette_file_key">PALETTE_FILE_KEY</string>
 
 
 </resources>

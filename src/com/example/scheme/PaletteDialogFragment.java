@@ -8,9 +8,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
@@ -21,7 +20,7 @@ public class PaletteDialogFragment extends DialogFragment {
 	private Activity mActivity;
 	private ObjectPreference mObjectPref;
 	private ComplexPreferences mComplexPrefs;
-	private String[] mPaletteNames;
+	private ArrayList<String> mPaletteNames;
 	private AlertDialog mAlertDialog;
 	private ListView mListView;
 
@@ -56,6 +55,7 @@ public class PaletteDialogFragment extends DialogFragment {
 		if (mComplexPrefs.getObject("palette_collection", PaletteCollection.class) == null){
 			mComplexPrefs.putObject("palette_collection", new PaletteCollection());
 		}
+		Log.d("lwer", "null palette collection" + mComplexPrefs.getObject("palette_collection", PaletteCollection.class));
 		mPaletteNames = mComplexPrefs.getObject("palette_collection", PaletteCollection.class).getCollection();
 		
 		

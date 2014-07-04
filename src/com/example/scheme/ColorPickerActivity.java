@@ -23,6 +23,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -655,6 +656,12 @@ public class ColorPickerActivity extends FragmentActivity implements
 		case R.id.action_adjust:
 			showAdjustDialog();
 			return true;
+		case R.id.action_add_to_palette:
+			showPaletteDialog();
+			return true;
+		case R.id.action_create_palette:
+			showNewPaletteDialog();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -978,12 +985,12 @@ public class ColorPickerActivity extends FragmentActivity implements
 			ArrayList<Integer> selectedPalettes) {
 		for (Integer i : selectedPalettes) {
 			String paletteKey = mComplexPrefs.getObject("palette_collection",
-					PaletteCollection.class).getCollection()[i];
+					PaletteCollection.class).getCollection().get(i);
 			mComplexPrefs.getObject(paletteKey, PaletteModel.class).add(
 					Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat,
 							mCurrentVal }));
 		}
-		
+
 		dialog.dismiss();
 		Toast toast = Toast.makeText(getApplicationContext(),
 				"Added to palettes", Toast.LENGTH_SHORT);
@@ -1008,11 +1015,21 @@ public class ColorPickerActivity extends FragmentActivity implements
 		PaletteModel palette = new PaletteModel(name);
 		if (mComplexPrefs != null) {
 			mComplexPrefs.putObject(name, palette);
-			mComplexPrefs.getObject("palette_collection",
-					PaletteCollection.class).add(name);
+			if (mComplexPrefs.getObject("palette_collection",
+					PaletteCollection.class) == null) {
+				mComplexPrefs.putObject("palette_collection",
+						new PaletteCollection(name));
+			} else {
+				mComplexPrefs.getObject("palette_collection",
+						PaletteCollection.class).add(name);
+			}
+		} else {
+			android.util.Log.e("pref null", "Preference is null");
 		}
+		Log.d("awetr", "null just created "+mComplexPrefs.getObject("palette_collection",
+					PaletteCollection.class));
 		dialog.dismiss();
-		showPaletteDialog();
+		//showPaletteDialog();
 		Toast toast = Toast.makeText(getApplicationContext(),
 				"Created new palette \'" + name + "\'", Toast.LENGTH_SHORT);
 		toast.show();

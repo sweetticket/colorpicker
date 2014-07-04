@@ -42,6 +42,7 @@ public class ComplexPreferences {
 			throw new IllegalArgumentException("Key is empty or null");
 		}
 		editor.putString(key, GSON.toJson(object));
+		editor.commit();
 	}
 
 	public void commit() {
@@ -57,7 +58,7 @@ public class ComplexPreferences {
 				return GSON.fromJson(gson, a);
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Object stored with key "
-						+ key + " is instance of other calss");
+						+ key + " is instance of other class");
 			}
 		}
 	}

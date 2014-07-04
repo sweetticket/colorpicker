@@ -43,5 +43,17 @@
         android:orderInCategory="100"
         android:title="@string/action_adjust"
         app:showAsAction="always" />
+      
+      <item
+        android:id="@+id/action_add_to_palette"
+        android:orderInCategory="100"
+        android:title="@string/action_add_to_palette"
+        app:showAsAction="always" />
+      
+      <item
+        android:id="@+id/action_create_palette"
+        android:orderInCategory="100"
+        android:title="@string/action_create_palette"
+        app:showAsAction="always" />
 
 </menu>

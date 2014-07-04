@@ -43,6 +43,9 @@
     <string name="palette_file_key">PALETTE_FILE_KEY</string>
     <string name="palette_name">palette name</string>
     <string name="create">Create</string>
+    <string name="action_add_to_palette">Add to Palette</string>
+    <string name="action_create_palette">Create a Palette</string>
+    
 
 
 </resources>

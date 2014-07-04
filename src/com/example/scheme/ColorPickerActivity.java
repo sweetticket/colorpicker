@@ -996,13 +996,10 @@ public class ColorPickerActivity extends FragmentActivity implements
 			String paletteKey = mComplexPrefs
 					.getObject("palette_collection", PaletteCollection.class)
 					.getCollection().get(i);
-			mComplexPrefs.getObject(paletteKey, PaletteModel.class).add(
-					Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat,
-							mCurrentVal }));
-			/*PaletteModel temp_palette_model = mComplexPrefs.getObject(paletteKey, PaletteModel.class);
+			PaletteModel temp_palette_model = mComplexPrefs.getObject(paletteKey, PaletteModel.class);
 			temp_palette_model.add(Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat, mCurrentVal }));
-			mComplexPrefs.putObject(paletteKey, temp_palette_model);*/
-			Log.d("added to palette", "added to palette: "+ mComplexPrefs.getObject(paletteKey, PaletteModel.class));
+			mComplexPrefs.putObject(paletteKey, temp_palette_model);
+			Log.d("added to palette", "new size: "+ mComplexPrefs.getObject(paletteKey, PaletteModel.class).size());
 		}
 
 		dialog.dismiss();

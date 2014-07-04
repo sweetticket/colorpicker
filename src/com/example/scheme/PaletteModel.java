@@ -2,19 +2,21 @@ package com.example.scheme;
 
 import java.util.ArrayList;
 
-public class PaletteModel extends ArrayList<Integer> {
+public class PaletteModel {
 
 	private static final long serialVersionUID = 1L;
 	private String mName;
+	private ArrayList<Integer> mColorArr;
 	
 	public PaletteModel(String name) {
-		super();
 		mName = name;
+		mColorArr = new ArrayList<Integer>();
 	}
 	
 	public PaletteModel(String name, int Color){
 		this(name);
-		this.add(Color);
+		mColorArr = new ArrayList<Integer>();
+		mColorArr.add(Color);
 	}
 	
 	public String getName(){
@@ -23,6 +25,18 @@ public class PaletteModel extends ArrayList<Integer> {
 	
 	public void setName(String name){
 		mName = name;
+	}
+	
+	public void add(int Color){
+		mColorArr.add(Color);
+	}
+	
+	public ArrayList<Integer> getColors(){
+		return mColorArr;
+	}
+	
+	public int size(){
+		return mColorArr.size();
 	}
 
 }

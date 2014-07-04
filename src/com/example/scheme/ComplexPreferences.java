@@ -43,13 +43,17 @@ public class ComplexPreferences {
 		}
 		editor.putString(key, GSON.toJson(object));
 		editor.commit();
-		Log.d("fowe", "class of "+key+" :"+ object.getClass());
 	}
 
 	public void commit() {
 		editor.commit();
 	}
-
+	
+	public void removeObject(String key){
+		editor.remove(key);
+		editor.commit();
+	}
+	
 	public <T> T getObject(String key, Class<T> a) {
 		String gson = preferences.getString(key, null);
 		if (gson == null) {

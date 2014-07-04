@@ -999,6 +999,10 @@ public class ColorPickerActivity extends FragmentActivity implements
 			mComplexPrefs.getObject(paletteKey, PaletteModel.class).add(
 					Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat,
 							mCurrentVal }));
+			/*PaletteModel temp_palette_model = mComplexPrefs.getObject(paletteKey, PaletteModel.class);
+			temp_palette_model.add(Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat, mCurrentVal }));
+			mComplexPrefs.putObject(paletteKey, temp_palette_model);*/
+			Log.d("added to palette", "added to palette: "+ mComplexPrefs.getObject(paletteKey, PaletteModel.class));
 		}
 
 		dialog.dismiss();
@@ -1035,11 +1039,7 @@ public class ColorPickerActivity extends FragmentActivity implements
 				temp_name_arr.add(name);
 				mComplexPrefs.putObject("palette_collection",
 						temp_name_arr);
-				Log.d("la", "palette collection 0: "+ mComplexPrefs.getObject("palette_collection",
-						PaletteCollection.class).getCollection().get(0));
-				Log.d("la", "palette collection 1: "+ mComplexPrefs.getObject("palette_collection",
-						PaletteCollection.class).getCollection().get(1));
-				mComplexPrefs.putObject(name, new PaletteModel(name));
+				
 			}
 		} else {
 			android.util.Log.e("pref null", "Preference is null");

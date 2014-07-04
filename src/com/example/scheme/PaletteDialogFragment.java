@@ -23,6 +23,7 @@ public class PaletteDialogFragment extends DialogFragment {
 	private ArrayList<String> mPaletteNames;
 	private AlertDialog mAlertDialog;
 	private ListView mListView;
+	private boolean[] mCheckedItems;
 
 	public interface PaletteDialogListener {
 		public void onPaletteDialogPositiveClick(DialogFragment dialog, ArrayList<Integer> selectedPalettes);
@@ -52,7 +53,7 @@ public class PaletteDialogFragment extends DialogFragment {
 		mObjectPref = (ObjectPreference) mActivity.getApplication();
 		mComplexPrefs = mObjectPref.getComplexPreference();
 		mPaletteNames = mComplexPrefs.getObject("palette_collection", PaletteCollection.class).getCollection();
-		
+		mCheckedItems = new boolean[mPaletteNames.size()];
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.add_to_palettes)
@@ -83,6 +84,13 @@ public class PaletteDialogFragment extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
+								
+								for (int i = 0; i < mCheckedItems.length; i++){
+									if (mCheckedItems[i]){
+										mSelectedPalettes.add(i);
+									}
+								}
+								
 								mListener
 										.onPaletteDialogPositiveClick(PaletteDialogFragment.this, mSelectedPalettes);
 								// add color to selected palettes
@@ -99,7 +107,7 @@ public class PaletteDialogFragment extends DialogFragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				CheckedTextView checkedTextView = (CheckedTextView) view;
-				mSelectedPalettes.add(position);
+				mCheckedItems[position] = !checkedTextView.isChecked();
 			}
 			
 		});

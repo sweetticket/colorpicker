@@ -2,7 +2,7 @@ package com.example.scheme;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.renderscript.Type;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +43,7 @@ public class ComplexPreferences {
 		}
 		editor.putString(key, GSON.toJson(object));
 		editor.commit();
+		Log.d("fowe", "class of "+key+" :"+ object.getClass());
 	}
 
 	public void commit() {

@@ -26,7 +26,7 @@ public class PaletteDialogFragment extends DialogFragment {
 	private ListView mListView;
 
 	public interface PaletteDialogListener {
-		public void onPaletteDialogPositiveClick(DialogFragment dialog);
+		public void onPaletteDialogPositiveClick(DialogFragment dialog, ArrayList<Integer> selectedPalettes);
 
 		public void onPaletteDialogNeutralClick(DialogFragment dialog);
 
@@ -52,7 +52,13 @@ public class PaletteDialogFragment extends DialogFragment {
 		mSelectedPalettes = new ArrayList<Integer>();
 		mObjectPref = (ObjectPreference) mActivity.getApplication();
 		mComplexPrefs = mObjectPref.getComplexPreference();
-		mPaletteNames = buildPaletteList(new ArrayList<String>(), 0);
+		
+		if (mComplexPrefs.getObject("palette_collection", PaletteCollection.class) == null){
+			mComplexPrefs.putObject("palette_collection", new PaletteCollection());
+		}
+		mPaletteNames = mComplexPrefs.getObject("palette_collection", PaletteCollection.class).getCollection();
+		
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.add_to_palettes)
 				.setAdapter(
@@ -65,10 +71,6 @@ public class PaletteDialogFragment extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								// create a new palette, input palette name, add
-								// selected color
-								// new fragment? intent?
-								
 								mListener.onPaletteDialogNeutralClick(PaletteDialogFragment.this);
 							}
 						})
@@ -87,7 +89,7 @@ public class PaletteDialogFragment extends DialogFragment {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								mListener
-										.onPaletteDialogPositiveClick(PaletteDialogFragment.this);
+										.onPaletteDialogPositiveClick(PaletteDialogFragment.this, mSelectedPalettes);
 								// add color to selected palettes
 							}
 						});
@@ -110,16 +112,5 @@ public class PaletteDialogFragment extends DialogFragment {
 		mListView.setDividerHeight(-1);
 		
 		return mAlertDialog;
-	}
-
-	private String[] buildPaletteList(ArrayList<String> plist, int order) {
-		if (mComplexPrefs.getObject(order + "", PaletteModel.class) == null) {
-			return plist.toArray(mPaletteNames);
-		}
-		String name = mComplexPrefs.getObject(order + "", PaletteModel.class)
-				.getName();
-		plist.add(name);
-		int next_order = order + 1;
-		return buildPaletteList(plist, next_order);
 	}
 }

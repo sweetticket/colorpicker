@@ -2,16 +2,13 @@ package com.example.scheme;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -38,7 +35,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ColorPickerActivity extends FragmentActivity implements
-		AdjustDialogFragment.AdjustDialogListener, PaletteDialogFragment.PaletteDialogListener {
+		AdjustDialogFragment.AdjustDialogListener,
+		PaletteDialogFragment.PaletteDialogListener,
+		NewPaletteDialogFragment.NewPaletteDialogListener {
 
 	public final static int BY_HUE = 9035;
 	public final static int BY_SATURATION = 2039;
@@ -87,10 +86,17 @@ public class ColorPickerActivity extends FragmentActivity implements
 
 	private SlidingPanel[] mAllPanels;
 
+	private ObjectPreference mObjectPref;
+	private ComplexPreferences mComplexPrefs;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
 		setContentView(R.layout.fragment_color_picker_activity);
+
+		mObjectPref = (ObjectPreference) this.getApplication();
+		mComplexPrefs = mObjectPref.getComplexPreference();
+
 		mBottomPanel = (SlidingPanel) findViewById(R.id.scheme_bottom_panel);
 		mTopPanel = (SlidingPanel) findViewById(R.id.scheme_top_panel);
 		mPosToHexMap = new HashMap<Integer, String>();
@@ -956,31 +962,66 @@ public class ColorPickerActivity extends FragmentActivity implements
 			return mFragmentColorModel.getHexCode();
 		}
 	}
-	
+
 	public void showNewPaletteDialog() {
 		DialogFragment dialog = new NewPaletteDialogFragment();
-
 		dialog.show(getSupportFragmentManager(), "NewPaletteDialogFragment");
 	}
 
+	public void showPaletteDialog() {
+		DialogFragment dialog = new PaletteDialogFragment();
+		dialog.show(getSupportFragmentManager(), "PaletteDialogFragment");
+	}
 
 	@Override
-	public void onPaletteDialogPositiveClick(DialogFragment dialog) {
-		// TODO Auto-generated method stub
+	public void onPaletteDialogPositiveClick(DialogFragment dialog,
+			ArrayList<Integer> selectedPalettes) {
+		for (Integer i : selectedPalettes) {
+			String paletteKey = mComplexPrefs.getObject("palette_collection",
+					PaletteCollection.class).getCollection()[i];
+			mComplexPrefs.getObject(paletteKey, PaletteModel.class).add(
+					Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat,
+							mCurrentVal }));
+		}
 		
+		dialog.dismiss();
+		Toast toast = Toast.makeText(getApplicationContext(),
+				"Added to palettes", Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 	@Override
 	public void onPaletteDialogNeutralClick(DialogFragment dialog) {
 		dialog.dismiss();
 		showNewPaletteDialog();
-		
 	}
 
 	@Override
 	public void onPaletteDialogNegativeClick(DialogFragment dialog) {
-		// TODO Auto-generated method stub
-		
+		dialog.dismiss();
+
+	}
+
+	@Override
+	public void onNewPaletteDialogPositiveClick(DialogFragment dialog,
+			String name) {
+		PaletteModel palette = new PaletteModel(name);
+		if (mComplexPrefs != null) {
+			mComplexPrefs.putObject(name, palette);
+			mComplexPrefs.getObject("palette_collection",
+					PaletteCollection.class).add(name);
+		}
+		dialog.dismiss();
+		showPaletteDialog();
+		Toast toast = Toast.makeText(getApplicationContext(),
+				"Created new palette \'" + name + "\'", Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
+	@Override
+	public void onNewPaletteDialogNegativeClick(DialogFragment dialog) {
+		dialog.dismiss();
+		showPaletteDialog();
 	}
 
 }

@@ -8,10 +8,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 
@@ -106,7 +106,9 @@ public class PaletteDialogFragment extends DialogFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				CheckedTextView checkedTextView = (CheckedTextView) view;
+				CheckedTextView checkedTextView = (CheckedTextView) view.findViewById(R.id.checked_text);
+				CheckBox cb = ((CheckBox)view.findViewById(R.id.checkBox));
+				cb.setChecked(!checkedTextView.isChecked());
 				mCheckedItems[position] = !checkedTextView.isChecked();
 			}
 			

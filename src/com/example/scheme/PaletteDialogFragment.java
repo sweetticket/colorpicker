@@ -26,11 +26,11 @@ public class PaletteDialogFragment extends DialogFragment {
 	private ListView mListView;
 
 	public interface PaletteDialogListener {
-		public void onDialogPositiveClick(DialogFragment dialog);
+		public void onPaletteDialogPositiveClick(DialogFragment dialog);
 
-		public void onDialogNeutralClick(DialogFragment dialog);
+		public void onPaletteDialogNeutralClick(DialogFragment dialog);
 
-		public void onDialogNegativeClick(DialogFragment dialog);
+		public void onPaletteDialogNegativeClick(DialogFragment dialog);
 	}
 
 	PaletteDialogListener mListener;
@@ -69,7 +69,7 @@ public class PaletteDialogFragment extends DialogFragment {
 								// selected color
 								// new fragment? intent?
 								
-								mListener.onDialogNeutralClick(PaletteDialogFragment.this);
+								mListener.onPaletteDialogNeutralClick(PaletteDialogFragment.this);
 							}
 						})
 				.setNegativeButton(R.string.cancel,
@@ -78,7 +78,7 @@ public class PaletteDialogFragment extends DialogFragment {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								mListener
-										.onDialogNegativeClick(PaletteDialogFragment.this);
+										.onPaletteDialogNegativeClick(PaletteDialogFragment.this);
 							}
 						})
 				.setPositiveButton(R.string.add,
@@ -87,7 +87,7 @@ public class PaletteDialogFragment extends DialogFragment {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								mListener
-										.onDialogPositiveClick(PaletteDialogFragment.this);
+										.onPaletteDialogPositiveClick(PaletteDialogFragment.this);
 								// add color to selected palettes
 							}
 						});

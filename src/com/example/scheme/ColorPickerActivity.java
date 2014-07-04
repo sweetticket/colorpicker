@@ -38,7 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ColorPickerActivity extends FragmentActivity implements
-		AdjustDialogFragment.AdjustDialogListener {
+		AdjustDialogFragment.AdjustDialogListener, PaletteDialogFragment.PaletteDialogListener {
 
 	public final static int BY_HUE = 9035;
 	public final static int BY_SATURATION = 2039;
@@ -955,6 +955,32 @@ public class ColorPickerActivity extends FragmentActivity implements
 		public String getHexCode() {
 			return mFragmentColorModel.getHexCode();
 		}
+	}
+	
+	public void showNewPaletteDialog() {
+		DialogFragment dialog = new NewPaletteDialogFragment();
+
+		dialog.show(getSupportFragmentManager(), "NewPaletteDialogFragment");
+	}
+
+
+	@Override
+	public void onPaletteDialogPositiveClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPaletteDialogNeutralClick(DialogFragment dialog) {
+		dialog.dismiss();
+		showNewPaletteDialog();
+		
+	}
+
+	@Override
+	public void onPaletteDialogNegativeClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

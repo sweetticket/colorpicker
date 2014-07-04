@@ -90,6 +90,8 @@ public class ColorPickerActivity extends FragmentActivity implements
 	private ObjectPreference mObjectPref;
 	private ComplexPreferences mComplexPrefs;
 
+	private boolean mBackToPaletteDialog = false;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mColorPickerActivity = this;
@@ -976,16 +978,24 @@ public class ColorPickerActivity extends FragmentActivity implements
 	}
 
 	public void showPaletteDialog() {
-		DialogFragment dialog = new PaletteDialogFragment();
-		dialog.show(getSupportFragmentManager(), "PaletteDialogFragment");
+		if (mComplexPrefs.getObject("palette_collection",
+				PaletteCollection.class) == null) {
+			DialogFragment dialog = new NewPaletteDialogFragment();
+			dialog.show(getSupportFragmentManager(), "NewPaletteDialogFragment");
+		} else {
+			DialogFragment dialog = new PaletteDialogFragment();
+			dialog.show(getSupportFragmentManager(), "PaletteDialogFragment");
+			mBackToPaletteDialog = true;
+		}
 	}
 
 	@Override
 	public void onPaletteDialogPositiveClick(DialogFragment dialog,
 			ArrayList<Integer> selectedPalettes) {
 		for (Integer i : selectedPalettes) {
-			String paletteKey = mComplexPrefs.getObject("palette_collection",
-					PaletteCollection.class).getCollection().get(i);
+			String paletteKey = mComplexPrefs
+					.getObject("palette_collection", PaletteCollection.class)
+					.getCollection().get(i);
 			mComplexPrefs.getObject(paletteKey, PaletteModel.class).add(
 					Color.HSVToColor(new float[] { mCurrentHue, mCurrentSat,
 							mCurrentVal }));
@@ -1020,16 +1030,22 @@ public class ColorPickerActivity extends FragmentActivity implements
 				mComplexPrefs.putObject("palette_collection",
 						new PaletteCollection(name));
 			} else {
-				mComplexPrefs.getObject("palette_collection",
-						PaletteCollection.class).add(name);
+				PaletteCollection temp_name_arr = mComplexPrefs.getObject("palette_collection",
+						PaletteCollection.class);
+				temp_name_arr.add(name);
+				mComplexPrefs.putObject("palette_collection",
+						temp_name_arr);
+				Log.d("la", "palette collection 0: "+ mComplexPrefs.getObject("palette_collection",
+						PaletteCollection.class).getCollection().get(0));
+				Log.d("la", "palette collection 1: "+ mComplexPrefs.getObject("palette_collection",
+						PaletteCollection.class).getCollection().get(1));
+				mComplexPrefs.putObject(name, new PaletteModel(name));
 			}
 		} else {
 			android.util.Log.e("pref null", "Preference is null");
 		}
-		Log.d("awetr", "null just created "+mComplexPrefs.getObject("palette_collection",
-					PaletteCollection.class));
 		dialog.dismiss();
-		//showPaletteDialog();
+		showPaletteDialog();
 		Toast toast = Toast.makeText(getApplicationContext(),
 				"Created new palette \'" + name + "\'", Toast.LENGTH_SHORT);
 		toast.show();
@@ -1038,7 +1054,10 @@ public class ColorPickerActivity extends FragmentActivity implements
 	@Override
 	public void onNewPaletteDialogNegativeClick(DialogFragment dialog) {
 		dialog.dismiss();
-		showPaletteDialog();
+		if (mBackToPaletteDialog) {
+			showPaletteDialog();
+			mBackToPaletteDialog = false;
+		}
 	}
 
 }

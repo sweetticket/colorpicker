@@ -51,11 +51,6 @@ public class PaletteDialogFragment extends DialogFragment {
 		mSelectedPalettes = new ArrayList<Integer>();
 		mObjectPref = (ObjectPreference) mActivity.getApplication();
 		mComplexPrefs = mObjectPref.getComplexPreference();
-		
-		if (mComplexPrefs.getObject("palette_collection", PaletteCollection.class) == null){
-			mComplexPrefs.putObject("palette_collection", new PaletteCollection());
-		}
-		Log.d("lwer", "null palette collection" + mComplexPrefs.getObject("palette_collection", PaletteCollection.class));
 		mPaletteNames = mComplexPrefs.getObject("palette_collection", PaletteCollection.class).getCollection();
 		
 		

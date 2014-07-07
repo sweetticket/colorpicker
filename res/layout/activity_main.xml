@@ -7,7 +7,7 @@
     tools:ignore="MergeRootFrame" >
 
     <ImageView
-        android:id="@+id/title"
+        android:id="@+id/to_palettes"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:contentDescription="@string/app_name"

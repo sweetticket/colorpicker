@@ -20,6 +20,8 @@ public class MainActivity extends ActionBarActivity {
 	private ImageView mToGallery;
 	private ImageView mToCamera;
 	private ImageView mToPicker;
+	private ImageView mToPalettes;
+
 
 	// private View mMainView;
 
@@ -31,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
 		mToGallery = (ImageView) findViewById(R.id.to_gallery);
 		mToCamera = (ImageView) findViewById(R.id.to_camera);
 		mToPicker = (ImageView) findViewById(R.id.to_picker);
+		mToPalettes = (ImageView) findViewById(R.id.to_palettes);
 		initButtons();
 		
 	}
@@ -65,6 +68,14 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View view) {
 				startColorPicker(Color.HSVToColor(new float[]{20.0f, 0.7f, 0.7f}));
+			}
+		});
+		
+		mToPalettes.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				startMyPalettes();
 			}
 		});
 
@@ -115,6 +126,12 @@ public class MainActivity extends ActionBarActivity {
 		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
 		colorPickerIntent.putExtra("color", color);
 		startActivity(colorPickerIntent);
+		
+	}
+	
+	private void startMyPalettes(){
+		Intent paletteIntent = new Intent(this, MyPalettesActivity.class);
+		startActivity(paletteIntent);
 		
 	}
 

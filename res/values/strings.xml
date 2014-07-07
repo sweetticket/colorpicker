@@ -44,7 +44,7 @@
     <string name="palette_name">palette name</string>
     <string name="create">Create</string>
     <string name="action_add_to_palette">Add to Palette</string>
-    <string name="action_create_palette">Create a Palette</string>
+    <string name="action_create_palette">New Palette</string>
     <string name="title_activity_my_palettes">MyPalettesActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -53,5 +53,10 @@
     <string name="drawer_close">Close Drawer</string>
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="action_delete_palette">Delete Palette</string>
+    <string name="action_edit_palette">Edit Palette</string>
+    <string name="action_rename_palette">Rename Palette</string>
+    <string name="confirm_delete">Delete Palette </string>
+    <string name="ok">OK</string>
 
 </resources>

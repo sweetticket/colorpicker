@@ -107,8 +107,8 @@ public class PaletteDialogFragment extends DialogFragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				CheckedTextView checkedTextView = (CheckedTextView) view.findViewById(R.id.checked_text);
-				CheckBox cb = ((CheckBox)view.findViewById(R.id.checkBox));
-				cb.setChecked(!checkedTextView.isChecked());
+				/*CheckBox cb = ((CheckBox)view.findViewById(R.id.checkBox));
+				cb.setChecked(!checkedTextView.isChecked());*/
 				mCheckedItems[position] = !checkedTextView.isChecked();
 			}
 			

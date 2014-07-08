@@ -17,12 +17,9 @@
 package com.example.scheme;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -39,7 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -54,7 +51,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 	private CharSequence mTitle;
 
 	private ObjectPreference mObjectPref;
-	private ComplexPreferences mComplexPrefs;
+	private static ComplexPreferences mComplexPrefs;
 	private static ArrayList<String> mPaletteNames;
 	private ArrayAdapter mDrawerAdapter;
 	private int mCurrentPos;
@@ -237,7 +234,8 @@ public class MyPalettesActivity extends FragmentActivity implements
 	 */
 	public static class PaletteFragment extends Fragment {
 		public static final String ARG_PALETTE_NUMBER = "palette_number";
-
+		private FrameLayout mPaletteContainer;
+		
 		public PaletteFragment() {
 			// Empty constructor required for fragment subclasses
 		}
@@ -249,14 +247,18 @@ public class MyPalettesActivity extends FragmentActivity implements
 					container, false);
 			int i = getArguments().getInt(ARG_PALETTE_NUMBER);
 			String palette_name = mPaletteNames.get(i);
-
-			/*
-			 * int imageId =
-			 * getResources().getIdentifier(palette_name.toLowerCase
-			 * (Locale.getDefault()), "drawable",
-			 * getActivity().getPackageName()); ((ImageView)
-			 * rootView.findViewById(R.id.image)).setImageResource(imageId);
-			 */
+			
+			mPaletteContainer = (FrameLayout) rootView.findViewById(R.id.palette_container);
+			PaletteModel current_palette = mComplexPrefs.getObject(palette_name, PaletteModel.class);
+			
+			for (Integer color : current_palette.getColors()){
+				PaletteView currentPaletteView = new PaletteView(getActivity());
+				mPaletteContainer.addView(currentPaletteView);
+				currentPaletteView.setPaintColor(color);
+				currentPaletteView.getLayoutParams().height = PaletteView.BIT_HEIGHT;
+				currentPaletteView.getLayoutParams().width = PaletteView.BIT_WIDTH;
+			}
+			
 			getActivity().setTitle(palette_name);
 			return rootView;
 		}

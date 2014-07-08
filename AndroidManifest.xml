@@ -50,6 +50,10 @@
             android:name="com.example.scheme.MyPalettesActivity"
             android:label="@string/title_activity_my_palettes" >
         </activity>
+        <activity
+            android:name="com.example.scheme.FirstPaletteActivity"
+            android:label="@string/title_activity_first_palette" >
+        </activity>
     </application>
 
 </manifest>

@@ -26,7 +26,8 @@ public class PaletteDialogFragment extends DialogFragment {
 	private boolean[] mCheckedItems;
 
 	public interface PaletteDialogListener {
-		public void onPaletteDialogPositiveClick(DialogFragment dialog, ArrayList<Integer> selectedPalettes);
+		public void onPaletteDialogPositiveClick(DialogFragment dialog,
+				ArrayList<Integer> selectedPalettes);
 
 		public void onPaletteDialogNeutralClick(DialogFragment dialog);
 
@@ -52,9 +53,18 @@ public class PaletteDialogFragment extends DialogFragment {
 		mSelectedPalettes = new ArrayList<Integer>();
 		mObjectPref = (ObjectPreference) mActivity.getApplication();
 		mComplexPrefs = mObjectPref.getComplexPreference();
-		mPaletteNames = mComplexPrefs.getObject("palette_collection", PaletteCollection.class).getCollection();
+		if (mComplexPrefs.getObject("palette_collection",
+				PaletteCollection.class) == null
+				|| mComplexPrefs
+						.getObject("palette_collection",
+								PaletteCollection.class).getCollection().size() == 0) {
+				mListener.onPaletteDialogNeutralClick(this);
+				
+		}
+		mPaletteNames = mComplexPrefs.getObject("palette_collection",
+				PaletteCollection.class).getCollection();
 		mCheckedItems = new boolean[mPaletteNames.size()];
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.add_to_palettes)
 				.setAdapter(
@@ -67,7 +77,8 @@ public class PaletteDialogFragment extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								mListener.onPaletteDialogNeutralClick(PaletteDialogFragment.this);
+								mListener
+										.onPaletteDialogNeutralClick(PaletteDialogFragment.this);
 							}
 						})
 				.setNegativeButton(R.string.cancel,
@@ -84,38 +95,43 @@ public class PaletteDialogFragment extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								
-								for (int i = 0; i < mCheckedItems.length; i++){
-									if (mCheckedItems[i]){
+
+								for (int i = 0; i < mCheckedItems.length; i++) {
+									if (mCheckedItems[i]) {
 										mSelectedPalettes.add(i);
 									}
 								}
-								
-								mListener
-										.onPaletteDialogPositiveClick(PaletteDialogFragment.this, mSelectedPalettes);
+
+								mListener.onPaletteDialogPositiveClick(
+										PaletteDialogFragment.this,
+										mSelectedPalettes);
 								// add color to selected palettes
 							}
 						});
 
 		mAlertDialog = builder.create();
 		mListView = (ListView) mAlertDialog.getListView();
-		mListView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.palette_choice_item, mPaletteNames));
+		mListView.setAdapter(new ArrayAdapter<String>(getActivity(),
+				R.layout.palette_choice_item, mPaletteNames));
 		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				CheckedTextView checkedTextView = (CheckedTextView) view.findViewById(R.id.checked_text);
-				/*CheckBox cb = ((CheckBox)view.findViewById(R.id.checkBox));
-				cb.setChecked(!checkedTextView.isChecked());*/
+				CheckedTextView checkedTextView = (CheckedTextView) view
+						.findViewById(R.id.checked_text);
+				/*
+				 * CheckBox cb = ((CheckBox)view.findViewById(R.id.checkBox));
+				 * cb.setChecked(!checkedTextView.isChecked());
+				 */
 				mCheckedItems[position] = !checkedTextView.isChecked();
 			}
-			
+
 		});
 		mListView.setDivider(null);
 		mListView.setDividerHeight(-1);
-		
+
 		return mAlertDialog;
 	}
 }

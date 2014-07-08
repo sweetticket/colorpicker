@@ -56,65 +56,87 @@ public class MyPalettesActivity extends FragmentActivity implements
 	private ObjectPreference mObjectPref;
 	private ComplexPreferences mComplexPrefs;
 	private static ArrayList<String> mPaletteNames;
+	private ArrayAdapter mDrawerAdapter;
+	private int mCurrentPos;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_palettes);
 
+		if (getIntent().getStringExtra("toast_text") != null) {
+			Toast toast = Toast.makeText(getApplicationContext(), getIntent()
+					.getStringExtra("toast_text"), Toast.LENGTH_SHORT);
+			toast.show();
+		}
+
 		mObjectPref = (ObjectPreference) getApplication();
 		mComplexPrefs = mObjectPref.getComplexPreference();
-		mPaletteNames = mComplexPrefs.getObject("palette_collection",
-				PaletteCollection.class).getCollection();
+		if (mComplexPrefs.getObject("palette_collection",
+				PaletteCollection.class) == null
+				|| mComplexPrefs
+						.getObject("palette_collection",
+								PaletteCollection.class).getCollection().size() == 0) {
+			Intent firstPaletteIntent = new Intent(this,
+					FirstPaletteActivity.class);
+			startActivity(firstPaletteIntent);
+			finish();
+		} else {
+			mPaletteNames = mComplexPrefs.getObject("palette_collection",
+					PaletteCollection.class).getCollection();
 
-		mTitle = mDrawerTitle = getTitle();
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+			mTitle = mDrawerTitle = getTitle();
+			mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+			mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		// set a custom shadow that overlays the main content when the drawer
-		// opens
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
-		// set up the drawer's list view with items and click listener
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, mPaletteNames));
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+			// set a custom shadow that overlays the main content when the
+			// drawer
+			// opens
+			mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+					GravityCompat.START);
+			// set up the drawer's list view with items and click listener
+			mDrawerAdapter = new ArrayAdapter<String>(this,
+					R.layout.drawer_list_item, mPaletteNames);
+			mDrawerList.setAdapter(mDrawerAdapter);
+			mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		// enable ActionBar app icon to behave as action to toggle nav drawer
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		// getActionBar().setHomeButtonEnabled(true);
+			// enable ActionBar app icon to behave as action to toggle nav
+			// drawer
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+			// getActionBar().setHomeButtonEnabled(true);
 
-		// ActionBarDrawerToggle ties together the the proper interactions
-		// between the sliding drawer and the action bar app icon
-		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-		mDrawerLayout, /* DrawerLayout object */
-		R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-		R.string.drawer_open, /* "open drawer" description for accessibility */
-		R.string.drawer_close /* "close drawer" description for accessibility */
-		) {
-			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(mTitle);
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
+			// ActionBarDrawerToggle ties together the the proper interactions
+			// between the sliding drawer and the action bar app icon
+			mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+			mDrawerLayout, /* DrawerLayout object */
+			R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
+			R.string.drawer_open, /* "open drawer" description for accessibility */
+			R.string.drawer_close /* "close drawer" description for accessibility */
+			) {
+				public void onDrawerClosed(View view) {
+					getActionBar().setTitle(mTitle);
+					invalidateOptionsMenu(); // creates call to
+												// onPrepareOptionsMenu()
+				}
+
+				public void onDrawerOpened(View drawerView) {
+					getActionBar().setTitle(mDrawerTitle);
+					invalidateOptionsMenu(); // creates call to
+												// onPrepareOptionsMenu()
+				}
+			};
+			mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+			if (savedInstanceState == null) {
+				selectItem(0);
 			}
-
-			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(mDrawerTitle);
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
-			}
-		};
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-		if (savedInstanceState == null) {
-			selectItem(0);
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+		inflater.inflate(R.menu.my_palettes, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -137,7 +159,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 			// TODO dialog
 			return true;
 		case R.id.action_delete_palette:
-			// TODO dialog
+			showDeleteDialog();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -145,10 +167,9 @@ public class MyPalettesActivity extends FragmentActivity implements
 	}
 
 	public void showDeleteDialog() {
-		DialogFragment dialog = new AdjustDialogFragment();
+		DialogFragment dialog = new DeleteDialogFragment();
 
-		((DeleteDialogFragment) dialog).setPaletteSelection(getTitle()
-				.toString());
+		((DeleteDialogFragment) dialog).setPaletteSelection(mTitle.toString());
 
 		dialog.show(getSupportFragmentManager(), "DeleteDialogFragment");
 	}
@@ -170,6 +191,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
+		mCurrentPos = position;
 		Fragment fragment = new PaletteFragment();
 		Bundle args = new Bundle();
 		args.putInt(PaletteFragment.ARG_PALETTE_NUMBER, position);
@@ -242,34 +264,34 @@ public class MyPalettesActivity extends FragmentActivity implements
 
 	@Override
 	public void onDeleteDialogPositiveClick(DialogFragment dialog) {
+
 		if (mComplexPrefs != null) {
-			if (mComplexPrefs.getObject(getTitle().toString(),
-					PaletteModel.class) != null) {
-				mComplexPrefs.removeObject(getTitle().toString());
-			}else{
-				dialog.dismiss();
-				Toast toast = Toast.makeText(getApplicationContext(),
-						"No palettes to delete", Toast.LENGTH_SHORT);
-				toast.show();
+			mComplexPrefs.removeObject(mTitle.toString());
+			PaletteCollection temp_name_arr = mComplexPrefs.getObject(
+					"palette_collection", PaletteCollection.class);
+			temp_name_arr.getCollection().remove(mTitle);
+			mComplexPrefs.putObject("palette_collection", temp_name_arr);
+			if (temp_name_arr.getCollection().size() == 0) {
+				Intent firstPaletteIntent = new Intent(this,
+						FirstPaletteActivity.class);
+				startActivity(firstPaletteIntent);
+				finish();
 			}
-			if (mComplexPrefs.getObject("palette_collection",
-					PaletteCollection.class) != null) {
-				//TODO delete key from palette_collection
-			} else {
-				dialog.dismiss();
-				Toast toast = Toast.makeText(getApplicationContext(),
-						"No palettes to delete", Toast.LENGTH_SHORT);
-				toast.show();
-			}
+			dialog.dismiss();
+			String toast_text = "Deleted palette \'" + mTitle + "\'";
+			refresh(toast_text);
 		} else {
 			android.util.Log.e("pref null", "Preference is null");
 		}
-		dialog.dismiss();
-		Toast toast = Toast.makeText(getApplicationContext(),
-				"Deleted palette \'" + getTitle() + "\'", Toast.LENGTH_SHORT);
-		toast.show();
-		//TODO show next item!!
+		// TODO show next item!!
 
+	}
+
+	public void refresh(String toastText) {
+		Intent refreshIntent = new Intent(this, MyPalettesActivity.class);
+		refreshIntent.putExtra("toast_text", toastText);
+		startActivity(refreshIntent);
+		finish();
 	}
 
 	@Override
@@ -292,15 +314,18 @@ public class MyPalettesActivity extends FragmentActivity implements
 						"palette_collection", PaletteCollection.class);
 				temp_name_arr.add(name);
 				mComplexPrefs.putObject("palette_collection", temp_name_arr);
-
+				mDrawerAdapter.notifyDataSetChanged();
+				dialog.dismiss();
+				String toast_text = "Created new palette \'" + name + "\'";
+				refresh(toast_text);
 			}
 		} else {
 			android.util.Log.e("pref null", "Preference is null");
+			dialog.dismiss();
+			Toast toast = Toast.makeText(getApplicationContext(),
+					"Error. Try Again.", Toast.LENGTH_SHORT);
+			toast.show();
 		}
-		dialog.dismiss();
-		Toast toast = Toast.makeText(getApplicationContext(),
-				"Created new palette \'" + name + "\'", Toast.LENGTH_SHORT);
-		toast.show();
 	}
 
 	@Override

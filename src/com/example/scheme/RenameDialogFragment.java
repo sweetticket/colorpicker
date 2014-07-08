@@ -10,30 +10,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-public class NewPaletteDialogFragment extends DialogFragment {
+public class RenameDialogFragment extends DialogFragment {
 	
 	private EditText mNameEditText;
 	
-	public NewPaletteDialogFragment() {
+	public RenameDialogFragment() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public interface NewPaletteDialogListener {
-		public void onNewPaletteDialogPositiveClick(DialogFragment dialog, String name);
+	public interface RenameDialogListener {
+		public void onRenameDialogPositiveClick(DialogFragment dialog, String name);
 
-		public void onNewPaletteDialogNegativeClick(DialogFragment dialog);
+		public void onRenameDialogNegativeClick(DialogFragment dialog);
 	}
 
-	NewPaletteDialogListener mListener;
+	RenameDialogListener mListener;
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			mListener = (NewPaletteDialogListener) activity;
+			mListener = (RenameDialogListener) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
-					+ " must implement NewPaletteDialogListener");
+					+ " must implement RenameDialogListener");
 		}
 	}
 
@@ -45,7 +45,7 @@ public class NewPaletteDialogFragment extends DialogFragment {
 				null);
 		mNameEditText = (EditText) diaRootView.findViewById(R.id.palette_name);
 		builder.setView(diaRootView)
-				.setMessage(R.string.new_palette)
+				.setMessage(R.string.rename_palette)
 				.setNegativeButton(R.string.cancel,
 						new DialogInterface.OnClickListener() {
 
@@ -53,11 +53,11 @@ public class NewPaletteDialogFragment extends DialogFragment {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								mListener
-										.onNewPaletteDialogNegativeClick(NewPaletteDialogFragment.this);
+										.onRenameDialogNegativeClick(RenameDialogFragment.this);
 
 							}
 						})
-				.setPositiveButton(R.string.create,
+				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
 
 							@Override
@@ -65,7 +65,7 @@ public class NewPaletteDialogFragment extends DialogFragment {
 									int which) {
 								String name = mNameEditText.getText().toString();
 								mListener
-										.onNewPaletteDialogPositiveClick(NewPaletteDialogFragment.this, name);
+										.onRenameDialogPositiveClick(RenameDialogFragment.this, name);
 
 							}
 						});

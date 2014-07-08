@@ -56,5 +56,5 @@
     <string name="title_activity_first_palette">No Palettes</string>
     <string name="create_first_palette">Create Palette</string>
     <string name="no_palettes">No saved palettes.</string>
-
+	<string name="rename_palette">Rename Palette</string>
 </resources>

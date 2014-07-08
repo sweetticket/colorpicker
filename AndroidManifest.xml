@@ -48,11 +48,13 @@
         </activity>
         <activity
             android:name="com.example.scheme.MyPalettesActivity"
-            android:label="@string/title_activity_my_palettes" >
+            android:label="@string/title_activity_my_palettes"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.example.scheme.FirstPaletteActivity"
-            android:label="@string/title_activity_first_palette" >
+            android:label="@string/title_activity_first_palette"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

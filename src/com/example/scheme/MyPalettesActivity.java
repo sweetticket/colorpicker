@@ -45,7 +45,9 @@ import android.widget.Toast;
 
 public class MyPalettesActivity extends FragmentActivity implements
 		DeleteDialogFragment.DeleteDialogListener,
-		NewPaletteDialogFragment.NewPaletteDialogListener {
+		NewPaletteDialogFragment.NewPaletteDialogListener,
+		EditDialogFragment.EditDialogListener,
+		RenameDialogFragment.RenameDialogListener{
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -58,10 +60,12 @@ public class MyPalettesActivity extends FragmentActivity implements
 	private static ArrayList<String> mPaletteNames;
 	private ArrayAdapter mDrawerAdapter;
 	private int mCurrentPos;
+	private static boolean mEditMode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mEditMode = false;
 		setContentView(R.layout.activity_my_palettes);
 
 		if (getIntent().getStringExtra("toast_text") != null) {
@@ -153,16 +157,26 @@ public class MyPalettesActivity extends FragmentActivity implements
 			showNewPaletteDialog();
 			return true;
 		case R.id.action_rename_palette:
-			// TODO dialog
+			showRenameDialog();
 			return true;
 		case R.id.action_edit_palette:
-			// TODO dialog
+			editPalette();
 			return true;
 		case R.id.action_delete_palette:
 			showDeleteDialog();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void editPalette() {
+		mEditMode = !mEditMode;
+		mDrawerLayout.closeDrawer(mDrawerList);
+		if (mEditMode) {
+			Toast toast = Toast.makeText(getApplicationContext(),
+					"Touch to delete a color", Toast.LENGTH_SHORT);
+			toast.show();
 		}
 	}
 
@@ -173,7 +187,13 @@ public class MyPalettesActivity extends FragmentActivity implements
 
 		dialog.show(getSupportFragmentManager(), "DeleteDialogFragment");
 	}
-
+	
+	
+	public void showRenameDialog(){
+		DialogFragment dialog = new RenameDialogFragment();
+		dialog.show(getSupportFragmentManager(), "RenameDialogFragment");
+	}
+	
 	public void showNewPaletteDialog() {
 		DialogFragment dialog = new NewPaletteDialogFragment();
 		dialog.show(getSupportFragmentManager(), "NewPaletteDialogFragment");
@@ -238,7 +258,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 	public static class PaletteFragment extends Fragment {
 		public static final String ARG_PALETTE_NUMBER = "palette_number";
 		private LinearLayout mPaletteContainer;
-		
+
 		public PaletteFragment() {
 			// Empty constructor required for fragment subclasses
 		}
@@ -246,16 +266,19 @@ public class MyPalettesActivity extends FragmentActivity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+
 			View rootView = inflater.inflate(R.layout.fragment_palette,
 					container, false);
 			int i = getArguments().getInt(ARG_PALETTE_NUMBER);
 			String palette_name = mPaletteNames.get(i);
-			
-			mPaletteContainer = (LinearLayout) rootView.findViewById(R.id.palette_container);
-			PaletteModel current_palette = mComplexPrefs.getObject(palette_name, PaletteModel.class);
-						
-			for (int pos = 0; pos < current_palette.getColors().size(); pos++){
-				if (rootView.findViewById(pos / 3) == null){
+
+			mPaletteContainer = (LinearLayout) rootView
+					.findViewById(R.id.palette_container);
+			PaletteModel current_palette = mComplexPrefs.getObject(
+					palette_name, PaletteModel.class);
+			if (current_palette != null){
+			for (int pos = 0; pos < current_palette.getColors().size(); pos++) {
+				if (rootView.findViewById(pos / 3) == null) {
 					LinearLayout lL = new LinearLayout(getActivity());
 					lL.setPadding(15, 15, 15, 15);
 					lL.setId(pos / 3);
@@ -263,26 +286,45 @@ public class MyPalettesActivity extends FragmentActivity implements
 				}
 				int color = current_palette.getColors().get(pos);
 				PaletteView currentPaletteView = new PaletteView(getActivity());
-				((LinearLayout)rootView.findViewById(pos/3)).addView(currentPaletteView);
+				((LinearLayout) rootView.findViewById(pos / 3))
+						.addView(currentPaletteView);
 				currentPaletteView.setPaintColor(color);
 				currentPaletteView.setPadding(15, 15, 15, 15);
+				currentPaletteView.setId(pos * -1);
 				currentPaletteView.getLayoutParams().height = PaletteView.BIT_HEIGHT;
 				currentPaletteView.getLayoutParams().width = PaletteView.BIT_WIDTH;
-				currentPaletteView.setOnClickListener(new OnClickListener(){
+				currentPaletteView.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						Intent colorPickerIntent = new Intent(getActivity(), ColorPickerActivity.class);
-						colorPickerIntent.putExtra("color", ((PaletteView)v).getPaintColor());
-						startActivity(colorPickerIntent);
+						if (!mEditMode) {
+							Intent colorPickerIntent = new Intent(
+									getActivity(), ColorPickerActivity.class);
+							colorPickerIntent.putExtra("color",
+									((PaletteView) v).getPaintColor());
+							startActivity(colorPickerIntent);
+						} else {
+							((MyPalettesActivity) getActivity())
+									.showEditDialog(
+											((PaletteView) v).getPaintColor(),
+											v.getId() * -1);
+						}
 					}
-					
+
 				});
 			}
-			
+			}
 			getActivity().setTitle(palette_name);
 			return rootView;
 		}
+	}
+
+	public void showEditDialog(int color, int pos) {
+		DialogFragment dialog = new EditDialogFragment();
+
+		((EditDialogFragment) dialog).setColorSelection(color);
+		((EditDialogFragment) dialog).setColorPos(pos);
+		dialog.show(getSupportFragmentManager(), "EditDialogFragment");
 	}
 
 	@Override
@@ -306,7 +348,6 @@ public class MyPalettesActivity extends FragmentActivity implements
 		} else {
 			android.util.Log.e("pref null", "Preference is null");
 		}
-		// TODO show next item!!
 
 	}
 
@@ -354,5 +395,42 @@ public class MyPalettesActivity extends FragmentActivity implements
 	@Override
 	public void onNewPaletteDialogNegativeClick(DialogFragment dialog) {
 		dialog.dismiss();
+	}
+
+	@Override
+	public void onEditDialogPositiveClick(DialogFragment dialog, int colorpos) {
+		PaletteModel temp_palette_model = mComplexPrefs.getObject(
+				mTitle.toString(), PaletteModel.class);
+		temp_palette_model.getColors().remove(colorpos);
+		mComplexPrefs.removeObject(mTitle.toString());
+		mComplexPrefs.putObject(mTitle.toString(), temp_palette_model);
+		int deleted_color = ((EditDialogFragment) dialog).getColorSelection();
+		refresh("Deleted " + ((new ColorModel(deleted_color)).getHexCode())
+				+ " from /'" + mTitle.toString() + "\'");
+	}
+
+	@Override
+	public void onEditDialogNegativeClick(DialogFragment dialog) {
+		dialog.dismiss();
+	}
+
+	@Override
+	public void onRenameDialogPositiveClick(DialogFragment dialog, String name) {
+		PaletteModel temp_palette_model = mComplexPrefs.getObject(mTitle.toString(), PaletteModel.class);
+		temp_palette_model.setName(name);
+		mComplexPrefs.removeObject(mTitle.toString());
+		mComplexPrefs.putObject(name, temp_palette_model);
+		PaletteCollection temp_collection = mComplexPrefs.getObject("palette_collection", PaletteCollection.class);
+		temp_collection.getCollection().remove(mTitle.toString());
+		temp_collection.getCollection().add(name);
+		mComplexPrefs.removeObject("palette_collection");
+		mComplexPrefs.putObject("palette_collection", temp_collection);
+		dialog.dismiss();
+		refresh("Renamed palette to \'"+name+"\'");
+	}
+
+	@Override
+	public void onRenameDialogNegativeClick(DialogFragment dialog) {
+		dialog.dismiss();	
 	}
 }

@@ -165,7 +165,6 @@ public class PinpointActivity extends ActionBarActivity {
 	}
 	
 	private void startColorPicker(int color){
-		Log.d("here", "colorpicker start with: "+color);
 		Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
 		colorPickerIntent.putExtra("color", color);
 		startActivity(colorPickerIntent);

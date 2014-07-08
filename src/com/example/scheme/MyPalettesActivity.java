@@ -28,15 +28,18 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -234,7 +237,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 	 */
 	public static class PaletteFragment extends Fragment {
 		public static final String ARG_PALETTE_NUMBER = "palette_number";
-		private FrameLayout mPaletteContainer;
+		private LinearLayout mPaletteContainer;
 		
 		public PaletteFragment() {
 			// Empty constructor required for fragment subclasses
@@ -248,15 +251,33 @@ public class MyPalettesActivity extends FragmentActivity implements
 			int i = getArguments().getInt(ARG_PALETTE_NUMBER);
 			String palette_name = mPaletteNames.get(i);
 			
-			mPaletteContainer = (FrameLayout) rootView.findViewById(R.id.palette_container);
+			mPaletteContainer = (LinearLayout) rootView.findViewById(R.id.palette_container);
 			PaletteModel current_palette = mComplexPrefs.getObject(palette_name, PaletteModel.class);
-			
-			for (Integer color : current_palette.getColors()){
+						
+			for (int pos = 0; pos < current_palette.getColors().size(); pos++){
+				if (rootView.findViewById(pos / 3) == null){
+					LinearLayout lL = new LinearLayout(getActivity());
+					lL.setPadding(15, 15, 15, 15);
+					lL.setId(pos / 3);
+					mPaletteContainer.addView(lL);
+				}
+				int color = current_palette.getColors().get(pos);
 				PaletteView currentPaletteView = new PaletteView(getActivity());
-				mPaletteContainer.addView(currentPaletteView);
+				((LinearLayout)rootView.findViewById(pos/3)).addView(currentPaletteView);
 				currentPaletteView.setPaintColor(color);
+				currentPaletteView.setPadding(15, 15, 15, 15);
 				currentPaletteView.getLayoutParams().height = PaletteView.BIT_HEIGHT;
 				currentPaletteView.getLayoutParams().width = PaletteView.BIT_WIDTH;
+				currentPaletteView.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View v) {
+						Intent colorPickerIntent = new Intent(getActivity(), ColorPickerActivity.class);
+						colorPickerIntent.putExtra("color", ((PaletteView)v).getPaintColor());
+						startActivity(colorPickerIntent);
+					}
+					
+				});
 			}
 			
 			getActivity().setTitle(palette_name);

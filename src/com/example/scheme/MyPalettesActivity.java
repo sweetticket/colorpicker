@@ -22,6 +22,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.DialogFragment;
@@ -171,6 +172,13 @@ public class MyPalettesActivity extends FragmentActivity implements
 	}
 
 	public void editPalette() {
+		if (mComplexPrefs.getObject(mTitle.toString(), PaletteModel.class).getColors().size() == 0){
+			Intent colorPickerIntent = new Intent(this, ColorPickerActivity.class);
+			colorPickerIntent.putExtra("color",
+					Color.HSVToColor(new float[]{20.0f, 0.7f, 0.7f}));
+			startActivity(colorPickerIntent);
+			finish();
+		}
 		mEditMode = !mEditMode;
 		mDrawerLayout.closeDrawer(mDrawerList);
 		if (mEditMode) {
@@ -303,6 +311,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 							colorPickerIntent.putExtra("color",
 									((PaletteView) v).getPaintColor());
 							startActivity(colorPickerIntent);
+							getActivity().finish();
 						} else {
 							((MyPalettesActivity) getActivity())
 									.showEditDialog(
@@ -320,6 +329,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 	}
 
 	public void showEditDialog(int color, int pos) {
+		
 		DialogFragment dialog = new EditDialogFragment();
 
 		((EditDialogFragment) dialog).setColorSelection(color);
@@ -406,7 +416,7 @@ public class MyPalettesActivity extends FragmentActivity implements
 		mComplexPrefs.putObject(mTitle.toString(), temp_palette_model);
 		int deleted_color = ((EditDialogFragment) dialog).getColorSelection();
 		refresh("Deleted " + ((new ColorModel(deleted_color)).getHexCode())
-				+ " from /'" + mTitle.toString() + "\'");
+				+ " from \'" + mTitle.toString() + "\'");
 	}
 
 	@Override

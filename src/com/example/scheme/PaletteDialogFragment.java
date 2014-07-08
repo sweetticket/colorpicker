@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -114,18 +115,20 @@ public class PaletteDialogFragment extends DialogFragment {
 		mListView.setAdapter(new ArrayAdapter<String>(getActivity(),
 				R.layout.palette_choice_item, mPaletteNames));
 		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+			
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				CheckedTextView checkedTextView = (CheckedTextView) view
 						.findViewById(R.id.checked_text);
-				/*
-				 * CheckBox cb = ((CheckBox)view.findViewById(R.id.checkBox));
-				 * cb.setChecked(!checkedTextView.isChecked());
-				 */
 				mCheckedItems[position] = !checkedTextView.isChecked();
+				if (!checkedTextView.isChecked()){
+					view.setBackgroundColor(Color.HSVToColor(new float[]{189.0f, 0.5f, 0.97f}));
+				}else{
+					view.setBackgroundColor(Color.TRANSPARENT);
+				}
 			}
 
 		});
